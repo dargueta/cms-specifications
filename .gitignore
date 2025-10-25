@@ -1,0 +1,9 @@
+.idea/
+.vscode/
+
+*.py[cow]
+__pycache__/
+.tox/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
