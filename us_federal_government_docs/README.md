@@ -4,4 +4,5 @@ Except where noted, all files in this directory and all its subdirectories is cr
 
 ## Exceptions
 
-* Any file whose name starts with "README" is provided for informational purposes only and is governed by the CC0 license.
+* Any file whose name starts with "README" is provided for informational purposes only and is governed by the X11 license.
+* Other files, especially ones starting with a period or named `Makefile`, are intended for administration of this repository.
