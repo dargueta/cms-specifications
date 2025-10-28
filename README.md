@@ -9,7 +9,7 @@ Instead of links I've included the actual files here because I hate dead links, 
 ## Licensing
 
 * Except as noted, all files in the `us_federal_government_docs` directory are works of the U.S. Federal Government. Under 17 U.S.C. §105 these are public domain. *I did not create these, nor do I claim any rights on these files or their contents.*
-* Anything else is governed by the [X11 license](https://spdx.org/licenses/X11.html). For details, see the `LICENSE` file in the `code` directory.
+* Anything else is governed by the [3-Clause BSD License](https://en.wikipedia.org/wiki/BSD_licenses#3-clause_license_(%22BSD_License_2.0%22,_%22Revised_BSD_License%22,_%22New_BSD_License%22,_or_%22Modified_BSD_License%22)). For details, see the `LICENSE` file in the `code` directory.
 
 ## Contributing
 
@@ -25,4 +25,4 @@ You understand and represent that your contribution is a publication of the U.S.
 
 ### Other Contributions
 
-Any contributions not originating from the US federal government are automatically governed by the X11 license. You understand and represent that you have the authority to release your contributions under this license. Either the contributions must be your own, from a source with compatible licensing, or you must provide written, verifiable proof that you have the authority to do so.
+Any contributions not originating from the US federal government are automatically governed by the BSD-3 license. You understand and represent that you have the authority to release your contributions under this license. Either the contributions must be your own, from a source with compatible licensing, or you must provide written, verifiable proof that you have the authority to do so.
