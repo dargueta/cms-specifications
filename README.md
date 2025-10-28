@@ -1,8 +1,8 @@
 # CMS Technical Specifications
 
-This repository is a collection of technical documentation made publicly available by CMS on their website. It's intended for software engineers looking to implement, for example, file parsing for CMS' plan communications (BEQR, MONMEMD, and the like). Only the latest version of the PCUG specification is available on their site, making any previous release very difficult to find, hence this.
+This repository is a collection of technical documentation made publicly available by [US Centers for Medicare and Medicaid Services ("CMS")](https://www.cms.gov/) ("CMS") on their website. It's intended for software engineers looking to implement, for example, file parsing for CMS' plan communications (BEQR, MONMEMD, and the like). Only the latest version of the PCUG specification is available on their site, making any previous release very difficult to find, hence this.
 
-**I am in no way affiliated with the [Centers for Medicare and Medicaid Services ("CMS")](https://www.cms.gov/) or the US government, nor has any entity of the US government endorsed this project.** All I want is to reduce the burden on healthcare companies working with the US government to provide medical care for those who need it most.
+**I am in no way affiliated with neither CMS nor the US government, nor has any entity of the US government endorsed this project.** All I want is to reduce the burden on healthcare companies working with the US government to provide medical care for those who need it most.
 
 Instead of links I've included the actual files here because I hate dead links, and, quite frankly, I don't trust [DOGE](https://doge.gov/) to not break everything.
 
