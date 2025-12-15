@@ -1,0 +1,88 @@
+# SPDX-License-Identifier: BSD-3-Clause
+$schema: https://datapackage.org/profiles/2.0/tableschema.json
+fieldsMatch: subset
+fields:
+  - name: record_type
+    title: Record Type
+    description: >-
+      Critical Field
+
+      This code identifies the record as a
+      Detail Record for processing
+      specifically for BEQ Service.
+    type: string
+    constraints:
+      required: true
+      maxLength: 5
+      enum: ["DTL01"]
+  - name: beneficiary_id
+    title: Beneficiary ID
+    description: >-
+      Critical Field
+
+      * Before the Medicare Beneficiary
+        Identifier (MBI) Transition period,
+        the acceptable values are the Health
+        Insurance Claim Number (HICN)
+        and the Railroad Retirement Board
+        (RRB) Number.
+      * During the MBI Transition period,
+        the acceptable values are the HICN,
+        RRB Number and MBI.
+      * When the MBI Transition period
+        ends, the acceptable value is the
+        MBI.
+      * The last position may be a space.
+    type: string
+    rdfType: http://schema.org/Person
+    constraints:
+      required: true
+      maxLength: 12
+  - name: _filler
+    title: Filler
+    type: string
+    constraints:
+      required: true
+      minLength: 9
+      maxLength: 9
+      enum: [""]
+  - name: dob
+    title: DOB
+    description: >-
+      Critical Field
+
+      The date of the beneficiary's birth.
+      The value should not include dashes,
+      decimals, or commas. The value
+      should include only numbers.
+    type: date
+    rdfType: http://schema.org/Date
+    format: "%Y%m%d"
+    constraints:
+      required: true
+  - name: sex_code
+    title: Sex Code
+    description: The sex of the beneficiary.
+    type: string
+    rdfType: https://schema.org/GenderType
+    categories:
+      - value: "0"
+        label: Unknown
+      - value: "1"
+        label: Male
+      - value: "2"
+        label: Female
+  - name: detail_record_sequence_number
+    title: Detail Record Sequence Number
+    description: >-
+      Critical Field
+
+      A unique number assigned by the
+      Sending Entity to the Detail Record.
+    type: integer
+    constraints:
+      required: true
+      minLength: 1
+      maxLength: 7
+      minimum: 0
+      maximum: 9999999
