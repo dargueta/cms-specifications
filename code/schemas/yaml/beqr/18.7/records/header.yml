@@ -11,8 +11,8 @@ fields:
     type: string
     constraints:
       enum: [MMABEQRH]
-      required: true
       maxLength: 8
+      required: true
   - name: sending_entity
     title: Sending Entity
     description: >-
@@ -27,9 +27,15 @@ fields:
     type: string
     rdfType: https://schema.org/Organization
     constraints:
+      maxLength: 5
       minLength: 5
-      maxLength: 8
       required: true
+  - name: _sending_entity_padding
+    type: string
+    constraints:
+      enum: [""]
+      maxLength: 3
+      minLength: 3
   - name: file_creation_date
     title: File Creation Date
     description: >-
@@ -41,10 +47,10 @@ fields:
       Record. CMS returns this information to
       the Sending Entity on all Detail Records
       of a BEQ Response File.
-    type: string
-    rdfType: https://schema.org/Date
+    type: date
     format: "%Y%m%d"
     constraints:
+      maxLength: 8
       required: true
   - name: file_control_number
     title: File Control Number
@@ -58,9 +64,14 @@ fields:
       BEQ Response File. This value should
       agree with the corresponding value in the
       Trailer Record.
+    type: string
+    constraints:
+      maxLength: 9
+      minLength: 1
+      required: true
   - name: _filler
     title: Filler
     constraints:
-      minLength: 717
-      maxLength: 717
       enum: [""]
+      maxLength: 717
+      minLength: 717
