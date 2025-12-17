@@ -12,9 +12,9 @@ fields:
       specifically for BEQ Service.
     type: string
     constraints:
-      required: true
-      maxLength: 5
       enum: ["DTL01"]
+      maxLength: 5
+      required: true
   - name: beneficiary_id
     title: Beneficiary ID
     description: >-
@@ -36,8 +36,9 @@ fields:
     type: string
     rdfType: http://schema.org/Person
     constraints:
-      required: true
+      minLength: 11
       maxLength: 12
+      required: true
   - name: _filler
     title: Filler
     type: string
@@ -56,9 +57,9 @@ fields:
       decimals, or commas. The value
       should include only numbers.
     type: date
-    rdfType: http://schema.org/Date
     format: "%Y%m%d"
     constraints:
+      maxLength: 8
       required: true
   - name: sex_code
     title: Sex Code
