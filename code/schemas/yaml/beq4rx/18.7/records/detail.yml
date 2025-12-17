@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: BSD-3-Clause
 $schema: https://datapackage.org/profiles/2.0/tableschema.json
-fieldsMatch: subset
+fieldsMatch: [subset]
 fields:
   - name: record_type
     title: Record Type
