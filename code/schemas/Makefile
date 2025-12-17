@@ -1,8 +1,11 @@
 # SPDX-License-Identifier: BSD-3-Clause
-.DELETE_ON_FAILURE: json/%.json
+
+.DELETE_ON_FAILURE: json/%.json dependencies.mk
+.INTERMEDIATE: %.dep
 
 YAML_SOURCES=$(shell find yaml -name '*.yml')
 M4_SOURCES=$(shell find yaml -name '*.m4')
+M4_DEPENDENCY_SPECS=$(M4_SOURCES:.m4=.dep)
 YAML_TARGETS=$(M4_SOURCES:.m4=.yml)
 JSON_INTERMEDIATES=$(YAML_SOURCES:.yml=.json)
 JSON_TARGETS=$(subst yaml/,json/,$(JSON_INTERMEDIATES))
@@ -15,7 +18,7 @@ all: $(ALL_TARGETS)
 
 .PHONY: clean
 clean:
-	$(RM) $(ALL_TARGETS)
+	$(RM) $(ALL_TARGETS) $(M4_DEPENDENCY_SPECS)
 
 %-min.json: %.json
 	yq -I0 -M -o json $< > $@
@@ -26,4 +29,16 @@ json/%.json: yaml/%.yml
 	yq -MP -o json $< > $@
 
 %.yml: %.m4
-	m4 -I yaml $< > $@
+	m4 -I yaml --debug=p --debugfile=$<-trace.log $< > $@
+
+
+M4_INCLUDE_OVERRIDE=m4_define(`include', `yaml/$$1')m4_dnl
+export M4_INCLUDE_OVERRIDE
+
+dependencies.mk: $(M4_DEPENDENCY_SPECS)
+	cat $^ > $@
+
+%.dep: %.m4
+	echo "$*.yml: $< $(shell echo "$$M4_INCLUDE_OVERRIDE" | cat - $^ | m4 -P)" > $@
+
+-include dependencies.mk
