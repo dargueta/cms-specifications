@@ -3,7 +3,6 @@
 
 YAML_SOURCES=$(shell find yaml -name '*.yml')
 M4_SOURCES=$(shell find yaml -name '*.m4')
-VALIDATION_INTERMEDIATES=$(YAML_SOURCES:.yml=-validation.json)
 YAML_TARGETS=$(M4_SOURCES:.m4=.yml)
 JSON_INTERMEDIATES=$(YAML_SOURCES:.yml=.json)
 JSON_TARGETS=$(subst yaml/,json/,$(JSON_INTERMEDIATES))
@@ -21,12 +20,10 @@ clean:
 %-min.json: %.json
 	yq -I0 -M -o json $< > $@
 
-json/%.json: yaml/%.yml yaml/%-validation.json
+json/%.json: yaml/%.yml
+	check-jsonschema --schemafile https://datapackage.org/profiles/2.0/tableschema.json $<
 	mkdir -p $(@D)
 	yq -MP -o json $< > $@
-
-%-validation.json: %.yml
-	check-jsonschema -o $@ --schemafile https://datapackage.org/profiles/2.0/tableschema.json $<
 
 %.yml: %.m4
 	m4 -I yaml $< > $@
