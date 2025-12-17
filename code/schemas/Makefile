@@ -19,11 +19,11 @@ clean:
 	$(RM) $(ALL_TARGETS)
 
 %-min.json: %.json
-	yq -I0M -o json $< > $@
+	yq -I0 -M -o json $< > $@
 
 json/%.json: yaml/%.yml yaml/%-validation.json
 	mkdir -p $(@D)
-	yq -I0M -o json -P $< > $@
+	yq -MP -o json $< > $@
 
 %-validation.json: %.yml
 	check-jsonschema -o $@ --schemafile https://datapackage.org/profiles/2.0/tableschema.json $<
