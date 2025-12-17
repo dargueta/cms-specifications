@@ -20,7 +20,7 @@ For example:
 
 ```
 yaml
-    |- beqr
+    |- beq4rx
        |- 18.7
           |- records
              |- header.yml
@@ -33,11 +33,11 @@ yaml
 
 `layout.yml` is a hard-coded name and describes the arrangement of the records in the file. Right now the exact format is unknown and the name may change.
 
-If a record specification is identical to that of another version, it's possible to use an `include()` directive. The include path will be relative to the `yaml` directory. For example, if the BEQR 18.6 version of the header record is identical to the BEQR 18.7 version, the file would be, in its entirety:
+If a record specification is identical to that of another version, it's possible to use an `include()` directive. The include path will be relative to the `yaml` directory. For example, if the BEQ Request 18.6 version of the header record is identical to the BEQ Request 18.7 version, the file would be, in its entirety:
 
 ```m4
 # SPDX-License-Identifier: BSD-3-Clause
-include(beqr/18.7/header.yml)
+include(beq4rx/18.7/header.yml)
 ```
 
 However, the file name would be `header.m4`, not `header.yml`. The `.m4` extension tells the build script to run it through the preprocessor first.
