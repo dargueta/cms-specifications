@@ -81,8 +81,15 @@ fields:
       Sending Entity to the Detail Record.
     type: integer
     constraints:
-      required: true
       minLength: 1
       maxLength: 7
       minimum: 0
       maximum: 9999999
+      required: true
+      unique: true
+  - name: _filler
+    type: string
+    constraints:
+      minLength: 708
+      maxLength: 708
+      enum: [""]
