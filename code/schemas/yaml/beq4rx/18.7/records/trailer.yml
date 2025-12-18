@@ -88,6 +88,10 @@ fields:
       minLength: 7
       maxLength: 7
       required: true
+    metadata:
+      serialization:
+        align: right
+        padding_character: "0"
   - name: _filler
     type: string
     constraints:
