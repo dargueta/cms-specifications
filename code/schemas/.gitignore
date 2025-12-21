@@ -1,3 +1,4 @@
 dependencies.mk
 json/
+*.dep
 *-min.json

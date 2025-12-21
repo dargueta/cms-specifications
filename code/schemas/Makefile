@@ -1,16 +1,18 @@
 # SPDX-License-Identifier: BSD-3-Clause
 
 .DELETE_ON_FAILURE: json/%.json dependencies.mk
-.INTERMEDIATE: %.dep
 
-YAML_SOURCES=$(shell find yaml -name '*.yml')
-M4_SOURCES=$(shell find yaml -name '*.m4')
-M4_DEPENDENCY_SPECS=$(M4_SOURCES:.m4=.dep)
-YAML_TARGETS=$(M4_SOURCES:.m4=.yml)
+
+YAML_SOURCES=$(shell find yaml -path '*/records/*.yml')
+M4_YAML_SOURCES=$(shell find yaml -name '*.yml.m4')
+M4_PUML_SOURCES=$(shell find yaml -name '*.puml.m4')
+M4_DEPENDENCY_SPECS=$(M4_YAML_SOURCES:.m4=.dep) $(M4_PUML_SOURCES:.m4=.dep)
+YAML_TARGETS=$(M4_YAML_SOURCES:.m4=)
+PUML_TARGETS=$(M4_PUML_SOURCES:.m4=)
 JSON_INTERMEDIATES=$(YAML_SOURCES:.yml=.json)
 JSON_TARGETS=$(subst yaml/,json/,$(JSON_INTERMEDIATES))
 JSON_TARGETS_MIN=$(JSON_TARGETS:.json=-min.json)
-ALL_TARGETS=$(YAML_TARGETS) $(JSON_TARGETS) $(JSON_TARGETS_MIN)
+ALL_TARGETS=$(YAML_TARGETS) $(PUML_TARGETS) $(JSON_TARGETS) $(JSON_TARGETS_MIN)
 
 
 .PHONY: all
@@ -28,17 +30,20 @@ json/%.json: yaml/%.yml
 	mkdir -p $(@D)
 	yq -MP -o json $< > $@
 
-%.yml: %.m4
-	m4 -I yaml --debug=p --debugfile=$<-trace.log $< > $@
+%.puml: %.puml.m4
+	m4 -I yaml $< > $@
 
-
-M4_INCLUDE_OVERRIDE=m4_define(`include', `yaml/$$1')m4_dnl
-export M4_INCLUDE_OVERRIDE
+%.yml: %.yml.m4
+	m4 -I yaml $< > $@
 
 dependencies.mk: $(M4_DEPENDENCY_SPECS)
 	cat $^ > $@
 
-%.dep: %.m4
-	echo "$*.yml: $< $(shell echo "$$M4_INCLUDE_OVERRIDE" | cat - $^ | m4 -P)" > $@
+%.dep: %-debug-trace.txt
+	echo -n "$*.yml: " > $@
+	sed -E 's/^.* found `(.*)$$/\1/g' < $< | tr -d "'" >> $@
+
+%-debug-trace.txt: %.m4
+	m4 -I yaml --debug=p --debugfile=$@ $< >/dev/null
 
 -include dependencies.mk
