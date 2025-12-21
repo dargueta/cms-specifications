@@ -1,0 +1,1 @@
+include(beq4rx/18.7/records/trailer.yaml)

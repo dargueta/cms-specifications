@@ -9,9 +9,12 @@ RENDERED_SOURCES=$(TEMPLATED_SOURCES:.m4=)
 
 SIMPLE_TARGETS=$(subst file_formats/,build/,$(YAML_SOURCES) $(PUML_SOURCES) $(RENDERED_SOURCES))
 YAML_TARGETS=$(filter %.yaml,$(SIMPLE_TARGETS))
+PUML_TARGETS=$(filter %.puml,$(SIMPLE_TARGETS))
 JSON_TARGETS=$(YAML_TARGETS:.yaml=.json)
 JSON_MIN_TARGETS=$(JSON_TARGETS:.json=-min.json)
-ALL_TARGETS=$(YAML_TARGETS) $(JSON_TARGETS) $(JSON_MIN_TARGETS)
+ALL_TARGETS=$(YAML_TARGETS) $(PUML_TARGETS) $(JSON_TARGETS) $(JSON_MIN_TARGETS)
+
+TABLESCHEMA_URL=https://datapackage.org/profiles/2.0/tableschema.json
 
 
 .PHONY: all
@@ -28,7 +31,11 @@ clean:
 	yq -MP -o json $< > $@
 
 build/%.yaml: file_formats/%.yaml
-	check-jsonschema --schemafile https://datapackage.org/profiles/2.0/tableschema.json $<
+	check-jsonschema --schemafile $(TABLESCHEMA_URL) $<
+	mkdir -p $(@D)
+	cp $< $@
+
+build/%: file_formats/%
 	mkdir -p $(@D)
 	cp $< $@
 
