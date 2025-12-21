@@ -1,0 +1,21 @@
+@startuml
+start
+if (match $header) then (yes)
+    :parse $header;
+else (no)
+    :error;
+    kill
+endif
+
+while (match $detail) is (yes)
+    :parse $detail;
+endwhile (no)
+
+if (match $trailer) then (yes)
+    :parse $trailer;
+    stop
+else (no)
+    :error;
+    kill
+endif
+@enduml
