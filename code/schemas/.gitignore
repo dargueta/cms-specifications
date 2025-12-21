@@ -2,3 +2,4 @@ dependencies.mk
 json/
 *.dep
 *-min.json
+build/
