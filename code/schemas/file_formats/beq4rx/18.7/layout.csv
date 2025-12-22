@@ -1,0 +1,10 @@
+from,to,action
+_START,CheckHeader,CHECK header
+CheckIfHeader,ParseHeader,PARSE header
+ParseHeader,CheckDetail,CHECK detail
+ParseHeader,CheckTrailer,CHECK trailer
+CheckDetail,ParseDetail,PARSE detail
+ParseDetail,CheckDetail,
+ParseDetail,CheckTrailer,
+CheckTrailer,ParseTrailer,PARSE trailer
+ParseTrailer,EOF,ASSERT eof
