@@ -2,6 +2,5 @@
 
 set -eux
 
-rm -f dependencies.mk
-make dependencies.mk
 make clean
+docker build -t cms-specifications/parser-generator:latest parser_generator
