@@ -1,10 +1,10 @@
 from,to,action
-_START,CheckHeader,CHECK header
-CheckIfHeader,ParseHeader,PARSE header
-ParseHeader,CheckDetail,CHECK detail
-ParseHeader,CheckTrailer,CHECK trailer
-CheckDetail,ParseDetail,PARSE detail
-ParseDetail,CheckDetail,
-ParseDetail,CheckTrailer,
-CheckTrailer,ParseTrailer,PARSE trailer
-ParseTrailer,EOF,ASSERT eof
+START,check_header,CHECK header
+check_header,parse_header,PARSE header
+parse_header,check_detail,CHECK detail
+parse_header,check_trailer,CHECK trailer
+check_detail,parse_detail,PARSE detail
+parse_detail,check_detail,
+parse_detail,check_trailer,
+check_trailer,parse_trailer,CHECK trailer
+parse_trailer,END,ASSERT EOF

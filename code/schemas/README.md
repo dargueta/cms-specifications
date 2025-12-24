@@ -11,9 +11,9 @@ yaml
     |- <file type slug>
        |- <version>
           |- records
-             |- <record type>.yml
+             |- <record type>.yaml
              |- ...
-          |- layout.yml
+          |- parser-state-table.csv
 ```
 
 For example:
@@ -23,21 +23,72 @@ yaml
     |- beq4rx
        |- 18.7
           |- records
-             |- header.yml
-             |- detail.yml
-             |- trailer.yml
-          |- layout.yml
+             |- header.yaml
+             |- detail.yaml
+             |- trailer.yaml
+          |- parser-state-table.csv
        |- 18.6
           |- ...
 ```
 
-`layout.yml` is a hard-coded name and describes the arrangement of the records in the file. Right now the exact format is unknown and the name may change.
+`parser-state-table.csv` describes the states of a [finite-state machine (FSM)](https://en.wikipedia.org/wiki/Finite-state_machine) that processes the records of the file. See [_Describing File Layouts_](#describing-file-layouts) below.
 
 If a record specification is identical to that of another version, it's possible to use an `include()` directive. The include path will be relative to the `yaml` directory. For example, if the BEQ Request 18.6 version of the header record is identical to the BEQ Request 18.7 version, the file would be, in its entirety:
 
 ```m4
-# SPDX-License-Identifier: BSD-3-Clause
-include(beq4rx/18.7/header.yml)
+include(beq4rx/18.7/header.yaml)
 ```
 
-However, the file name would be `header.m4`, not `header.yml`. The `.m4` extension tells the build script to run it through the preprocessor first.
+However, the file name would be `header.yaml.m4`, not `header.yaml`. The additional `.m4` extension tells the build script to run it through the preprocessor first.
+
+## Describing File Layouts
+
+_This section assumes basic familiarity with finite-state machines. See [the Wikipedia article](https://en.wikipedia.org/wiki/Finite-state_machine) for a refresher._
+
+To process a file, we describe an FSM by storing the state transition table in a CSV. There are three required columns; others may be present and are ignored.
+
+* `from`: The name of the state to transition from. The special state `START` indicates where the FSM should begin execution.
+* `to`: The name of the state to transition to. The special state `END` indicates where the FSM should stop execution successfully.
+* `action`: the action to perform when transitioning from `from` to `to`. This can be empty. See below for supported actions.
+
+State names are Python or C-style identifiers consisting of letters, numbers, and underscores. Names must start with a letter or underscore. Names using all uppercase letters are reserved for system use and should be avoided.
+
+### Supported Actions
+
+* **ASSERT *condition***: Checks the given condition and halts parsing if the condition fails. Currently the only supported value for *condition* is `EOF`, true when there are no more records to parse.
+* **CHECK *record-type | `EOF`***: Checks the current record being parsed to see if it matches *record-type*. If the result is false, the parser will try a different transition.
+* **CHECKNOT *record-type* | `EOF`**: Like `CHECK` but succeeds if the current record is *not* the given record type.
+* **PARSE *record-type***: Parse the current record using the given record type.
+
+### Examples
+
+Here are a few examples to get you started.
+
+#### Single record type
+
+The simplest file consists of an arbitrary number of records of a single type.
+
+| from       | to         | action     |
+| ---------- | ---------- | ---------- |
+| START      | check_data | CHECK data |
+| check_data | parse_data | PARSE data |
+| parse_data | check_data |            |
+| parse_data | check_eof  | CHECK EOF  |
+| check_eof  | END        |            |
+
+
+#### Header, Detail, Trailer
+
+A very common file layout consists of a single header, zero or more detail records, and a trailer row.
+
+| from          | to            | action        |
+| ------------- | ------------- | ------------- |
+| START         | check_header  | CHECK header  |
+| check_header  | parse_header  | PARSE header  |
+| parse_header  | check_detail  | CHECK detail  |
+| parse_header  | check_trailer | CHECK trailer |
+| check_detail  | parse_detail  | PARSE detail  |
+| parse_detail  | check_detail  |               |
+| parse_detail  | check_trailer |               |
+| check_trailer | parse_trailer | CHECK trailer |
+| parse_trailer | END           | ASSERT EOF    |
