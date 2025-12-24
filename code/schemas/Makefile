@@ -9,7 +9,7 @@ RENDERED_SOURCES=$(TEMPLATED_SOURCES:.m4=)
 
 SIMPLE_TARGETS=$(subst file_formats/,build/,$(YAML_SOURCES) $(RENDERED_SOURCES))
 YAML_TARGETS=$(filter %.yaml,$(SIMPLE_TARGETS))
-PUML_TARGETS=$(YAML_TARGETS:.yaml=.puml)
+PUML_TARGETS=$(foreach f,$(YAML_TARGETS),$(dir $f)../fsm.puml)
 JSON_TARGETS=$(YAML_TARGETS:.yaml=.json)
 JSON_MIN_TARGETS=$(JSON_TARGETS:.json=-min.json)
 ALL_TARGETS=$(YAML_TARGETS) $(PUML_TARGETS) $(JSON_TARGETS) $(JSON_MIN_TARGETS)
@@ -22,7 +22,7 @@ all: $(ALL_TARGETS)
 
 .PHONY: clean
 clean:
-	$(RM) -r build $(RENDERED_SOURCES)
+	$(RM) -r $(ALL_TARGETS) $(RENDERED_SOURCES)
 
 %-min.json: %.json
 	yq -I0 -M -o json $< > $@
@@ -35,8 +35,10 @@ build/%.yaml: file_formats/%.yaml
 	mkdir -p $(@D)
 	cp $< $@
 
-build/%.puml: file_formats/%.csv parser_generator/generate_plantuml.py
-	python3 parser_generator/generate_plantuml.py $< $@
+build/%/fsm.puml: parser_generator/generate_plantuml.py \
+                  file_formats/%/parser-state-table.csv
+	mkdir -p $(@D)
+	python3 $^ $@
 
 build/%: file_formats/%
 	mkdir -p $(@D)

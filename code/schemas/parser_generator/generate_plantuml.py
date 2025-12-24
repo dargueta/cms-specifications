@@ -22,7 +22,8 @@ def main() -> None:
     else:
         source_fd = open(args.layout_csv, "r")
 
-    result = io.StringIO("@startuml\n")
+    result = io.StringIO()
+    result.write("@startuml\n")
 
     with source_fd:
         reader = csv.DictReader(source_fd)
@@ -54,7 +55,7 @@ def validate_record(line_num: int, record: dict[str, str]) -> None:
             f" identifier; must match regex: {ID_REGEX}\n"
         )
 
-    if not re.match(ID_REGEX, record["end"]):
+    if not re.match(ID_REGEX, record["to"]):
         raise ValueError(
             f"Syntax error on line {line_num}: `from` state is not an"
             f" identifier; must match regex: {ID_REGEX}\n"
