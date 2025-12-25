@@ -1,0 +1,38 @@
+# SPDX-License-Identifier: BSD-3-Clause
+$schema: https://datapackage.org/profiles/2.0/tableschema.json
+fieldsMatch: [subset]
+fields:
+  - name: header_code
+    title: Header Code
+    type: string
+    constraints:
+      enum: [CMSBEQRH]
+      maxLength: 8
+      required: true
+  - name: sending_entity
+    title: Sending Entity
+    type: string
+    rdfType: https://schema.org/Organization
+    constraints:
+      enum: ["MBD"]
+      maxLength: 8
+      required: true
+  - name: file_creation_date
+    title: File Creation Date
+    type: date
+    format: "%Y%m%d"
+    constraints:
+      maxLength: 8
+      required: true
+  - name: file_control_number
+    title: File Control Number
+    type: string
+    constraints:
+      maxLength: 9
+      minLength: 1
+      required: true
+  - name: _filler
+    title: Filler
+    constraints:
+      enum: [""]
+      maxLength: 1967
