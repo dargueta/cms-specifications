@@ -96,5 +96,4 @@ fields:
     type: string
     constraints:
       enum: [""]
-      minLength: 710
       maxLength: 710

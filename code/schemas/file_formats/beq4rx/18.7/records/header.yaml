@@ -74,4 +74,3 @@ fields:
     constraints:
       enum: [""]
       maxLength: 717
-      minLength: 717

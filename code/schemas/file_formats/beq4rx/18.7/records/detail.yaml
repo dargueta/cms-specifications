@@ -43,10 +43,8 @@ fields:
     title: Filler
     type: string
     constraints:
-      required: true
-      minLength: 9
-      maxLength: 9
       enum: [""]
+      maxLength: 9
   - name: dob
     title: DOB
     description: >-
@@ -91,6 +89,5 @@ fields:
   - name: _filler
     type: string
     constraints:
-      minLength: 708
-      maxLength: 708
       enum: [""]
+      maxLength: 708
