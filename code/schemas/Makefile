@@ -33,7 +33,7 @@ clean:
 build/%.yaml: file_formats/%.yaml
 	check-jsonschema --schemafile $(TABLESCHEMA_URL) $<
 	mkdir -p $(@D)
-	cp $< $@
+	ln -f $< $@ || cp $< $@
 
 build/%/fsm.puml: parser_generator/generate_plantuml.py \
                   file_formats/%/parser-state-table.csv
@@ -42,7 +42,7 @@ build/%/fsm.puml: parser_generator/generate_plantuml.py \
 
 build/%: file_formats/%
 	mkdir -p $(@D)
-	cp $< $@
+	ln -f $< $@ || cp $< $@
 
 file_formats/%: file_formats/%.m4
 	m4 -I file_formats $< > $@
