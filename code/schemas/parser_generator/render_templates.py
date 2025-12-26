@@ -44,7 +44,7 @@ def main(
 
     The output is the concatenation of all inputs.
     """
-    lookup = mako.lookup.TemplateLookup(directories=include + [os.getcwd()])
+    lookup = mako.lookup.TemplateLookup(directories=include + (os.getcwd(),))
     definitions = dict(item.partition("=")[::2] for item in define)
     for file in sources:
         template = mako.template.Template(file.read(), lookup=lookup)

@@ -4,8 +4,8 @@
 
 YAML_SOURCES=$(shell find file_formats -name '*.yaml')
 FSM_SOURCES=$(shell find file_formats -name 'parser-state-table.csv')
-TEMPLATED_SOURCES=$(shell find file_formats -name '*.m4')
-RENDERED_SOURCES=$(TEMPLATED_SOURCES:.m4=)
+TEMPLATED_SOURCES=$(shell find file_formats -name '*.mako')
+RENDERED_SOURCES=$(TEMPLATED_SOURCES:.mako=)
 
 SIMPLE_TARGETS=$(subst file_formats/,build/,$(YAML_SOURCES) $(RENDERED_SOURCES))
 YAML_TARGETS=$(filter %.yaml,$(SIMPLE_TARGETS))
@@ -22,7 +22,7 @@ all: $(ALL_TARGETS)
 
 .PHONY: clean
 clean:
-	$(RM) -r $(ALL_TARGETS) $(RENDERED_SOURCES)
+	$(RM) -r build $(RENDERED_SOURCES)
 
 %-min.json: %.json
 	yq -I0 -M -o json $< > $@
@@ -44,5 +44,5 @@ build/%: file_formats/%
 	mkdir -p $(@D)
 	ln -f $< $@ || cp $< $@
 
-file_formats/%: file_formats/%.m4
-	m4 -I file_formats $< > $@
+file_formats/%: file_formats/%.mako
+	python3 parser_generator/render_templates.py -I file_formats -o $@ $^
