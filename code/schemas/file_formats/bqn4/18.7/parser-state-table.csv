@@ -1,0 +1,10 @@
+from,to,action
+START,check_header,CHECK header
+check_header,parse_header,PARSE header
+parse_header,check_detail,CHECK detail
+parse_header,check_trailer,CHECK trailer
+check_detail,parse_detail,PARSE detail
+parse_detail,check_detail,
+parse_detail,check_trailer,
+check_trailer,parse_trailer,CHECK trailer
+parse_trailer,END,ASSERT EOF
