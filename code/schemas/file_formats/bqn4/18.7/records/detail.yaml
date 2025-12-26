@@ -74,24 +74,24 @@ fields:
   - name: medicare_part_a_entitlement_start_date
     title: Medicare Part A Entitlement Start Date
     type: date
-    format: %Y%m%d
+    format: "%Y%m%d"
     constraints:
       maxLength: 8
   - name: medicare_part_a_entitlement_end_date
     title: Medicare Part A Entitlement End Date
     type: date
-    format: %Y%m%d
+    format: "%Y%m%d"
     constraints:
       maxLength: 8
   - name: medicare_part_b_entitlement_start_date
     title: Medicare Part B Entitlement Start Date
     type: date
-    format: %Y%m%d
+    format: "%Y%m%d"
     constraints:
       maxLength: 8
   - name: medicare_part_b_entitlement_end_date
     title: Medicare Part B Entitlement End Date
     type: date
-    format: %Y%m%d
+    format: "%Y%m%d"
     constraints:
       maxLength: 8
