@@ -95,3 +95,17 @@ fields:
     format: "%Y%m%d"
     constraints:
       maxLength: 8
+% for i in range(10):
+  - name: part_d_enrollment_effective_date_${i + 1}
+    title: Part D Enrollment Effective Date or Employer Subsidy Start Date (Occurrence ${i + 1})
+    type: date
+    format: "%Y%m%d"
+    constraints:
+      maxLength: 8
+  - name: part_d_disenrollment_date_${i + 1}
+    title: Part D Disenrollment Date or Employer Subsidy End Date (Occurrence ${i + 1})
+    type: date
+    format: "%Y%m%d"
+    constraints:
+      maxLength: 8
+% endfor
