@@ -3,17 +3,22 @@
 from __future__ import annotations
 
 import os
+import sys
 import typing
 
 import click
 import mako.template  # pyright: ignore[reportMissingTypeStubs]
 import mako.lookup  # pyright: ignore[reportMissingTypeStubs]
+from mako.exceptions import CompileException
+from mako.exceptions import SyntaxException
 
 if typing.TYPE_CHECKING:
     from typing import TextIO
 
 
-@click.argument("sources", type=click.File(), nargs=-1)
+@click.argument(
+    "sources", type=click.Path(exists=True, dir_okay=False, allow_dash=True), nargs=-1
+)
 @click.option(
     "-o",
     "--output",
@@ -38,7 +43,7 @@ if typing.TYPE_CHECKING:
 )
 @click.command()
 def main(
-    define: list[str], include: list[str], output: TextIO, sources: list[TextIO]
+    define: list[str], include: list[str], output: TextIO, sources: list[str]
 ) -> None:
     """Render mako template files.
 
@@ -47,8 +52,17 @@ def main(
     lookup = mako.lookup.TemplateLookup(directories=include + (os.getcwd(),))
     definitions = dict(item.partition("=")[::2] for item in define)
     for file in sources:
-        template = mako.template.Template(file.read(), lookup=lookup)
-        output.write(template.render(**definitions))
+        try:
+            if file == "-":
+                template = mako.template.Template(
+                    sys.stdin.read(), filename="stdin", lookup=lookup
+                )
+            else:
+                template = mako.template.Template(filename=file, lookup=lookup)
+                output.write(template.render(**definitions))
+        except (CompileException, SyntaxException) as err:
+            click.echo(str(err), err=True)
+            sys.exit(1)
 
 
 if __name__ == "__main__":
