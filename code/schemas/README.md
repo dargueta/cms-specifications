@@ -33,13 +33,15 @@ yaml
 
 `parser-state-table.csv` describes the states of a [finite-state machine (FSM)](https://en.wikipedia.org/wiki/Finite-state_machine) that processes the records of the file. See [_Describing File Layouts_](#describing-file-layouts) below.
 
-If a record specification is identical to that of another version, it's possible to use an `include()` directive. The include path will be relative to the `yaml` directory. For example, if the BEQ Request 18.6 version of the header record is identical to the BEQ Request 18.7 version, the file would be, in its entirety:
+Schema files can be templatized using [Mako](https://docs.makotemplates.org/en/latest/). Among other things, this allows generating arrays and reusing specifications. For example, if a record specification is identical to that of another version, it's possible to use an `include` directive. The include path will be relative to the `file_formats` directory.
 
-```m4
-include(beq4rx/18.7/header.yaml)
+The BEQ Request 18.6 version of the header record is identical to the BEQ Request 18.7 version, so the spec file in its entirety is:
+
+```mako
+<%include file="/beq4rx/18.7/header.yaml"/>
 ```
 
-However, the file name would be `header.yaml.m4`, not `header.yaml`. The additional `.m4` extension tells the build script to run it through the preprocessor first.
+However, the file name would be `header.yaml.mako`, not `header.yaml`. The additional `.mako` extension tells the build script to run it through the preprocessor first. Without the `.mako` extension, the file is used as is.
 
 ## Describing File Layouts
 
