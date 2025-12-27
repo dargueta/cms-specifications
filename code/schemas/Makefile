@@ -38,7 +38,7 @@ build/%.yaml: file_formats/%.yaml
 	mkdir -p $(@D)
 	ln -f $< $@ || cp $< $@
 
-build/%/fsm.puml: parser_generator/generate_plantuml.py \
+build/%/fsm.puml: scripts/generate_plantuml.py \
                   file_formats/%/parser-state-table.csv
 	mkdir -p $(@D)
 	python3 $^ $@
@@ -48,4 +48,4 @@ build/%: file_formats/%
 	ln -f $< $@ || cp $< $@
 
 file_formats/%: file_formats/%.mako
-	python3 parser_generator/render_templates.py -I file_formats -o $@ $^
+	python3 scripts/render_templates.py -I file_formats -o $@ $^
