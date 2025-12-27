@@ -19,7 +19,8 @@ if typing.TYPE_CHECKING:
     from typing import Any
     from typing import TextIO
 
-HERE = pathlib.Path(__file__).parent
+THIS_FILE = pathlib.Path(__file__)
+HERE = THIS_FILE.parent
 SCHEMAS_ROOT_DIR = HERE.parent
 
 
@@ -81,10 +82,19 @@ def main(
             click.echo(str(err), err=True)
             sys.exit(1)
 
-        if track_dependencies and file != "-":
-            output.write(file + ": " + " ".join(sorted(dependencies)) + "\n")
-        else:
+        if not track_dependencies or not file.endswith(".mako"):
             output.write(text)
+        elif file.endswith(".mako") and dependencies:
+            # output.write(
+            #     f"{file.removesuffix('.mako')}: {file} "
+            #     + " ".join(sorted(dependencies))
+            #     + f"\n\tpython3 {THIS_FILE.relative_to(SCHEMAS_ROOT_DIR)} -I "
+            #     + " -I ".join(search_directories)
+            #     + " -o $@ $^\n"
+            # )
+            output.write(
+                f"{file}: " + " ".join(sorted(dependencies)) + "\n\ttouch $@\n"
+            )
 
 
 def render_single_file(

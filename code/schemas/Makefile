@@ -20,8 +20,6 @@ TABLESCHEMA_URL=https://datapackage.org/profiles/2.0/tableschema.json
 # Uncomment this when debugging templates.
 # .PRECIOUS: $(RENDERED_SOURCES)
 
--include dependencies.mk
-
 .PHONY: all
 all: $(ALL_TARGETS)
 
@@ -54,3 +52,5 @@ file_formats/%: file_formats/%.mako
 
 dependencies.mk: $(TEMPLATED_SOURCES)
 	python3 scripts/render_templates.py -M -I file_formats -o $@ $^
+
+-include dependencies.mk
