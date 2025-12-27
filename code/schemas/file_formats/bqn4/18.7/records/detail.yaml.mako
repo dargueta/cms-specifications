@@ -247,3 +247,12 @@ fields:
     type: string
     constraints:
       maxLength: 5
+  - name: part_c_d_enrollment_start_date
+    title: Part C/D Enrollment Start Date
+    type: date
+    format: "%Y%m%d"
+  - name: part_d_indicator
+    title: Part D Indicator
+    type: boolean
+    trueValues: ["Y"]
+    falseValues: ["N"]
