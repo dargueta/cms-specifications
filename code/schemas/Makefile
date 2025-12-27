@@ -1,6 +1,5 @@
 # SPDX-License-Identifier: BSD-3-Clause
 
-.DELETE_ON_FAILURE:
 
 YAML_SOURCES=$(shell find file_formats -name '*.yaml')
 FSM_SOURCES=$(shell find file_formats -name 'parser-state-table.csv')
@@ -16,6 +15,10 @@ ALL_TARGETS=$(YAML_TARGETS) $(PUML_TARGETS) $(JSON_TARGETS) $(JSON_MIN_TARGETS)
 
 TABLESCHEMA_URL=https://datapackage.org/profiles/2.0/tableschema.json
 
+
+.DELETE_ON_FAILURE:
+# Uncomment this when debugging templates.
+# .PRECIOUS: $(RENDERED_SOURCES)
 
 .PHONY: all
 all: $(ALL_TARGETS)

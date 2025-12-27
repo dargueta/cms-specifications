@@ -1,4 +1,20 @@
 # SPDX-License-Identifier: BSD-3-Clause
+<%def name="render_sex_code(field_name, title='Sex Code', description='')">\
+{
+    "name": "${field_name}",
+    "title": "${title}",
+% if description:
+    "description": "${description}",
+% endif
+    "type": "string",
+    "rdfType": "https://schema.org/GenderType",
+    "categories": [
+        {"value": "0", "label": "Unknown"},
+        {"value": "1", "label": "Male"},
+        {"value": "2", "label": "Female"}
+    ]
+}
+</%def>
 $schema: https://datapackage.org/profiles/2.0/tableschema.json
 fieldsMatch: [subset]
 fields:
@@ -35,18 +51,7 @@ fields:
     format: "%Y%m%d"
     constraints:
       maxLength: 8
-  - name: sex_code
-    title: Sex Code
-    description: The sex of the beneficiary.
-    type: string
-    rdfType: https://schema.org/GenderType
-    categories:
-      - value: "0"
-        label: Unknown
-      - value: "1"
-        label: Male
-      - value: "2"
-        label: Female
+  - ${render_sex_code("sex_code", "Beneficiary's Sex Code")}
   - name: detail_record_sequence_number
     title: Detail Record Sequence Number
     type: integer
@@ -174,3 +179,71 @@ fields:
       enum: ["D", "R"]
       maxLength: 1
 % endfor
+% for i in range(1, 21):
+  - name: start_date_${i}
+    title: Start Date (Occurrence ${i})
+    type: date
+    format: "%Y%m%d"
+  - name: number_of_uncovered_months_${i}
+    title: Number of Uncovered Months (Occurrence ${i})
+    type: integer
+    constraints:
+      minimum: 0
+      maximum: 999
+      maxLength: 3
+  - name: number_of_uncovered_months_status_indicator_${i}
+    title: Number of Uncovered Months Status Indicator (Occurrence ${i})
+    type: string
+    constraints:
+      maxLength: 1
+  - name: total_number_of_uncovered_months_${i}
+    title: Number of Uncovered Months Status Indicator (Occurrence ${i})
+    type: integer
+    constraints:
+      minimum: 0
+      maximum: 999
+      maxLength: 3
+    __serialization:
+      justify: right
+      fill: zero
+% endfor
+  - name: retrieved_date_of_birth
+    title: Beneficiary's Retrieved Date of Birth
+    description: As retrieved from CMS database for matching beneficiary.
+    type: date
+    format: "%Y%m%d"
+  - ${render_sex_code("retrieved_sex_code", "Beneficiary's Retrieved Sex Code", "As retrieved from CMS database for matching beneficiary.")}
+  - name: last_name
+    title: Last Name
+    type: string
+    constraints:
+      maxLength: 40
+  - name: first_name
+    title: First Name
+    type: string
+    constraints:
+      maxLength: 30
+  - name: middle_initial
+    title: Middle Initial
+    type: string
+    constraints:
+      maxLength: 1
+  - name: current_state_code
+    title: Current State Code
+    type: string
+    constraints:
+      maxLength: 2
+  - name: current_county_code
+    title: Current County Code
+    type: string
+    constraints:
+      maxLength: 3
+  - name: date_of_death
+    title: Date of Death
+    type: date
+    format: "%Y%m%d"
+  - name: part_c_d_contract_number
+    title: Part C/D Contract Number
+    type: string
+    constraints:
+      maxLength: 5

@@ -9,8 +9,8 @@ import typing
 import click
 import mako.template  # pyright: ignore[reportMissingTypeStubs]
 import mako.lookup  # pyright: ignore[reportMissingTypeStubs]
-from mako.exceptions import CompileException
-from mako.exceptions import SyntaxException
+from mako.exceptions import MakoException  # pyright: ignore[reportMissingTypeStubs]
+
 
 if typing.TYPE_CHECKING:
     from collections.abc import Iterable
@@ -66,7 +66,7 @@ def main(
             else:
                 template = mako.template.Template(filename=file, lookup=lookup)
                 output.write(template.render(**definitions))
-        except (CompileException, SyntaxException) as err:
+        except MakoException as err:
             click.echo(str(err), err=True)
             sys.exit(1)
 
