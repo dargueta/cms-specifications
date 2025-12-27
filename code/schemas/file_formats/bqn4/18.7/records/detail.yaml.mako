@@ -95,17 +95,82 @@ fields:
     format: "%Y%m%d"
     constraints:
       maxLength: 8
-% for i in range(10):
-  - name: part_d_enrollment_effective_date_${i + 1}
-    title: Part D Enrollment Effective Date or Employer Subsidy Start Date (Occurrence ${i + 1})
+% for i in range(1, 11):
+  - name: part_d_enrollment_effective_date_${i}
+    title: Part D Enrollment Effective Date or Employer Subsidy Start Date (Occurrence ${i})
     type: date
     format: "%Y%m%d"
     constraints:
       maxLength: 8
-  - name: part_d_disenrollment_date_${i + 1}
-    title: Part D Disenrollment Date or Employer Subsidy End Date (Occurrence ${i + 1})
+  - name: part_d_disenrollment_date_${i}
+    title: Part D Disenrollment Date or Employer Subsidy End Date (Occurrence ${i})
     type: date
     format: "%Y%m%d"
     constraints:
       maxLength: 8
+% endfor
+  - name: sending_entity
+    title: Sending Entity
+    type: string
+    constraints:
+      maxLength: 8
+  - name: file_control_number
+    title: File Control Number
+    type: string
+    constraints:
+      maxLength: 9
+      minLength: 1
+      required: true
+  - name: file_creation_date
+    title: File Creation Date
+    type: date
+    format: "%Y%m%d"
+    constraints:
+      maxLength: 8
+      required: true
+  - name: part_d_eligibility_start_date
+    title: Part D Eligibility Start Date
+    description: >-
+      (Note: The 18.7 specs do not specify a format for the date field, but it's almost
+      certainly YYYYMMDD as in all the other fields.)
+    type: date
+    format: "%Y%m%d"
+% for i in range(1, 3):
+  - name: deemed_lis_effective_date_${i}
+    title: Deemed / Low-Income Subsidy Effective Date (Occurrence ${i})
+    type: date
+    format: "%Y%m%d"
+  - name: deemed_lis_end_date_${i}
+    title: Deemed / Low-Income Subsidy End Date (Occurrence ${i})
+    type: date
+    format: "%Y%m%d"
+  - name: copayment_level_identifier_${i}
+    title: Co-Payment Level Identifier
+    type: string
+    constraints:
+      enum: ["1", "2", "3", "4", "5"]
+      maxLength: 1
+  - name: part_d_premium_subsidy_percent
+    title: Part D Premium Subsidy Percent
+    type: integer
+    constraints:
+      minimum: 25
+      maximum: 100
+      enum:
+        - 25
+        - 50
+        - 75
+        - 100
+      maxLength: 3
+    __serialization:
+      justify: right
+      fill: zero
+% endfor
+% for i in range(1, 11):
+  - name: rds_part_d_indicator_${i}
+    title: RDS / Part D Indicator (Occurrence ${i})
+    type: string
+    constraints:
+      enum: ["D", "R"]
+      maxLength: 1
 % endfor

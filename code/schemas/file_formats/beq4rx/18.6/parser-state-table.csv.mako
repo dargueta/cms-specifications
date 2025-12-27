@@ -1,1 +1,1 @@
-<%include file="beq4rx/18.7/parser-state-table.csv"/>
+<%include file="/beq4rx/18.7/parser-state-table.csv"/>

@@ -13,6 +13,7 @@ from mako.exceptions import CompileException
 from mako.exceptions import SyntaxException
 
 if typing.TYPE_CHECKING:
+    from collections.abc import Iterable
     from typing import TextIO
 
 
@@ -43,13 +44,18 @@ if typing.TYPE_CHECKING:
 )
 @click.command()
 def main(
-    define: list[str], include: list[str], output: TextIO, sources: list[str]
+    define: Iterable[str],
+    include: Iterable[str],
+    output: TextIO,
+    sources: Iterable[str],
 ) -> None:
     """Render mako template files.
 
     The output is the concatenation of all inputs.
     """
-    lookup = mako.lookup.TemplateLookup(directories=include + (os.getcwd(),))
+    lookup = mako.lookup.TemplateLookup(
+        directories=[os.path.abspath(p) for p in include] + [os.getcwd()]
+    )
     definitions = dict(item.partition("=")[::2] for item in define)
     for file in sources:
         try:
