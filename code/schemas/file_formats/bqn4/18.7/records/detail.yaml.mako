@@ -256,3 +256,24 @@ fields:
     type: boolean
     trueValues: ["Y"]
     falseValues: ["N"]
+  - name: part_c_contract_number
+    title: Part C Contract Number
+    type: string
+    constraints:
+      maxLength: 5
+  - name: part_c_enrollment_start_date
+    title: Part C Enrollment Start Date
+    type: date
+    format: "%Y%m%d"
+  - name: part_d_indicator_2
+    title: Part D Indicator
+    description: >-
+      This appears twice in the documentation and it's unclear what the difference is.
+    type: boolean
+    trueValues: ["Y"]
+    falseValues: ["N"]
+  - name: esrd_indicator
+    title: End Stage Renal Disease Indicator
+    type: boolean
+    trueValues: ["1"]
+    falseValues: ["0"]
