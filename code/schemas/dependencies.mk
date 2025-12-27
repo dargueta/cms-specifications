@@ -1,0 +1,5 @@
+file_formats/bqn4/18.7/records/detail.yaml.mako: 
+file_formats/beq4rx/18.6/records/header.yaml.mako: file_formats/beq4rx/18.7/records/header.yaml
+file_formats/beq4rx/18.6/records/trailer.yaml.mako: file_formats/beq4rx/18.7/records/trailer.yaml
+file_formats/beq4rx/18.6/records/detail.yaml.mako: file_formats/beq4rx/18.7/records/detail.yaml
+file_formats/beq4rx/18.6/parser-state-table.csv.mako: file_formats/beq4rx/18.7/parser-state-table.csv
