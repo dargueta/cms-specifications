@@ -212,7 +212,13 @@ fields:
     description: As retrieved from CMS database for matching beneficiary.
     type: date
     format: "%Y%m%d"
-  - ${render_sex_code("retrieved_sex_code", "Beneficiary's Retrieved Sex Code", "As retrieved from CMS database for matching beneficiary.")}
+  - ${
+      render_sex_code(
+        "retrieved_sex_code",
+        "Beneficiary's Retrieved Sex Code",
+        "As retrieved from CMS database for matching beneficiary.",
+      )
+    }
   - name: last_name
     title: Last Name
     type: string
@@ -277,3 +283,67 @@ fields:
     type: boolean
     trueValues: ["1"]
     falseValues: ["0"]
+  - name: part_c_pbp_number
+    title: PBP Number
+    description: Associated with contract number in Field 88, positions 717 - 721.
+    type: string
+    constraints:
+      maxLength: 3
+  - name: part_c_plan_type_code
+    title: Plan Type Code
+    description: Associated with PBP number in Field 95, positions 746 - 748
+    type: string
+    constraints:
+      pattern: "\\d{2}"
+      maxLength: 2
+  - name: part_c_eghp_indicator
+    title: EGHP Indicator
+    description: Associated with PBP number in Field 95, positions 746 - 748
+    type: boolean
+    trueValues: ["Y"]
+    falseValues: ["N"]
+    constraints:
+      maxLength: 1
+  - name: part_c_d_pbp_number
+    title: PBP Number
+    description: Associated with contract number in Field 91, positions 731 - 735
+    type: string
+    constraints:
+      maxLength: 3
+  - name: part_c_d_plan_type_code
+    title: Plan Type Code
+    description: Associated with contract number in Field 91, positions 731 - 735
+    type: string
+    constraints:
+      pattern: "\\d{2}"
+      maxLength: 2
+  - name: part_c_d_eghp_indicator
+    title: EGHP Indicator
+    description: Associated with contract number in Field 91, positions 731 - 735
+    type: boolean
+    trueValues: ["Y"]
+    falseValues: ["N"]
+    constraints:
+      maxLength: 1
+% for i in range(1, 7):
+  - name: mailing_address_line_${i}
+    title: Mailing Address Line ${i}
+    type: string
+    constraints:
+      maxLength: 40
+% endfor
+  - name: mailing_address_city
+    title: Mailing Address City
+    type: string
+    constraints:
+      maxLength: 40
+  - name: mailing_address_state
+    title: Mailing Address Postal State Code
+    type: string
+    constraints:
+      maxLength: 2
+  - name: mailing_address_zip_code
+    title: Mailing Address ZIP Code
+    type: string
+    constraints:
+      maxLength: 9
