@@ -1,0 +1,5 @@
+type: boolean
+trueValues: ["1"]
+falseValues: ["0"]
+constraints:
+  maxLength: 1
