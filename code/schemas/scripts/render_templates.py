@@ -14,8 +14,8 @@ from mako.exceptions import MakoException
 
 
 if typing.TYPE_CHECKING:
-    from collections.abc import Iterable
     from collections.abc import Mapping
+    from collections.abc import Sequence
     from typing import Any
     from typing import TextIO
 
@@ -58,17 +58,17 @@ SCHEMAS_ROOT_DIR = HERE.parent
 )
 @click.command()
 def main(
-    define: Iterable[str],
-    include: Iterable[str],
+    define: Sequence[str],
+    include: Sequence[str],
     output: TextIO,
-    sources: Iterable[str],
+    sources: Sequence[str],
     track_dependencies: bool,
 ) -> None:
     """Render mako template files.
 
     The output is the concatenation of all inputs.
     """
-    search_directories = [os.path.abspath(p) for p in include] + [os.getcwd()]
+    search_directories = [os.path.abspath(p) for p in include[::-1]] + [os.getcwd()]
     lookup = DependencyTrackingLookup(directories=search_directories)
 
     if track_dependencies:
@@ -82,24 +82,19 @@ def main(
             click.echo(str(err), err=True)
             sys.exit(1)
 
-        if not track_dependencies or not file.endswith(".mako"):
+        if track_dependencies:
+            if dependencies:
+                output.write(
+                    f"{file}: " + " ".join(sorted(dependencies)) + "\n\ttouch $@\n"
+                )
+        else:
             output.write(text)
-        elif file.endswith(".mako") and dependencies:
-            # output.write(
-            #     f"{file.removesuffix('.mako')}: {file} "
-            #     + " ".join(sorted(dependencies))
-            #     + f"\n\tpython3 {THIS_FILE.relative_to(SCHEMAS_ROOT_DIR)} -I "
-            #     + " -I ".join(search_directories)
-            #     + " -o $@ $^\n"
-            # )
-            output.write(
-                f"{file}: " + " ".join(sorted(dependencies)) + "\n\ttouch $@\n"
-            )
 
 
 def render_single_file(
     file: str, lookup: DependencyTrackingLookup, definitions: Mapping[str, str]
 ) -> tuple[str, set[str]]:
+    """Render a single Mako template file."""
     lookup.imported_uris.clear()
     if file == "-":
         template = mako.template.Template(
