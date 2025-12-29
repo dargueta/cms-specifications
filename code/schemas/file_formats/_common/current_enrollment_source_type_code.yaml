@@ -1,0 +1,35 @@
+description: An indicator providing the type of enrollment performed.
+type: string
+categories:
+  - value: A
+    label: Auto enrolled by CMS.
+  - value: B
+    label: Beneficiary election.
+  - value: C
+    label: Facilitated enrollment by CMS.
+  - value: D
+    label: CMS Annual Rollover.
+  - value: E
+    label: Plan submitted auto-enrollments.
+  - value: F
+    label: Plan submitted facilitated enrollments.
+  - value: G
+    label: Point of Sale (POS) submitted enrollments.
+  - value: H
+    label: CMS or plan submitted re-assignment enrollments.
+  - value: I
+    label: Invalid Submitted Value.
+  - value: J
+    label: State-submitted MMP passive enrollment.
+  - value: K
+    label: CMS-submitted MMP passive enrollment.
+  - value: L
+    label: Beneficiary MMP election.
+  - value: M
+    label: >-
+      Default for Financial Alignment Demo Plan enrollments submitted without an
+      Enrollment Source Code (M is not submitted on an enrollment).
+  - value: N
+    label: Rollover by plan transaction.
+constraints:
+  maxLength: 1
