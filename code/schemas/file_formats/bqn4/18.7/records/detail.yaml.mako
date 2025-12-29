@@ -347,3 +347,63 @@ fields:
     type: string
     constraints:
       maxLength: 9
+  - name: mailing_address_start_date
+    title: Mailing Address Start Date
+    type: date
+    format: "%Y%m%d"
+    constraints:
+      maxLength: 8
+  - name: residence_address_line_1
+    title: Residence Address Line 1
+    type: string
+    constraints:
+      maxLength: 60
+  - name: residence_address_city
+    title: Residence Address City
+    type: string
+    constraints:
+      maxLength: 40
+  - name: residence_address_state
+    title: Residence Address Postal State Code
+    type: string
+    constraints:
+      maxLength: 2
+  - name: residence_address_zip_code
+    title: Residence Address ZIP Code
+    type: string
+    constraints:
+      maxLength: 9
+  - name: residence_address_start_date
+    title: Residence Address Start Date
+    type: date
+    format: "%Y%m%d"
+    constraints:
+      maxLength: 8
+% for i in range(1, 11):
+  - name: medicare_plan_ineligibility_due_to_incarceration_start_date_${i}
+    title: Medicare Plan Ineligibility Due to Incarceration Start Date (${i})
+    type: date
+    format: "%Y%m%d"
+    constraints:
+      maxLength: 8
+  - name: medicare_plan_ineligibility_due_to_incarceration_end_date_${i}
+    title: Medicare Plan Ineligibility Due to Incarceration End Date (${i})
+    type: date
+    format: "%Y%m%d"
+    constraints:
+      maxLength: 8
+% endfor
+% for i in range(1, 11):
+  - name: medicare_plan_ineligibility_due_to_not_lawful_presence_start_date_${i}
+    title: Medicare Plan Ineligibility Due to Not Lawful Presence Start Date (${i})
+    type: date
+    format: "%Y%m%d"
+    constraints:
+      maxLength: 8
+  - name: medicare_plan_ineligibility_due_to_not_lawful_presence_end_date_${i}
+    title: Medicare Plan Ineligibility Due to Not Lawful Presence End Date (${i})
+    type: date
+    format: "%Y%m%d"
+    constraints:
+      maxLength: 8
+% endfor

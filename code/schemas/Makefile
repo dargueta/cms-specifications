@@ -1,12 +1,16 @@
 # SPDX-License-Identifier: BSD-3-Clause
 
+FILE_FORMAT_DIRS=$(filter-out %/_common,$(wildcard file_formats/*))
+ALL_FILE_VERSION_DIRS=$(foreach f,$(FILE_FORMAT_DIRS),$(wildcard $(f)/*))
+RECORD_DEF_SOURCES=$(foreach v,$(ALL_FILE_VERSION_DIRS),$(wildcard $(v)/records/*.yaml))
+TEMPLATE_RECORD_DEF_SOURCES=$(foreach v,$(ALL_FILE_VERSION_DIRS),$(wildcard $(v)/records/*.yaml.mako))
+LAYOUT_SOURCES=$(foreach v,$(ALL_FILE_VERSION_DIRS),$(wildcard $(v)/parser-state-table.csv))
+TEMPLATE_LAYOUT_SOURCES=$(foreach v,$(ALL_FILE_VERSION_DIRS),$(wildcard $(v)/parser-state-table.csv.mako))
 
-YAML_SOURCES=$(shell find file_formats -name '*.yaml')
-FSM_SOURCES=$(shell find file_formats -name 'parser-state-table.csv')
-TEMPLATED_SOURCES=$(shell find file_formats -name '*.mako')
-RENDERED_SOURCES=$(TEMPLATED_SOURCES:.mako=)
+ALL_TEMPLATED_SOURCES=$(TEMPLATE_RECORD_DEF_SOURCES) $(TEMPLATE_LAYOUT_SOURCES)
+ALL_RENDERED_SOURCES=$(ALL_TEMPLATED_SOURCES:.mako=)
 
-SIMPLE_TARGETS=$(subst file_formats/,build/,$(YAML_SOURCES) $(RENDERED_SOURCES))
+SIMPLE_TARGETS=$(subst file_formats/,build/,$(RECORD_DEF_SOURCES) $(LAYOUT_SOURCES))
 YAML_TARGETS=$(filter %.yaml,$(SIMPLE_TARGETS))
 PUML_TARGETS=$(foreach f,$(YAML_TARGETS),$(dir $f)../fsm.puml)
 JSON_TARGETS=$(YAML_TARGETS:.yaml=.json)
@@ -18,14 +22,31 @@ TABLESCHEMA_URL=https://datapackage.org/profiles/2.0/tableschema.json
 
 .DELETE_ON_FAILURE:
 # Uncomment this when debugging templates.
-# .PRECIOUS: $(RENDERED_SOURCES)
+# .PRECIOUS: $(ALL_RENDERED_SOURCES)
 
 .PHONY: all
 all: $(ALL_TARGETS)
 
 .PHONY: clean
 clean:
-	$(RM) -r build $(RENDERED_SOURCES)
+	$(RM) -r build $(ALL_RENDERED_SOURCES)
+
+.PHONY: show-vars
+show-vars:
+	@echo "FILE FORMAT DIRS ---------------------------------------------------"
+	@echo $(FILE_FORMAT_DIRS)
+	@echo
+	@echo "RECORD FILES -------------------------------------------------------"
+	@echo $(RECORD_DEF_SOURCES)
+	@echo
+	@echo "TEMPLATE RECORD FILES ----------------------------------------------"
+	@echo $(TEMPLATE_RECORD_DEF_SOURCES)
+	@echo
+	@echo "LAYOUT FILES -------------------------------------------------------"
+	@echo $(LAYOUT_SOURCES)
+	@echo
+	@echo "TEMPLATE LAYOUT FILES ----------------------------------------------"
+	@echo $(TEMPLATE_LAYOUT_SOURCES)
 
 %-min.json: %.json
 	yq -I0 -M -o json $< > $@
@@ -50,7 +71,7 @@ build/%: file_formats/%
 file_formats/%: file_formats/%.mako
 	python3 scripts/render_templates.py -I file_formats -o $@ $^
 
-dependencies.mk: $(TEMPLATED_SOURCES)
+dependencies.mk: $(ALL_TEMPLATED_SOURCES)
 	python3 scripts/render_templates.py -M -I file_formats -o $@ $^
 
 -include dependencies.mk
