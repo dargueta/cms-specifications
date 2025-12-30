@@ -82,13 +82,10 @@ def main(
             click.echo(str(err), err=True)
             sys.exit(1)
 
-        if track_dependencies:
-            if dependencies:
-                output.write(
-                    f"{file}: " + " ".join(sorted(dependencies)) + "\n\ttouch $@\n"
-                )
-        else:
+        if not track_dependencies:
             output.write(text)
+        elif dependencies:
+            output.write(f"{file}: " + " ".join(sorted(dependencies)) + "\n")
 
 
 def render_single_file(
