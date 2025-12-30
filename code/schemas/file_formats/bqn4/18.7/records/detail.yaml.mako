@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: BSD-3-Clause
+## SPDX-License-Identifier: BSD-3-Clause
 <%def name="render_sex_code(field_name, title='Sex Code', description='')">\
 {
     "name": "${field_name}",
@@ -45,12 +45,9 @@ fields:
     constraints:
       enum: [""]
       maxLength: 9
-  - name: beneficiary_dob
+  - !date8
+    name: beneficiary_dob
     title: Beneficiary's Date of Birth
-    type: date
-    format: "%Y%m%d"
-    constraints:
-      maxLength: 8
   - ${render_sex_code("sex_code", "Beneficiary's Sex Code")}
   - name: detail_record_sequence_number
     title: Detail Record Sequence Number
@@ -76,43 +73,25 @@ fields:
     falseValues: ["N"]
     constraints:
       required: true
-  - name: medicare_part_a_entitlement_start_date
+  - !date8
+    name: medicare_part_a_entitlement_start_date
     title: Medicare Part A Entitlement Start Date
-    type: date
-    format: "%Y%m%d"
-    constraints:
-      maxLength: 8
-  - name: medicare_part_a_entitlement_end_date
+  - !date8
+    name: medicare_part_a_entitlement_end_date
     title: Medicare Part A Entitlement End Date
-    type: date
-    format: "%Y%m%d"
-    constraints:
-      maxLength: 8
-  - name: medicare_part_b_entitlement_start_date
+  - !date8
+    name: medicare_part_b_entitlement_start_date
     title: Medicare Part B Entitlement Start Date
-    type: date
-    format: "%Y%m%d"
-    constraints:
-      maxLength: 8
-  - name: medicare_part_b_entitlement_end_date
+  - !date8
+    name: medicare_part_b_entitlement_end_date
     title: Medicare Part B Entitlement End Date
-    type: date
-    format: "%Y%m%d"
-    constraints:
-      maxLength: 8
 % for i in range(1, 11):
-  - name: part_d_enrollment_effective_date_${i}
+  - !date8
+    name: part_d_enrollment_effective_date_${i}
     title: Part D Enrollment Effective Date or Employer Subsidy Start Date (Occurrence ${i})
-    type: date
-    format: "%Y%m%d"
-    constraints:
-      maxLength: 8
-  - name: part_d_disenrollment_date_${i}
+  - !date8
+    name: part_d_disenrollment_date_${i}
     title: Part D Disenrollment Date or Employer Subsidy End Date (Occurrence ${i})
-    type: date
-    format: "%Y%m%d"
-    constraints:
-      maxLength: 8
 % endfor
   - name: sending_entity
     title: Sending Entity
@@ -126,29 +105,24 @@ fields:
       maxLength: 9
       minLength: 1
       required: true
-  - name: file_creation_date
+  - !date8
+    name: file_creation_date
     title: File Creation Date
-    type: date
-    format: "%Y%m%d"
     constraints:
-      maxLength: 8
       required: true
-  - name: part_d_eligibility_start_date
+  - !date8
+    name: part_d_eligibility_start_date
     title: Part D Eligibility Start Date
     description: >-
       (Note: The 18.7 specs do not specify a format for the date field, but it's almost
       certainly YYYYMMDD as in all the other fields.)
-    type: date
-    format: "%Y%m%d"
 % for i in range(1, 3):
-  - name: deemed_lis_effective_date_${i}
+  - !date8
+    name: deemed_lis_effective_date_${i}
     title: Deemed / Low-Income Subsidy Effective Date (Occurrence ${i})
-    type: date
-    format: "%Y%m%d"
-  - name: deemed_lis_end_date_${i}
+  - !date8
+    name: deemed_lis_end_date_${i}
     title: Deemed / Low-Income Subsidy End Date (Occurrence ${i})
-    type: date
-    format: "%Y%m%d"
   - name: copayment_level_identifier_${i}
     title: Co-Payment Level Identifier
     type: string
@@ -180,10 +154,9 @@ fields:
       maxLength: 1
 % endfor
 % for i in range(1, 21):
-  - name: start_date_${i}
+  - !date8
+    name: start_date_${i}
     title: Start Date (Occurrence ${i})
-    type: date
-    format: "%Y%m%d"
   - name: number_of_uncovered_months_${i}
     title: Number of Uncovered Months (Occurrence ${i})
     type: integer
@@ -207,11 +180,10 @@ fields:
       justify: right
       fill: zero
 % endfor
-  - name: retrieved_date_of_birth
+  - !date8
+    name: retrieved_date_of_birth
     title: Beneficiary's Retrieved Date of Birth
     description: As retrieved from CMS database for matching beneficiary.
-    type: date
-    format: "%Y%m%d"
   - ${
       render_sex_code(
         "retrieved_sex_code",
@@ -244,19 +216,17 @@ fields:
     type: string
     constraints:
       maxLength: 3
-  - name: date_of_death
+  - !date8
+    name: date_of_death
     title: Date of Death
-    type: date
-    format: "%Y%m%d"
   - name: part_c_d_contract_number
     title: Part C/D Contract Number
     type: string
     constraints:
       maxLength: 5
-  - name: part_c_d_enrollment_start_date
+  - !date8
+    name: part_c_d_enrollment_start_date
     title: Part C/D Enrollment Start Date
-    type: date
-    format: "%Y%m%d"
   - name: part_d_indicator
     title: Part D Indicator
     type: boolean
@@ -267,10 +237,9 @@ fields:
     type: string
     constraints:
       maxLength: 5
-  - name: part_c_enrollment_start_date
+  - !date8
+    name: part_c_enrollment_start_date
     title: Part C Enrollment Start Date
-    type: date
-    format: "%Y%m%d"
   - name: part_d_indicator_2
     title: Part D Indicator
     description: >-
@@ -347,12 +316,9 @@ fields:
     type: string
     constraints:
       maxLength: 9
-  - name: mailing_address_start_date
+  - !date8
+    name: mailing_address_start_date
     title: Mailing Address Start Date
-    type: date
-    format: "%Y%m%d"
-    constraints:
-      maxLength: 8
   - name: residence_address_line_1
     title: Residence Address Line 1
     type: string
@@ -373,37 +339,22 @@ fields:
     type: string
     constraints:
       maxLength: 9
-  - name: residence_address_start_date
+  - !date8
+    name: residence_address_start_date
     title: Residence Address Start Date
-    type: date
-    format: "%Y%m%d"
-    constraints:
-      maxLength: 8
 % for i in range(1, 11):
-  - name: medicare_plan_ineligibility_due_to_incarceration_start_date_${i}
+  - !date8
+    name: medicare_plan_ineligibility_due_to_incarceration_start_date_${i}
     title: Medicare Plan Ineligibility Due to Incarceration Start Date (${i})
-    type: date
-    format: "%Y%m%d"
-    constraints:
-      maxLength: 8
-  - name: medicare_plan_ineligibility_due_to_incarceration_end_date_${i}
+  - !date8
+    name: medicare_plan_ineligibility_due_to_incarceration_end_date_${i}
     title: Medicare Plan Ineligibility Due to Incarceration End Date (${i})
-    type: date
-    format: "%Y%m%d"
-    constraints:
-      maxLength: 8
 % endfor
 % for i in range(1, 11):
-  - name: medicare_plan_ineligibility_due_to_not_lawful_presence_start_date_${i}
+  - !date8
+    name: medicare_plan_ineligibility_due_to_not_lawful_presence_start_date_${i}
     title: Medicare Plan Ineligibility Due to Not Lawful Presence Start Date (${i})
-    type: date
-    format: "%Y%m%d"
-    constraints:
-      maxLength: 8
-  - name: medicare_plan_ineligibility_due_to_not_lawful_presence_end_date_${i}
+  - !date8
+    name: medicare_plan_ineligibility_due_to_not_lawful_presence_end_date_${i}
     title: Medicare Plan Ineligibility Due to Not Lawful Presence End Date (${i})
-    type: date
-    format: "%Y%m%d"
-    constraints:
-      maxLength: 8
 % endfor

@@ -39,7 +39,8 @@ fields:
       enum: [""]
       maxLength: 3
       minLength: 3
-  - name: file_creation_date
+  - !date8
+    name: file_creation_date
     title: File Creation Date
     description: >-
       Critical Field
@@ -52,10 +53,7 @@ fields:
       Record. CMS will pass this information
       back to the Sending Entity on all Detail
       Records of a BEQ Response File.
-    type: date
-    format: "%Y%m%d"
     constraints:
-      maxLength: 8
       required: true
   - name: file_control_number
     title: File Control Number
@@ -92,8 +90,4 @@ fields:
       serialization:
         align: right
         padding_character: "0"
-  - name: _filler
-    type: string
-    constraints:
-      enum: [""]
-      maxLength: 710
+  - !filler 710

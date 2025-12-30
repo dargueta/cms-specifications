@@ -39,13 +39,9 @@ fields:
       minLength: 11
       maxLength: 12
       required: true
-  - name: _filler
-    title: Filler
-    type: string
-    constraints:
-      enum: [""]
-      maxLength: 9
-  - name: dob
+  - !filler 9
+  - !date8
+    name: dob
     title: DOB
     description: >-
       Critical Field
@@ -54,10 +50,7 @@ fields:
       The value should not include dashes,
       decimals, or commas. The value
       should include only numbers.
-    type: date
-    format: "%Y%m%d"
     constraints:
-      maxLength: 8
       required: true
   - name: sex_code
     title: Sex Code
@@ -86,8 +79,4 @@ fields:
       maximum: 9999999
       required: true
       unique: true
-  - name: _filler
-    type: string
-    constraints:
-      enum: [""]
-      maxLength: 708
+  - !filler 708
