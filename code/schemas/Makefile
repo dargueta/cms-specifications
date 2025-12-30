@@ -10,7 +10,7 @@ TEMPLATE_LAYOUT_SOURCES=$(foreach v,$(ALL_FILE_VERSION_DIRS),$(wildcard $(v)/par
 ALL_TEMPLATED_SOURCES=$(TEMPLATE_RECORD_DEF_SOURCES) $(TEMPLATE_LAYOUT_SOURCES)
 ALL_RENDERED_SOURCES=$(ALL_TEMPLATED_SOURCES:.mako=)
 
-SIMPLE_TARGETS=$(subst file_formats/,build/,$(RECORD_DEF_SOURCES) $(LAYOUT_SOURCES))
+SIMPLE_TARGETS=$(subst file_formats/,build/,$(RECORD_DEF_SOURCES) $(LAYOUT_SOURCES) $(ALL_RENDERED_SOURCES))
 YAML_TARGETS=$(filter %.yaml,$(SIMPLE_TARGETS))
 PUML_TARGETS=$(foreach f,$(YAML_TARGETS),$(dir $f)../fsm.puml)
 JSON_TARGETS=$(YAML_TARGETS:.yaml=.json)
@@ -47,6 +47,12 @@ show-vars:
 	@echo
 	@echo "TEMPLATE LAYOUT FILES ----------------------------------------------"
 	@echo $(TEMPLATE_LAYOUT_SOURCES)
+	@echo
+	@echo "RENDERED SOURCES ---------------------------------------------------"
+	@echo $(ALL_RENDERED_SOURCES)
+	@echo
+	@echo "ALL TARGETS --------------------------------------------------------"
+	@echo $(ALL_TARGETS)
 
 %-min.json: %.json
 	yq -I0 -M -o json $< > $@
@@ -55,9 +61,9 @@ show-vars:
 	yq -MP -o json $< > $@
 
 build/%.yaml: file_formats/%.yaml
-	check-jsonschema --schemafile $(TABLESCHEMA_URL) $<
 	mkdir -p $(@D)
-	ln -f $< $@ || cp $< $@
+	python scripts/postprocess_yaml.py -I file_formats/_common -o $@ $<
+	check-jsonschema --schemafile $(TABLESCHEMA_URL) $@
 
 build/%/fsm.puml: scripts/generate_plantuml.py \
                   file_formats/%/parser-state-table.csv

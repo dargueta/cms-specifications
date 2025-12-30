@@ -17,12 +17,10 @@ fields:
       enum: ["MBD"]
       maxLength: 8
       required: true
-  - name: file_creation_date
+  - !date8
+    name: file_creation_date
     title: File Creation Date
-    type: date
-    format: "%Y%m%d"
     constraints:
-      maxLength: 8
       required: true
   - name: file_control_number
     title: File Control Number
@@ -31,8 +29,4 @@ fields:
       maxLength: 9
       minLength: 1
       required: true
-  - name: _filler
-    title: Filler
-    constraints:
-      enum: [""]
-      maxLength: 1967
+  - !filler 1967
