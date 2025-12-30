@@ -1,20 +1,4 @@
-## SPDX-License-Identifier: BSD-3-Clause
-<%def name="render_sex_code(field_name, title='Sex Code', description='')">\
-{
-    "name": "${field_name}",
-    "title": "${title}",
-% if description:
-    "description": "${description}",
-% endif
-    "type": "string",
-    "rdfType": "https://schema.org/GenderType",
-    "categories": [
-        {"value": "0", "label": "Unknown"},
-        {"value": "1", "label": "Male"},
-        {"value": "2", "label": "Female"}
-    ]
-}
-</%def>
+# SPDX-License-Identifier: BSD-3-Clause
 $schema: https://datapackage.org/profiles/2.0/tableschema.json
 fieldsMatch: [subset]
 fields:
@@ -40,15 +24,13 @@ fields:
       minLength: 11
       maxLength: 12
       required: true
-  - name: _filler
-    type: string
-    constraints:
-      enum: [""]
-      maxLength: 9
+  - !filler 9
   - !date8
     name: beneficiary_dob
     title: Beneficiary's Date of Birth
-  - ${render_sex_code("sex_code", "Beneficiary's Sex Code")}
+  - !sex-code
+    name: sex_code
+    title: Beneficiary's Sex Code"
   - name: detail_record_sequence_number
     title: Detail Record Sequence Number
     type: integer
@@ -59,18 +41,14 @@ fields:
       maximum: 9999999
       required: true
       unique: true
-  - name: processed_flag
+  - !bool-yn
+    name: processed_flag
     title: Processed Flag
-    type: boolean
-    trueValues: ["Y"]
-    falseValues: ["N"]
     constraints:
       required: true
-  - name: beneficiary_matched_flag
+  - !bool-yn
+    name: beneficiary_matched_flag
     title: Beneficiary Matched Flag
-    type: boolean
-    trueValues: ["Y"]
-    falseValues: ["N"]
     constraints:
       required: true
   - !date8
@@ -184,13 +162,10 @@ fields:
     name: retrieved_date_of_birth
     title: Beneficiary's Retrieved Date of Birth
     description: As retrieved from CMS database for matching beneficiary.
-  - ${
-      render_sex_code(
-        "retrieved_sex_code",
-        "Beneficiary's Retrieved Sex Code",
-        "As retrieved from CMS database for matching beneficiary.",
-      )
-    }
+  - !sex-code
+    name: retrieved_sex_code
+    title: "Beneficiary's Retrieved Sex Code
+    description: As retrieved from CMS database for matching beneficiary.
   - name: last_name
     title: Last Name
     type: string
@@ -227,11 +202,9 @@ fields:
   - !date8
     name: part_c_d_enrollment_start_date
     title: Part C/D Enrollment Start Date
-  - name: part_d_indicator
+  - !bool-yn
+    name: part_d_indicator
     title: Part D Indicator
-    type: boolean
-    trueValues: ["Y"]
-    falseValues: ["N"]
   - name: part_c_contract_number
     title: Part C Contract Number
     type: string
@@ -240,18 +213,14 @@ fields:
   - !date8
     name: part_c_enrollment_start_date
     title: Part C Enrollment Start Date
-  - name: part_d_indicator_2
+  - !bool-yn
+    name: part_d_indicator_2
     title: Part D Indicator
     description: >-
       This appears twice in the documentation and it's unclear what the difference is.
-    type: boolean
-    trueValues: ["Y"]
-    falseValues: ["N"]
-  - name: esrd_indicator
+  - !bool-10
+    name: esrd_indicator
     title: End Stage Renal Disease Indicator
-    type: boolean
-    trueValues: ["1"]
-    falseValues: ["0"]
   - name: part_c_pbp_number
     title: PBP Number
     description: Associated with contract number in Field 88, positions 717 - 721.
@@ -265,14 +234,10 @@ fields:
     constraints:
       pattern: "\\d{2}"
       maxLength: 2
-  - name: part_c_eghp_indicator
+  - !bool-yn
+    name: part_c_eghp_indicator
     title: EGHP Indicator
     description: Associated with PBP number in Field 95, positions 746 - 748
-    type: boolean
-    trueValues: ["Y"]
-    falseValues: ["N"]
-    constraints:
-      maxLength: 1
   - name: part_c_d_pbp_number
     title: PBP Number
     description: Associated with contract number in Field 91, positions 731 - 735
@@ -286,14 +251,10 @@ fields:
     constraints:
       pattern: "\\d{2}"
       maxLength: 2
-  - name: part_c_d_eghp_indicator
+  - !bool-yn
+    name: part_c_d_eghp_indicator
     title: EGHP Indicator
     description: Associated with contract number in Field 91, positions 731 - 735
-    type: boolean
-    trueValues: ["Y"]
-    falseValues: ["N"]
-    constraints:
-      maxLength: 1
 % for i in range(1, 7):
   - name: mailing_address_line_${i}
     title: Mailing Address Line ${i}

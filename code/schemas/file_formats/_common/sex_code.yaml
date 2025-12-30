@@ -1,0 +1,9 @@
+type: string
+rdfType: "https://schema.org/GenderType"
+categories:
+  - value": "0"
+    label": "Unknown"
+  - value": "1"
+    label": "Male"
+  - value": "2"
+    label": "Female"
