@@ -2,7 +2,9 @@
 $schema: https://datapackage.org/profiles/2.0/tableschema.json
 fieldsMatch: [subset]
 fields:
-  - name: record_type
+  - !const
+    __value: DTL01
+    name: record_type
     title: Record Type
     description: >-
       Critical Field
@@ -10,11 +12,6 @@ fields:
       This code identifies the record as a
       Detail Record for processing
       specifically for BEQ Service.
-    type: string
-    constraints:
-      enum: ["DTL01"]
-      maxLength: 5
-      required: true
   - name: beneficiary_id
     title: Beneficiary ID
     description: >-

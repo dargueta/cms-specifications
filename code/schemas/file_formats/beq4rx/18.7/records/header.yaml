@@ -2,17 +2,14 @@
 $schema: https://datapackage.org/profiles/2.0/tableschema.json
 fieldsMatch: [subset]
 fields:
-  - name: file_id_name
+  - !const
+    __value: MMABEQRH
+    name: file_id_name
     title: File ID Name
     description: >-
       Critical Field: This code identifies the file
       as a BEQ Request File and this record as
       the Header Record of the file.
-    type: string
-    constraints:
-      enum: [MMABEQRH]
-      maxLength: 8
-      required: true
   - name: sending_entity
     title: Sending Entity
     description: >-

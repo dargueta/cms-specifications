@@ -2,12 +2,7 @@
 $schema: https://datapackage.org/profiles/2.0/tableschema.json
 fieldsMatch: [subset]
 fields:
-  - name: record_type
-    title: Record Type
-    type: string
-    constraints:
-      enum: ["DTL"]
-      maxLength: 3
+  - !const DTL
   - name: original_record_type
     title: Record Type
     type: string
@@ -30,7 +25,7 @@ fields:
     title: Beneficiary's Date of Birth
   - !sex-code
     name: sex_code
-    title: Beneficiary's Sex Code"
+    title: Beneficiary's Sex Code
   - name: detail_record_sequence_number
     title: Detail Record Sequence Number
     type: integer
@@ -164,7 +159,7 @@ fields:
     description: As retrieved from CMS database for matching beneficiary.
   - !sex-code
     name: retrieved_sex_code
-    title: "Beneficiary's Retrieved Sex Code
+    title: Beneficiary's Retrieved Sex Code
     description: As retrieved from CMS database for matching beneficiary.
   - name: last_name
     title: Last Name

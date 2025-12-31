@@ -44,6 +44,7 @@ def main(file: TextIO, include_dirs: Sequence[pathlib.Path], output: TextIO) -> 
 
     yaml = ruamel.yaml.YAML(typ="safe")
     yaml.register_class(Filler)
+    yaml.register_class(Const)
 
     for include_dir in include_dirs:
         for dirent in include_dir.iterdir():
@@ -151,6 +152,39 @@ class Filler:
                 "maxLength": width,
             },
         }
+
+
+class Const:
+    """A class for representing an immutable string in a file."""
+
+    yaml_tag = "!const"
+    count = 0
+
+    @classmethod
+    def from_yaml(cls, constructor: Constructor, node: Node) -> dict[str, Any]:
+        """Create a field representing filler space in a file."""
+        string_value: str
+        dict_value: dict[str, Any] = {}
+
+        try:
+            string_value = constructor.construct_yaml_str(node)
+        except ConstructorError:
+            dict_value = constructor.construct_mapping(node, True)
+            string_value = dict_value.pop("__value")
+
+        base = {
+            "name": "_const" if cls.count == 1 else f"_const_{cls.count}",
+            "type": "string",
+            "constraints": {
+                "enum": [string_value],
+                "minLength": len(string_value),
+                "maxLength": len(string_value),
+                "required": True,
+            },
+        }
+
+        deep_map = deep_chainmap.DeepChainMap(dict_value, base)
+        return deep_to_dict(deep_map)
 
 
 if __name__ == "__main__":
