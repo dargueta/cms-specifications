@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import os
 import pathlib
 import sys
 import typing
@@ -43,7 +42,7 @@ SCHEMAS_ROOT_DIR = HERE.parent
 @click.option(
     "-I",
     "include",
-    type=click.Path(exists=True, file_okay=False),
+    type=click.Path(exists=True, file_okay=False, path_type=pathlib.Path),
     multiple=True,
     help="Add the given directory to the template search path. Specify multiple times"
     " to add multiple directories. They will be searched in the order the paths are"
@@ -59,7 +58,7 @@ SCHEMAS_ROOT_DIR = HERE.parent
 @click.command()
 def main(
     define: Sequence[str],
-    include: Sequence[str],
+    include: Sequence[pathlib.Path],
     output: TextIO,
     sources: Sequence[str],
     track_dependencies: bool,
@@ -68,7 +67,7 @@ def main(
 
     The output is the concatenation of all inputs.
     """
-    search_directories = [os.path.abspath(p) for p in include[::-1]] + [os.getcwd()]
+    search_directories = [p.absolute() for p in include[::-1]] + [pathlib.Path.cwd()]
     lookup = DependencyTrackingLookup(directories=search_directories)
 
     if track_dependencies:
