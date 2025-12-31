@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+"""Render Mako templates."""
+
 from __future__ import annotations
 
 import pathlib
@@ -117,12 +119,13 @@ class DependencyTrackingLookup(mako.lookup.TemplateLookup):
         super().__init__(*args, **kwargs)
         self.imported_uris = set()
 
-    def get_template(self, uri: str) -> mako.template.Template:
+    def get_template(self, uri: str) -> mako.template.Template:  # type: ignore[override]
+        """Retrieve a template, recording the resolved file path."""
         template = super().get_template(uri)
         abs_template_path = pathlib.Path(template.filename)
         relative_template_path = abs_template_path.relative_to(SCHEMAS_ROOT_DIR)
         self.imported_uris.add(str(relative_template_path))
-        return template
+        return template  # type: ignore[no-any-return]
 
 
 if __name__ == "__main__":
