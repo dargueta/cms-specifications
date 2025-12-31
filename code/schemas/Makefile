@@ -62,7 +62,7 @@ show-vars:
 
 build/%.yaml: file_formats/%.yaml
 	mkdir -p $(@D)
-	python scripts/postprocess_yaml.py -I file_formats/_common -o $@ $<
+	python3 -m scripts.postprocess_yaml -I file_formats/_common -o $@ $<
 	check-jsonschema --schemafile $(TABLESCHEMA_URL) $@
 
 build/%/fsm.puml: scripts/generate_plantuml.py \
@@ -75,9 +75,9 @@ build/%: file_formats/%
 	ln -f $< $@ || cp $< $@
 
 file_formats/%: file_formats/%.mako
-	python3 scripts/render_templates.py -I file_formats -o $@ $^
+	python3 -m scripts.render_templates -I file_formats -o $@ $^
 
 dependencies.mk: $(ALL_TEMPLATED_SOURCES)
-	python3 scripts/render_templates.py -M -I file_formats -o $@ $^
+	python3 -m scripts.render_templates -M -I file_formats -o $@ $^
 
 -include dependencies.mk

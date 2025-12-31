@@ -7,10 +7,6 @@ from __future__ import annotations
 import functools
 import pathlib
 import typing
-from collections.abc import Mapping
-from collections.abc import Sequence
-from typing import overload
-from typing import TypeVar
 
 import click
 import deep_chainmap
@@ -18,16 +14,19 @@ import ruamel.yaml
 from ruamel.yaml.constructor import ConstructorError
 from ruamel.yaml.error import MarkedYAMLError
 
+from ._common import deep_merge_dicts
+from ._common import deep_to_dict
+
 
 if typing.TYPE_CHECKING:
+    from collections.abc import Mapping
+    from collections.abc import Sequence
     from typing import Any
     from typing import TextIO
 
     from ruamel.yaml import Node
     from ruamel.yaml import YAML
     from ruamel.yaml.constructor import Constructor
-
-T = TypeVar("T")
 
 
 @click.argument("file", type=click.File())
@@ -41,7 +40,6 @@ T = TypeVar("T")
 @click.command()
 def main(file: TextIO, include_dirs: Sequence[pathlib.Path], output: TextIO) -> None:
     """Expand all anchors and constructors in a YAML file."""
-
     yaml = ruamel.yaml.YAML(typ="safe")
     yaml.register_class(Filler)
     yaml.register_class(Const)
@@ -77,7 +75,6 @@ def create_constructor_class(yaml_loader: YAML, fragment_file: pathlib.Path) -> 
 
     class_name = fragment_file.stem
     yaml_name = class_name.replace("_", "-")
-
     namespace = {
         "yaml_tag": "!" + yaml_name,
         "from_yaml": classmethod(
@@ -109,26 +106,6 @@ def construct_item(
 
     deep_map = deep_chainmap.DeepChainMap(user_fragment, dict(fragment))
     return deep_to_dict(deep_map)
-
-
-@overload
-def deep_to_dict(item: Mapping[str, T]) -> dict[str, T]: ...
-
-
-@overload
-def deep_to_dict(item: Sequence[T]) -> list[T]: ...
-
-
-@overload
-def deep_to_dict(item: T) -> T: ...
-
-
-def deep_to_dict(item: Any) -> Any:
-    if isinstance(item, Mapping):
-        return {k: deep_to_dict(v) for k, v in item.items()}
-    if isinstance(item, Sequence) and not isinstance(item, str):
-        return [deep_to_dict(v) for v in item]
-    return item
 
 
 class Filler:
@@ -164,7 +141,7 @@ class Const:
     def from_yaml(cls, constructor: Constructor, node: Node) -> dict[str, Any]:
         """Create a field representing filler space in a file."""
         string_value: str
-        dict_value: dict[str, Any] = {}
+        dict_value = {}
 
         try:
             string_value = constructor.construct_yaml_str(node)
@@ -183,8 +160,7 @@ class Const:
             },
         }
 
-        deep_map = deep_chainmap.DeepChainMap(dict_value, base)
-        return deep_to_dict(deep_map)
+        return deep_merge_dicts(dict_value, base)
 
 
 if __name__ == "__main__":
