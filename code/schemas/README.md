@@ -8,27 +8,27 @@ The directory structure is strictly:
 
 ```
 yaml
-    |- <file type slug>
-       |- <version>
-          |- records
-             |- <record type>.yaml
-             |- ...
-          |- parser-state-table.csv
+    └ <file type slug>
+      └ <version>
+        ├ records
+        │ ├ <record type>.yaml
+        │ └ ...
+        └ parser-state-table.csv
 ```
 
 For example:
 
 ```
 yaml
-    |- beq4rx
-       |- 18.7
-          |- records
-             |- header.yaml
-             |- detail.yaml
-             |- trailer.yaml
-          |- parser-state-table.csv
-       |- 18.6
-          |- ...
+    └ beq4rx
+       ├ 18.7
+       │  ├ records
+       │  │ ├ header.yaml
+       │  │ ├ detail.yaml
+       │  │ └ trailer.yaml
+       │  └ parser-state-table.csv
+       └ 18.6
+         └ ...
 ```
 
 `parser-state-table.csv` describes the states of a [finite-state machine (FSM)](https://en.wikipedia.org/wiki/Finite-state_machine) that processes the records of the file. See [_Describing File Layouts_](#describing-file-layouts) below.
