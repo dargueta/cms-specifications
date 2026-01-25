@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 
-"""Expand all anchors and constructors in a YAML file."""
+"""Expand all anchors and constructors in a YAML file.
+
+Do not confuse this with preprocessing, which renders Mako templates.
+"""
 
 from __future__ import annotations
 

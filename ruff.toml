@@ -1,4 +1,4 @@
-target-version = "py310"
+target-version = "py312"
 
 [lint]
 exclude = ["docs/*"]
@@ -25,13 +25,7 @@ keep-runtime-typing = true
 
 [lint.per-file-ignores]
 "__init__.py" = ["F403", "PLC0414"]
-"tests/*" = [
-    "ANN",
-    "D",       # Forces docstrings and such
-    "PLR6301", # Method could be a function, class method, or static method
-    "S101",
-    "S311",
-]
+"code/schemas/scripts/schemas.py" = ["I002"]
 
 [lint.isort]
 force-single-line = true
