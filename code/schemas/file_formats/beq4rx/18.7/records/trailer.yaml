@@ -83,7 +83,7 @@ fields:
       minLength: 7
       maxLength: 7
       required: true
-    metadata:
+    __metadata__:
       serialization:
         align: right
         padding_character: "0"
