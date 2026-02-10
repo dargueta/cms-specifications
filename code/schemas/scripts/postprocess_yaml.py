@@ -2,7 +2,8 @@
 
 """Expand all anchors and constructors in a YAML file.
 
-Do not confuse this with preprocessing, which renders Mako templates.
+Do not confuse this with preprocessing, which renders Mako templates to generate valid
+YAML.
 """
 
 from __future__ import annotations
