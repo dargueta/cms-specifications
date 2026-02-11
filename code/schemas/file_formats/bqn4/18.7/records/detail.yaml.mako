@@ -314,3 +314,51 @@ fields:
     name: medicare_plan_ineligibility_due_to_not_lawful_presence_end_date_${i}
     title: Medicare Plan Ineligibility Due to Not Lawful Presence End Date (${i})
 % endfor
+  - !current_enrollment_source_type_code
+    name: current_enrollment_source_type_code_95
+    title: Current Enrollment Source Type Code
+    description: >-
+      Current Enrollment Source Type Code (associated with PBP number in Field 95,
+      positions 746 - 748)
+  - !current_enrollment_source_type_code
+    name: current_enrollment_source_type_code_98
+    title: Current Enrollment Source Type Code
+    description: >-
+      Current Enrollment Source Type Code (associated with PBP number in Field 98,
+      positions 752 - 754)
+  - name: prior_part_cd_contract_number
+    title: Prior Part C/D Contract Number
+    type: string
+    constraints:
+      maxLength: 5
+  - !date8
+    name: prior_part_cd_enrollment_start_date
+    title: Prior Part C/D Enrollment Start Date
+    description: >-
+      Prior Part C/D Enrollment Start Date (associated with PBP Number in Field 162,
+      positions 1520-1522)
+  - !date8
+    name: prior_part_cd_enrollment_disenrollment_date
+    title: Prior Part C/D Disenrollment Date
+    description: >-
+      Prior Part C/D Disenrollment Date (associated with PBP Number in Field 162,
+      positions 1520-1522)
+  - !bool-yn
+    name: prior_part_d_indicator
+    title: Prior Part D Indicator
+    description: >-
+      Prior Part D Indicator (associated with PBP Number in Field 162, positions
+      1520-1522)
+  - name: prior_pbp_number
+    title: Prior PBP Number
+    description: >-
+      Prior PBP Number (associated with Contract Number in Field 158, positions
+      1498-1502)
+    type: string
+    constraints:
+      maxLength: 3
+  - name: prior_plan_type_code
+    title: Prior Plan Type Code
+    type: string
+    constraints:
+      maxLength: 2
