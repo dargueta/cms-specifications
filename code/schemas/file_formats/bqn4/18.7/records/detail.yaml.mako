@@ -308,13 +308,13 @@ fields:
     name: medicare_plan_ineligibility_due_to_not_lawful_presence_end_date_${i}
     title: Medicare Plan Ineligibility Due to Not Lawful Presence End Date (${i})
 % endfor
-  - !current-enrollment-source-type-code
+  - !enrollment-source-type-code
     name: current_enrollment_source_type_code_95
     title: Current Enrollment Source Type Code
     description: >-
       Current Enrollment Source Type Code (associated with PBP number in Field 95,
       positions 746 - 748)
-  - !current-enrollment-source-type-code
+  - !enrollment-source-type-code
     name: current_enrollment_source_type_code_98
     title: Current Enrollment Source Type Code
     description: >-
