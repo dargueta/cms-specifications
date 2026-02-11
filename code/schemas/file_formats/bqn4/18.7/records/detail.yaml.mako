@@ -222,13 +222,10 @@ fields:
     type: string
     constraints:
       maxLength: 3
-  - name: part_c_plan_type_code
+  - !plan-type-code
+    name: part_c_plan_type_code
     title: Plan Type Code
     description: Associated with PBP number in Field 95, positions 746 - 748
-    type: string
-    constraints:
-      pattern: "\\d{2}"
-      maxLength: 2
   - !bool-yn
     name: part_c_eghp_indicator
     title: EGHP Indicator
@@ -239,13 +236,10 @@ fields:
     type: string
     constraints:
       maxLength: 3
-  - name: part_c_d_plan_type_code
+  - !plan-type-code
+    name: part_c_d_plan_type_code
     title: Plan Type Code
     description: Associated with contract number in Field 91, positions 731 - 735
-    type: string
-    constraints:
-      pattern: "\\d{2}"
-      maxLength: 2
   - !bool-yn
     name: part_c_d_eghp_indicator
     title: EGHP Indicator
@@ -314,31 +308,31 @@ fields:
     name: medicare_plan_ineligibility_due_to_not_lawful_presence_end_date_${i}
     title: Medicare Plan Ineligibility Due to Not Lawful Presence End Date (${i})
 % endfor
-  - !current_enrollment_source_type_code
+  - !current-enrollment-source-type-code
     name: current_enrollment_source_type_code_95
     title: Current Enrollment Source Type Code
     description: >-
       Current Enrollment Source Type Code (associated with PBP number in Field 95,
       positions 746 - 748)
-  - !current_enrollment_source_type_code
+  - !current-enrollment-source-type-code
     name: current_enrollment_source_type_code_98
     title: Current Enrollment Source Type Code
     description: >-
       Current Enrollment Source Type Code (associated with PBP number in Field 98,
       positions 752 - 754)
-  - name: prior_part_cd_contract_number
+  - name: prior_part_c_d_contract_number
     title: Prior Part C/D Contract Number
     type: string
     constraints:
       maxLength: 5
   - !date8
-    name: prior_part_cd_enrollment_start_date
+    name: prior_part_c_d_enrollment_start_date
     title: Prior Part C/D Enrollment Start Date
     description: >-
       Prior Part C/D Enrollment Start Date (associated with PBP Number in Field 162,
       positions 1520-1522)
   - !date8
-    name: prior_part_cd_enrollment_disenrollment_date
+    name: prior_part_c_d_enrollment_disenrollment_date
     title: Prior Part C/D Disenrollment Date
     description: >-
       Prior Part C/D Disenrollment Date (associated with PBP Number in Field 162,
@@ -357,8 +351,6 @@ fields:
     type: string
     constraints:
       maxLength: 3
-  - name: prior_plan_type_code
+  - !plan-type-code
+    name: prior_plan_type_code
     title: Prior Plan Type Code
-    type: string
-    constraints:
-      maxLength: 2
