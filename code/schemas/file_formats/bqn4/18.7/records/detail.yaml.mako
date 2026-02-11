@@ -385,3 +385,38 @@ fields:
     name: prior_enrollment_source_type_code
     title: Prior Enrollment Source Type Code
     description: Associated with PBP Number in Field 170, positions 1549-1551.
+  - name: active_mbi
+    title: Active MBI
+    description: >-
+      The MBI from the beneficiary's active Beneficiary MBI period. The value is
+      a system-generated identifier used internally and externally to uniquely
+      identify the beneficiary in the Medicare database.
+    type: string
+    constraints:
+      minLength: 11
+      maxLength: 11
+      required: true
+  - !date8
+    name: most_recent_duals_sep_use_date
+    title: Most Recent Duals SEP Use Date
+% for i in range(1, 11):
+  - !date8
+    name: cara_status_start_date_${i}
+    title: CARA Status Start Date (${i})
+  - !date8
+    name: cara_status_end_date_${i}
+    title: CARA Status End Date (${i})
+% endfor
+  - !date8
+    name: medicare_part_a_entitlement_start_date_2
+    title: Medicare Part A Entitlement Start Date 2
+  - !date8
+    name: medicare_part_a_entitlement_end_date_2
+    title: Medicare Part A Entitlement End Date 2
+  - !date8
+    name: medicare_part_b_entitlement_start_date_2
+    title: Medicare Part B Entitlement Start Date 2
+  - !date8
+    name: medicare_part_b_entitlement_end_date_2
+    title: Medicare Part B Entitlement End Date 2
+  - !filler 234
