@@ -55,10 +55,10 @@ show-vars:
 	@echo $(ALL_TARGETS)
 
 %-min.json: %.json
-	yq -I0 -M -o json $< > $@
+	python3 -m scripts.yaml2json --minify $< $@
 
 %.json: %.yaml
-	yq -MP -o json $< > $@
+	python3 -m scripts.yaml2json $< $@
 
 build/%.yaml: file_formats/%.yaml
 	mkdir -p $(@D)

@@ -13,10 +13,5 @@ jobs:
           python-version: "3.12"
       - name: Install Python Dependencies
         run: pip3 install -Ur code/schemas/requirements.txt
-      - name: Install Package Dependencies
-        run: |
-          set -eux
-          sudo apt-get update
-          sudo apt-get install -y --no-install-recommends yq
       - name: Test generating files
         run: make -C code/schemas
