@@ -1,0 +1,22 @@
+name: CI
+
+on: [ push ]
+
+jobs:
+  generation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install Python Dependencies
+        run: pip3 install -Ur code/schemas/requirements.txt
+      - name: Install Package Dependencies
+        run: |
+          set -eux
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends yq
+      - name: Test generating files
+        run: make -C code/schemas
