@@ -114,9 +114,10 @@ fields:
         - 75
         - 100
       maxLength: 3
-    __serialization:
-      justify: right
-      fill: zero
+    __metadata__:
+      serialization:
+        aligh: right
+        padding_character: "0"
 % endfor
 % for i in range(1, 11):
   - name: rds_part_d_indicator_${i}
@@ -149,9 +150,10 @@ fields:
       minimum: 0
       maximum: 999
       maxLength: 3
-    __serialization:
-      justify: right
-      fill: zero
+    __metadata__:
+      serialization:
+        aligh: right
+        padding_character: "0"
 % endfor
   - !date8
     name: retrieved_date_of_birth
