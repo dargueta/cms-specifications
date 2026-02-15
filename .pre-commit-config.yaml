@@ -9,7 +9,7 @@ repos:
     args:
       - "-c"
       - |
-        if ! make -C `pwd`/code/schemas -q dependencies.mk; then
+        if ! make -C code/schemas -q dependencies.mk; then
           echo "ERROR: Mako schema template dependencies are out of date. Run:"
           echo "    make -C `pwd`/code/schemas dependencies.mk"
           echo "and commit the changes, then try again."
