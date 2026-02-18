@@ -55,14 +55,14 @@ show-vars:
 	@echo $(ALL_TARGETS)
 
 %-min.json: %.json
-	python3 -m scripts.yaml2json --minify $< $@
+	python3 -m scripts.minijson $< $@
 
-%.json: %.yaml
-	python3 -m scripts.yaml2json $< $@
+build/%.yaml: build/%.json
+	python3 -m scripts.json2yaml $< $@
 
-build/%.yaml: file_formats/%.yaml
+build/%.json: file_formats/%.yaml
 	mkdir -p $(@D)
-	python3 -m scripts.postprocess_yaml -I file_formats/_common -o $@ $<
+	python3 -m scripts.postprocess_yaml -I file_formats/_common -o $@ --json $<
 	check-jsonschema --schemafile $(TABLESCHEMA_URL) $@
 
 build/%/fsm.puml: scripts/generate_plantuml.py \

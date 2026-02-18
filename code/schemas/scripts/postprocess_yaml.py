@@ -9,6 +9,7 @@ YAML.
 from __future__ import annotations
 
 import functools
+import json
 import pathlib
 import typing
 
@@ -35,6 +36,7 @@ if typing.TYPE_CHECKING:
 
 @click.argument("file", type=click.File())
 @click.option("-o", "--output", type=click.File(mode="w", atomic=True))
+@click.option("-j", "--json", "as_json", is_flag=True, default=False)
 @click.option(
     "-I",
     "include_dirs",
@@ -42,7 +44,9 @@ if typing.TYPE_CHECKING:
     multiple=True,
 )
 @click.command()
-def main(file: TextIO, include_dirs: Sequence[pathlib.Path], output: TextIO) -> None:
+def main(
+    file: TextIO, include_dirs: Sequence[pathlib.Path], as_json: bool, output: TextIO
+) -> None:
     """Expand all anchors and constructors in a YAML file."""
     yaml = ruamel.yaml.YAML(typ="safe")
     yaml.register_class(Filler)
@@ -57,12 +61,15 @@ def main(file: TextIO, include_dirs: Sequence[pathlib.Path], output: TextIO) -> 
 
     # Load the YAML file provided. As we've already registered all the constructors, we
     # don't need to do anything special after we load it.
-    resulting_yaml = yaml.load(file)
+    result = yaml.load(file)
+    if as_json:
+        json.dump(result, output, indent=2, sort_keys=True)
+        return
 
     # Set arrays to be indented two spaces underneath the keys they're mapped to. It
     # drives me crazy otherwise.
     yaml.indent(offset=2)
-    yaml.dump(resulting_yaml, output)
+    yaml.dump(result, output)
 
 
 def create_constructor_class(yaml_loader: YAML, fragment_file: pathlib.Path) -> type:
