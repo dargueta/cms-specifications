@@ -1,0 +1,61 @@
+type: string
+constraints:
+  maxLength: 2
+categories:
+  - value: "01"
+    label: HMO
+  - value: "02"
+    label: HMOPOS
+  # "03" undefined
+  - value: "04"
+    label: Local PPO
+  - value: "05"
+    label: PSO (State License)
+  # "06" undefined
+  - value: "07"
+    label: MSA
+  - value: "08"
+    label: RFB PFFS
+  - value: "09"
+    label: PFFS
+  # 10-17 undefined
+  - value: "18"
+    label: 1876 Cost
+  - value: "19"
+    label: HCPP 1833 Cost
+  - value: "20"
+    label: National PACE
+  # 21-27 undefined
+  - value: "28"
+    label: Chronic Care
+  - value: "29"
+    label: Medicare Prescription Drug Plan
+  - value: "30"
+    label: Employer/Union Only Direct Contract PDP
+  - value: "31"
+    label: Regional PPO
+  # 32-39 undefined
+  - value: "40"
+    label: Employer/Union Only Direct Contract PFFS
+  # 41 undefined
+  - value: "42"
+    label: RFB HMO
+  - value: "43"
+    label: RFB HMOPOS
+  - value: "44"
+    label: RFB Local PPO
+  - value: "45"
+    label: RFB PSO (State License)
+  - value: "46"
+    label: Point-of-Sale Contractor
+  - value: "47"
+    label: Employer/Union Only Direct Contract PPO
+  - value: "48"
+    label: Medicare-Medicaid Plan HMO
+  - value: "49"
+    label: Medicare-Medicaid Plan HMOPOS
+  - value: "50"
+    label: Medicare-Medicaid Plan PPO
+  # 51-98 undefined
+  - value: "99"
+    label: Undefined Historical Data

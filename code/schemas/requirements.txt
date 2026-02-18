@@ -1,0 +1,6 @@
+attrs
+check-jsonschema>=0.33.2
+click~=8.0
+deep_chainmap~=0.1.0
+mako~=1.3
+ruamel.yaml>=0.18.15, <0.20.0

@@ -1,0 +1,90 @@
+# SPDX-License-Identifier: BSD-3-Clause
+$schema: https://datapackage.org/profiles/2.0/tableschema.json
+fieldsMatch: [subset]
+fields:
+  - !const
+    __value: MMABEQRT
+    name: file_id_name
+    title: File ID Name
+    description: >-
+      Critical Field
+
+      This code identifies the record as the
+      Trailer Record of a BEQ Request File.
+  - name: sending_entity
+    title: Sending Entity (CMS)
+    description: >-
+      Critical Field
+
+      This field provides CMS with the
+      identification of the entity that is sending
+      the BEQ Request File. The value for this
+      field is provided to CMS and used in
+      connection with CMS electronic routing
+      and mailbox functions. The value in this
+      field should agree with the corresponding
+      value in the Header Record.
+    type: string
+    rdfType: https://schema.org/Organization
+    constraints:
+      maxLength: 5
+      minLength: 5
+      required: true
+  - name: _sending_entity_padding
+    type: string
+    constraints:
+      enum: [""]
+      maxLength: 3
+      minLength: 3
+  - !date8
+    name: file_creation_date
+    title: File Creation Date
+    description: >-
+      Critical Field
+
+      The date when the Sending Entity created
+      the BEQ Request File. For example,
+      January 3, 2017 is the value 20170103.
+      This value should agree with the
+      corresponding value in the Header
+      Record. CMS will pass this information
+      back to the Sending Entity on all Detail
+      Records of a BEQ Response File.
+    constraints:
+      required: true
+  - name: file_control_number
+    title: File Control Number
+    description: >-
+      Critical Field
+
+      The specific Control Number assigned by
+      the Sending Entity to the BEQ Request
+      File. CMS will return this information to
+      the Sending Entity on all Detail Records
+      of a BEQ Response File. This value
+      should agree with the corresponding
+      value in the Header Record.
+    type: string
+    constraints:
+      maxLength: 9
+      minLength: 1
+      required: true
+  - name: record_count
+    title: Record Count
+    description: >-
+      Critical Field
+
+      The total number of Detail Records
+      supplied on the BEQ Request File.
+    type: integer
+    constraints:
+      minimum: 1
+      maximum: 9999999
+      minLength: 7
+      maxLength: 7
+      required: true
+    __metadata__:
+      serialization:
+        align: right
+        padding_character: "0"
+  - !filler 710

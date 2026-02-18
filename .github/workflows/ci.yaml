@@ -1,0 +1,19 @@
+name: CI
+
+on: [ push ]
+
+jobs:
+  generation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      # Note: We're using 3.12 because that's the lowest version of Python we
+      # support. Do not just use the latest version.
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install Python Dependencies
+        run: pip3 install -Ur code/schemas/requirements.txt
+      - name: Test generating files
+        run: make -C code/schemas
