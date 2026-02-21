@@ -9,9 +9,11 @@ ALL_RENDERED_YAML_TARGETS=$(BEQ4RX_RENDERED_YAML_TARGETS) $(BQN4_RENDERED_YAML_T
 .DELETE_ON_FAILURE:
 
 # BEQ4RX -----------------------------------------------------------------------
-build/beq4rx/18.6/%: build/beq4rx/18.7/%
+build/beq4rx/18.9/%: build/beq4rx/18.8/%
 build/beq4rx/18.8/%: build/beq4rx/18.7/%
+build/beq4rx/18.7/%: build/beq4rx/18.6/%
 
 # BQN4 -------------------------------------------------------------------------
-build/bqn4/18.6/%: build/bqn4/18.7/%
+build/bqn4/18.9/%: build/bqn4/18.8/%
 build/bqn4/18.8/%: build/bqn4/18.7/%
+build/bqn4/18.7/%: build/bqn4/18.6/%
