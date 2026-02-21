@@ -33,15 +33,9 @@ file_formats
 
 `parser-state-table.csv` describes the states of a [finite-state machine (FSM)](https://en.wikipedia.org/wiki/Finite-state_machine) that processes the records of the file. See [_Describing File Layouts_](#describing-file-layouts) below.
 
-Schema files can be templatized using [Mako](https://docs.makotemplates.org/en/latest/). Among other things, this allows generating arrays and reusing specifications. For example, if a record specification is identical to that of another version, it's possible to use an `include` directive. The include path will be relative to the `file_formats` directory.
+Any file can be templatized using [Liquid](https://shopify.github.io/liquid). For schemas, this mostly serves to remove the tedium of making "arrays" -- sequences of otherwise-identical columns that repeat.
 
-The BEQ Request 18.6 version of the header record is identical to the BEQ Request 18.7 version, so the spec file in its entirety is:
-
-```mako
-<%include file="/beq4rx/18.7/header.yaml"/>
-```
-
-However, the file name would be `header.yaml.mako`, not `header.yaml`. The additional `.mako` extension tells the build script to run it through the preprocessor first. Without the `.mako` extension, the file is used as is.
+Any Liquid template must have both the desired file extension *and* `.liquid` at the end. For example, to generate a file called `header.yaml`, the template file must be named `header.yaml.liquid`.
 
 ## Describing File Layouts
 
