@@ -16,6 +16,7 @@ all: $(ALL_TARGETS)
 .PHONY: clean
 clean:
 	$(RM) -r build
+	find $1 -depth -type d -empty -exec rmdir -v '{}' \+
 
 %-min.json: %.json
 	python3 -m scripts.minijson $< $@
