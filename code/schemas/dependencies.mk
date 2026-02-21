@@ -10,47 +10,47 @@ ALL_RENDERED_YAML_TARGETS=$(BEQ4RX_RENDERED_YAML_TARGETS) $(BQN4_RENDERED_YAML_T
 
 # TODO (dargueta): Consolidate these rules to avoid so much repetition?
 # BEQ4RX -----------------------------------------------------------------------
-file_formats/beq4rx/18.9/%: file_formats/beq4rx/18.8/%
+build/beq4rx/18.9/%: build/beq4rx/18.8/%
 	mkdir -p $(@D)
 	ln -f $< $@
-file_formats/beq4rx/18.8/%: file_formats/beq4rx/18.7/%
+build/beq4rx/18.8/%: build/beq4rx/18.7/%
 	mkdir -p $(@D)
 	ln -f $< $@
-file_formats/beq4rx/18.7/%: file_formats/beq4rx/18.6/%
+build/beq4rx/18.7/%: build/beq4rx/18.6/%
 	mkdir -p $(@D)
 	ln -f $< $@
-file_formats/beq4rx/18.6/%: file_formats/beq4rx/18.5/%
+build/beq4rx/18.6/%: build/beq4rx/18.5/%
 	mkdir -p $(@D)
 	ln -f $< $@
-file_formats/beq4rx/18.5/%: file_formats/beq4rx/18.4/%
+build/beq4rx/18.5/%: build/beq4rx/18.4/%
 	mkdir -p $(@D)
 	ln -f $< $@
-file_formats/beq4rx/18.4/%: file_formats/beq4rx/18.3/%
+build/beq4rx/18.4/%: build/beq4rx/18.3/%
 	mkdir -p $(@D)
 	ln -f $< $@
-file_formats/beq4rx/18.3/%: file_formats/beq4rx/18.2/%
+build/beq4rx/18.3/%: build/beq4rx/18.2/%
 	mkdir -p $(@D)
 	ln -f $< $@
 
 # BQN4 -------------------------------------------------------------------------
-file_formats/bqn4/18.9/%: file_formats/bqn4/18.8/%
+build/bqn4/18.9/%: build/bqn4/18.8/%
 	mkdir -p $(@D)
 	ln -f $< $@
-file_formats/bqn4/18.8/%: file_formats/bqn4/18.7/%
+build/bqn4/18.8/%: build/bqn4/18.7/%
 	mkdir -p $(@D)
 	ln -f $< $@
-file_formats/bqn4/18.7/%: file_formats/bqn4/18.6/%
+build/bqn4/18.7/%: build/bqn4/18.6/%
 	mkdir -p $(@D)
 	ln -f $< $@
-file_formats/bqn4/18.6/%: file_formats/bqn4/18.5/%
+build/bqn4/18.6/%: build/bqn4/18.5/%
 	mkdir -p $(@D)
 	ln -f $< $@
-file_formats/bqn4/18.5/%: file_formats/bqn4/18.4/%
+build/bqn4/18.5/%: build/bqn4/18.4/%
 	mkdir -p $(@D)
 	ln -f $< $@
-file_formats/bqn4/18.4/%: file_formats/bqn4/18.3/%
+build/bqn4/18.4/%: build/bqn4/18.3/%
 	mkdir -p $(@D)
 	ln -f $< $@
-file_formats/bqn4/18.3/%: file_formats/bqn4/18.2/%
+build/bqn4/18.3/%: build/bqn4/18.2/%
 	mkdir -p $(@D)
 	ln -f $< $@

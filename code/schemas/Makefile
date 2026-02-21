@@ -33,9 +33,12 @@ build/%/fsm.puml: build/%/parser-state-table.csv
 	mkdir -p $(@D)
 	python3 -m scripts/generate_plantuml $^ $@
 
+# *Never* symlink from `file_formats` into `build`! There's a race condition where,
+# depending on the order Make picks, you could end up modifying original files.
+# Always copy from `file_formats` into `build`, and link `build` to `build`.
 build/%: file_formats/%
 	mkdir -p $(@D)
-	ln $< $@ || cp $< $@
+	cp $< $@
 
 file_formats/%: file_formats/%.liquid
 	python3 -m scripts.render_templates -I file_formats -o $@ $^
