@@ -8,12 +8,25 @@ ALL_RENDERED_YAML_TARGETS=$(BEQ4RX_RENDERED_YAML_TARGETS) $(BQN4_RENDERED_YAML_T
 
 .DELETE_ON_FAILURE:
 
+# TODO (dargueta): Consolidate these rules to avoid so much repetition?
 # BEQ4RX -----------------------------------------------------------------------
-build/beq4rx/18.9/%: build/beq4rx/18.8/%
-build/beq4rx/18.8/%: build/beq4rx/18.7/%
-build/beq4rx/18.7/%: build/beq4rx/18.6/%
+file_formats/beq4rx/18.9/%: file_formats/beq4rx/18.8/%
+	mkdir -p $(@D)
+	ln -f $< $@
+file_formats/beq4rx/18.8/%: file_formats/beq4rx/18.7/%
+	mkdir -p $(@D)
+	ln -f $< $@
+file_formats/beq4rx/18.7/%: file_formats/beq4rx/18.6/%
+	mkdir -p $(@D)
+	ln -f $< $@
 
 # BQN4 -------------------------------------------------------------------------
-build/bqn4/18.9/%: build/bqn4/18.8/%
-build/bqn4/18.8/%: build/bqn4/18.7/%
-build/bqn4/18.7/%: build/bqn4/18.6/%
+file_formats/bqn4/18.9/%: file_formats/bqn4/18.8/%
+	mkdir -p $(@D)
+	ln -f $< $@
+file_formats/bqn4/18.8/%: file_formats/bqn4/18.7/%
+	mkdir -p $(@D)
+	ln -f $< $@
+file_formats/bqn4/18.7/%: file_formats/bqn4/18.6/%
+	mkdir -p $(@D)
+	ln -f $< $@
