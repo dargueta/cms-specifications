@@ -119,7 +119,7 @@ fields:
         aligh: right
         padding_character: "0"
 {% endfor %}
-{% for i in range(1..10) %}
+{% for i in (1..10) %}
   - name: rds_part_d_indicator_{{ i }}
     title: RDS / Part D Indicator (Occurrence {{ i }})
     type: string
@@ -127,7 +127,7 @@ fields:
       enum: ["D", "R"]
       maxLength: 1
 {% endfor %}
-{% for i in range(1..20) %}
+{% for i in (1..20) %}
   - !date8
     name: start_date_{{ i }}
     title: Start Date (Occurrence {{ i }})
@@ -246,7 +246,7 @@ fields:
     name: part_c_d_eghp_indicator
     title: EGHP Indicator
     description: Associated with contract number in Field 91, positions 731 - 735
-{% for i in range(1..6) %}
+{% for i in (1..6) %}
   - name: mailing_address_line_{{ i }}
     title: Mailing Address Line {{ i }}
     type: string
