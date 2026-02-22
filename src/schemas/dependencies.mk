@@ -24,6 +24,8 @@ build/beq4rx/18.3/%: build/beq4rx/18.4/%
 	mkdir -p $(@D) && ln -f $< $@
 build/beq4rx/18.2/%: build/beq4rx/18.3/%
 	mkdir -p $(@D) && ln -f $< $@
+build/beq4rx/18.1/%: build/beq4rx/18.2/%
+	mkdir -p $(@D) && ln -f $< $@
 
 # BQN4 -------------------------------------------------------------------------
 build/bqn4/18.8/%: build/bqn4/18.9/%

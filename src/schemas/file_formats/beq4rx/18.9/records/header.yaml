@@ -24,15 +24,9 @@ fields:
     type: string
     rdfType: https://schema.org/Organization
     constraints:
-      maxLength: 5
+      maxLength: 8
       minLength: 5
       required: true
-  - name: _sending_entity_padding
-    type: string
-    constraints:
-      enum: [""]
-      maxLength: 3
-      minLength: 3
   - !date8
     name: file_creation_date
     title: File Creation Date
