@@ -13,9 +13,8 @@ extend-ignore = [
     "EM",
     "ERA001",
     "FBT",
-    "FIX002",  # Disallows FIXMEss
+    "FIX002",  # Disallows FIXMEs
     "PLR2004",
-    "S702",    # Screams about unescaped values in Mako templates
     "TD003",
     "TRY003",
 ]
