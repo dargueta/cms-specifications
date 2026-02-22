@@ -9,7 +9,7 @@ Instead of links I've included the actual files here because I hate dead links, 
 ## Licensing
 
 * Except as noted, all files in the `us_federal_government_docs` directory are works of the U.S. Federal Government. Under 17 U.S.C. §105 these are public domain. *I did not create these, nor do I claim any rights on these files or their contents.*
-* Anything else is governed by the [3-Clause BSD License](https://en.wikipedia.org/wiki/BSD_licenses#3-clause_license_(%22BSD_License_2.0%22,_%22Revised_BSD_License%22,_%22New_BSD_License%22,_or_%22Modified_BSD_License%22)). For details, see the `LICENSE` file in the `code` directory.
+* Anything else is governed by the [3-Clause BSD License](https://en.wikipedia.org/wiki/BSD_licenses#3-clause_license_(%22BSD_License_2.0%22,_%22Revised_BSD_License%22,_%22New_BSD_License%22,_or_%22Modified_BSD_License%22)). For details, see the `LICENSE` file in the `src` directory.
 
 ## Contributing
 
