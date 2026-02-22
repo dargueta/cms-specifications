@@ -49,18 +49,7 @@ fields:
       should include only numbers.
     constraints:
       required: true
-  - name: sex_code
-    title: Sex Code
-    description: The sex of the beneficiary.
-    type: string
-    rdfType: https://schema.org/GenderType
-    categories:
-      - value: "0"
-        label: Unknown
-      - value: "1"
-        label: Male
-      - value: "2"
-        label: Female
+  - !sex-code
   - name: detail_record_sequence_number
     title: Detail Record Sequence Number
     description: >-

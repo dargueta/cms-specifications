@@ -1,3 +1,6 @@
+name: sex_code
+title: Beneficiary's Sex Code
+description: The sex of the beneficiary.
 type: string
 rdfType: https://schema.org/GenderType
 categories:
