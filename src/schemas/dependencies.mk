@@ -26,6 +26,8 @@ build/beq4rx/18.2/%: build/beq4rx/18.3/%
 	mkdir -p $(@D) && ln -f $< $@
 build/beq4rx/18.1/%: build/beq4rx/18.2/%
 	mkdir -p $(@D) && ln -f $< $@
+build/beq4rx/18.0/%: build/beq4rx/18.1/%
+	mkdir -p $(@D) && ln -f $< $@
 
 # BQN4 -------------------------------------------------------------------------
 build/bqn4/18.8/%: build/bqn4/18.9/%
@@ -41,4 +43,8 @@ build/bqn4/18.4/%: build/bqn4/18.5/%
 build/bqn4/18.3/%: build/bqn4/18.4/%
 	mkdir -p $(@D) && ln -f $< $@
 build/bqn4/18.2/%: build/bqn4/18.3/%
+	mkdir -p $(@D) && ln -f $< $@
+build/bqn4/18.1/%: build/bqn4/18.2/%
+	mkdir -p $(@D) && ln -f $< $@
+build/bqn4/18.0/%: build/bqn4/18.1/%
 	mkdir -p $(@D) && ln -f $< $@
