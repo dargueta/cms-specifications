@@ -1,0 +1,39 @@
+# SPDX-License-Identifier: BSD-3-Clause
+$schema: https://datapackage.org/profiles/2.0/tableschema.json
+fieldsMatch: [subset]
+fields:
+  - name: beneficiary_identifier
+    title: Beneficiary Identifier
+    constraints:
+      maxLength: 12
+      required: true
+      pattern: "([A-Z][0-9]{6})|([A-Z]{3}[0-9]{9})|([0-9]{9}[A-Z][A-Z0-9]?)|[0-9A-Z]{11}"
+      #          | RRB (7)_____| RRB (12)_________| HICN __________________| MBI ______|
+      # The regex for the MBI is too lax.
+  - name: surname
+    title: Surname
+    type: string
+    constraints:
+      maxLength: 12
+      required: true
+  - name: first_name
+    title: First Name
+    type: string
+    constraints:
+      maxLength: 7
+      required: true
+  - name: middle_initial
+    title: Middle Initial
+    type: string
+    constraints:
+      maxLength: 1
+  - !sex-code
+    name: sex
+    title: Sex
+    constraints:
+      required: true
+  - !date8
+    name: birth_date
+    title: Birth Date
+    constraints:
+      required: true
