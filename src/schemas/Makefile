@@ -29,10 +29,6 @@ build/%.json: file_formats/%.yaml
 	python3 -m scripts.postprocess_yaml -I file_formats/_common -o $@ --json $<
 	check-jsonschema --schemafile $(TABLESCHEMA_URL) $@
 
-build/%/fsm.puml: build/%/parser-state-table.csv
-	mkdir -p $(@D)
-	python3 -m scripts/generate_plantuml $^ $@
-
 # *Never* symlink from `file_formats` into `build`! There's a race condition where,
 # depending on the order Make picks, you could end up modifying original files.
 # Always copy from `file_formats` into `build`, and link `build` to `build`.

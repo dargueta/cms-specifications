@@ -109,10 +109,16 @@ def construct_item(
     try:
         user_fragment = constructor.construct_mapping(node, True)
     except ConstructorError as err:
-        raise ValueError(
-            f"Constructor !{fragment_name} requires a dictionary as its argument."
-            f" Original error: {err}"
-        ) from None
+        # The node may be null, in which case we fall back to a dictionary.
+        value = constructor.construct_object(node, True)
+        if value is not None:
+            raise ValueError(
+                f"Constructor !{fragment_name} requires a dictionary as its argument."
+                f" Fragment as object: {constructor.construct_object(node, True)!r}."
+                f" Original error: {err}"
+            ) from None
+        # The deserialized value is indeed None. Treat this as an empty dict.
+        user_fragment = {}
 
     deep_map = deep_chainmap.DeepChainMap(user_fragment, dict(fragment))
     return deep_to_dict(deep_map)
