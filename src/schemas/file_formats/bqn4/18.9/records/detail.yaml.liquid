@@ -132,6 +132,7 @@ fields:
   - name: number_of_uncovered_months_{{ i }}
     title: Number of Uncovered Months (Occurrence {{ i }})
     type: integer
+    rdfType: http://purl.org/dc/terms/SizeOrDuration
     constraints:
       minimum: 0
       maximum: 999
@@ -179,6 +180,7 @@ fields:
   - name: current_state_code
     title: Current State Code
     type: string
+    rdfType: https://schema.org/State
     constraints:
       maxLength: 2
   - name: current_county_code
@@ -254,11 +256,13 @@ fields:
   - name: mailing_address_city
     title: Mailing Address City
     type: string
+    rdfType: https://schema.org/City
     constraints:
       maxLength: 40
   - name: mailing_address_state
     title: Mailing Address Postal State Code
     type: string
+    rdfType: https://schema.org/State
     constraints:
       maxLength: 2
   - name: mailing_address_zip_code
@@ -277,11 +281,13 @@ fields:
   - name: residence_address_city
     title: Residence Address City
     type: string
+    rdfType: https://schema.org/City
     constraints:
       maxLength: 40
   - name: residence_address_state
     title: Residence Address Postal State Code
     type: string
+    rdfType: https://schema.org/State
     constraints:
       maxLength: 2
   - name: residence_address_zip_code
