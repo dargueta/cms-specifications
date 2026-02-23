@@ -1,6 +1,7 @@
 {% assign record_types = "disenrollment disenrollment_mcsc enrollment 4rx_data_change eghp_change residence_address_change_record part_d_opt_out cancellation_of_enrollment cancellation_of_disenrollment mmp_enrollment_cancellation mmp_opt_out_update cara_status ic_model_participation additional_enrollment_information_change update_enrollment_sep_reason update_disenrollment_sep_reason" | split: " " %}
 flowchart TB
     header[parse header]
+    trailer[parse trailer]
 {% for rtype in record_types %}
     {{ rtype }}[parse {{ rtype }}]
 {% endfor %}
