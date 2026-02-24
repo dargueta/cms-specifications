@@ -1,7 +1,7 @@
 type: string
 constraints:
   maxLength: 1
-  enum:
+  categories:
     - value: A
       label: AEP
     - value: E

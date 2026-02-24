@@ -9,7 +9,7 @@ fields:
     type: string
     constraints:
       maxLength: 5
-      enum:
+      categories:
         - value: null
           label: No special approval required.
         - value: RETRO
@@ -37,8 +37,10 @@ fields:
       Reference month for enrollment processing. The CCM date determines whether
       to accept a file and evaluates the appropriate effective date for submitted
       transactions.
-    type: yearmonth
+    type: date
     format: "%m%Y"
+    constraints:
+      maxLength: 6
   - !filler 7
   - name: idm_user_id
     title: IDM User ID
