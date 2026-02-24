@@ -52,8 +52,8 @@ fields:
       without drug, CCIP/FFS demo, MDHO demo, MSHO demo, and PACE National Plans.
 
       * MAs have A, D, I, L[^retronote], M, N, O, S, T, U, V, W, X.
-      * MAPDs have A, D, E, I, L†, M, N, O, S, T, U, V, W, X, Z.
-      * PDPs have A, E, L†, S, U, V, W, X, Z.
+      * MAPDs have A, D, E, I, L[^retronote], M, N, O, S, T, U, V, W, X, Z.
+      * PDPs have A, E, L[^retronote], S, U, V, W, X, Z.
 
-      [^retronote]: † For RPC Retroactive transactions only effective 1/1/2025. Plan
+      [^retronote]: For RPC Retroactive transactions only effective 1/1/2025. Plan
       disenrollment transactions after 1/1/2025 will reject.
