@@ -37,3 +37,23 @@ fields:
     title: Birth Date
     constraints:
       required: true
+  - !filler 1
+  - name: pbp_number
+    title: "PBP #"
+    description: Not required but must be valid for the contract when provided.
+    type: string
+    constraints:
+      maxLength: 3
+  - !plan-election-type
+    name: election_type
+    title: Election Type
+    description: >-
+      Required for all Plan types except HCPP, COST 1 without drug, COST 2
+      without drug, CCIP/FFS demo, MDHO demo, MSHO demo, and PACE National Plans.
+
+      * MAs have A, D, I, L[^retronote], M, N, O, S, T, U, V, W, X.
+      * MAPDs have A, D, E, I, L†, M, N, O, S, T, U, V, W, X, Z.
+      * PDPs have A, E, L†, S, U, V, W, X, Z.
+
+      [^retronote]: † For RPC Retroactive transactions only effective 1/1/2025. Plan
+      disenrollment transactions after 1/1/2025 will reject.
