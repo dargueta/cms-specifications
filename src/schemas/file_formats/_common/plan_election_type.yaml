@@ -1,0 +1,36 @@
+type: string
+constraints:
+  maxLength: 1
+  enum:
+    - value: A
+      label: AEP
+    - value: E
+      label: IEP
+    - value: I
+      label: ICEP
+    - value: L
+      label: Dual/LIS Quarterly SEP
+    - value: M
+      label: MA-OEP
+    - value: N
+      label: OEPNEW
+    - value: O
+      label: OEP
+    - value: S
+      label: Other SEP
+    - value: T
+      label: OEPI
+    - value: U
+      label: Dual/LIS SEP
+    - value: V
+      label: Permanent Change in Residence SEP
+    - value: W
+      label: EGHP SEP
+    - value: X
+      label: Administrative Action
+    - value: Y
+      label: CMS/Case Work SEP
+    - value: Z
+      label: >-
+        Auto Enrollment, Facilitated Enrollment, Reassign Enrollment, or POS
+        enrollment (current and retro effective dates).
