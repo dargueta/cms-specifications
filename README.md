@@ -1,6 +1,11 @@
-# CMS Technical Specifications
+# CMS Technical Specifications and Code Generation
 
-This repository is a collection of technical documentation made publicly available by [US Centers for Medicare and Medicaid Services ("CMS")](https://www.cms.gov/) ("CMS") on their website. It's intended for software engineers looking to implement, for example, file parsing for CMS' plan communications (BEQR, MONMEMD, and the like). Only the latest version of the PCUG specification is available on their site, making any previous release very difficult to find, hence this.
+This repository consists of two major parts:
+
+* An archive of technical documentation made publicly available by [US Centers for Medicare and Medicaid Services ("CMS")](https://www.cms.gov/) ("CMS") on their website, and
+* Language-agnostic [schemas](https://datapackage.org/standard/table-schema/) and tools to generate parsers, SQL DDL, and more.
+
+It's intended for software engineers looking to implement, for example, file parsing for CMS' plan communications (BEQR, MONMEMD, and the like). Only the latest version of the PCUG specification is available on their site, making any previous release very difficult to find, hence this.
 
 **I am in no way affiliated with neither CMS nor the US government, nor has any entity of the US government endorsed this project.** All I want is to reduce the burden on healthcare companies working with the US government to provide medical care for those who need it most.
 
