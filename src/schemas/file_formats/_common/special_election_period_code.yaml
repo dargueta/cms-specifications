@@ -16,7 +16,7 @@ categories:
   - value: "11"
     label: CMS TERM OF CONTRACT
     # CMS initiated termination of contract. Includes contract term by CMS, and
-    # immediate term by CMS where CMS provides notice of term to a Plan’s members
+    # immediate term by CMS where CMS provides notice of term to a Plan's members
     # and the term may be mid-month.
   - value: "12"
     label: TERM/CNTRCT MOD MUTUAL CONSENT
@@ -143,7 +143,7 @@ categories:
     # violated a material provision of its contract.
   - value: "93"
     label: OTHER EXCEPTIONAL CIRCUMSTANCE
-    # Circumstances beyond the beneficiary’s control that prevented him or her
+    # Circumstances beyond the beneficiary's control that prevented him or her
     # from submitting a timely request to enroll or disenroll from a Plan during
     # a valid election period.
   - value: "94"

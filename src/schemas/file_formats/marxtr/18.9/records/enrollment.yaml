@@ -1,0 +1,34 @@
+# SPDX-License-Identifier: BSD-3-Clause
+$schema: https://datapackage.org/profiles/2.0/tableschema.json
+fieldsMatch: [subset]
+fields:
+  - !beneficiary-identifier
+  - name: surname
+    title: Surname
+    type: string
+    constraints:
+      maxLength: 12
+      required: true
+  - name: first_name
+    title: First Name
+    type: string
+    constraints:
+      maxLength: 7
+      required: true
+  - name: middle_initial
+    title: Middle Initial
+    type: string
+    constraints:
+      maxLength: 1
+  - !sex-code
+    name: sex
+    title: Sex
+    constraints:
+      required: true
+  - !date8
+    name: birth_date
+    title: Birth Date
+    constraints:
+      required: true
+  - !bool-yn
+    name: eghp_flag
