@@ -1,0 +1,173 @@
+# SPDX-License-Identifier: BSD-3-Clause
+# Copied from PCUG v18.9, Table 3-8 (pages 38-48)
+type: string
+constraints:
+  maxLength: 2
+categories:
+  # GROUP: Emergency or disaster ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  - value: "01"
+    label: GOVT EMERGENCY OR DISASTER
+    # Government entity-declared disaster or other emergency.
+  - value: "02"
+    label: CODE DEACTIVATED
+    # No description
+
+  # GROUP: Terminations ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  - value: "11"
+    label: CMS TERM OF CONTRACT
+    # CMS initiated termination of contract. Includes contract term by CMS, and
+    # immediate term by CMS where CMS provides notice of term to a Plan’s members
+    # and the term may be mid-month.
+  - value: "12"
+    label: TERM/CNTRCT MOD MUTUAL CONSENT
+    # Plan initiated terminations/contract modifications by mutual consent.
+    # Includes contract non-renewals, Plan service area reductions, term/mod of
+    # contract by mutual consent.
+
+  # GROUP: General ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  - value: "21"
+    label: ACCESSIBLE FRMT RECEIPT DELAY
+    # For providing individuals who requested materials in accessible formats
+    # equal time to make enrollment decisions.
+  - value: "22"
+    label: INVOL LOSS OF CRED CVG
+    # For involuntary loss of creditable prescription drug coverage.
+  # Code "23" defined in a different group; see "CMS Approval Required".
+  - value: "24"
+    label: PART D DISENR FOR OTH CRED CVG
+    # Individuals may disenroll from a Part D Plan (PDP, MA- PD) to enroll in or
+    # maintain other creditable drug coverage. May disenroll from MA-PD by
+    # enrolling in MA-only Plan.
+  - value: "25"
+    label: INVOL DISENROLL LOSS OF PART B
+    # Individuals involuntarily disenrolled from an MA-PD Plan due to loss of
+    # Part B.
+  - value: "26"
+    label: MA OEPI DISENROLL FROM MA
+    # MA-PD enrollees using the MA Open Enrollment Period for Institutionalized
+    # Individuals (OEPI) to disenroll from an MA-PD Plan are eligible for a
+    # coordinating Part D SEP that permits enrollment in a PDP.
+    # Plans are reminded to use election type code "T" for OEPI transactions.
+  - value: "27"
+    label: PACE
+    # Disenroll from an MA/MA-PD/PDP to enroll in PACE or PACE disenroll to
+    # enroll in MA/MA-PD.
+  - value: "28"
+    label: COST PLANS NON-RENEWALS
+    # Individuals enrolled in Cost Plans that are non-renewing their contracts.
+  - value: "29"
+    label: DROP MEDIGAP IN TRIAL PERIOD
+    # Individuals who terminated a Medigap policy when they enrolled for the
+    # first time in an MA Plan, and who are still in a trial period. If used to
+    # disenroll from MA-PD Plan, may enroll in PDP.
+  - value: "30"
+    label: CHRONIC CARE C-SNP
+    # Enrollment into a C-SNP and for individuals found ineligible for a C-SNP.
+  - value: "31"
+    label: INSTITUTIONAL INDIVIDUAL
+    # SEP Reason Code 31 corresponds to the SEP for Institutionalized Individuals
+    # 42 CFR 423.38(c)(15). This SEP permits enrollment in, or disenrollment
+    # from, a Part D Plan.
+  - value: "32"
+    label: RETRO ENTITLEMENT DETERM
+    # Individuals whose Medicare entitlement determination was made retroactively.
+  - value: "33"
+    label: BENES AGE 65 (SEP65)
+    # Beneficiaries age 65 (SEP65). If the individual using the SEP65 is
+    # disenrolling from an MA-PD Plan, he or she may use this Part D SEP to
+    # enroll in a PDP Plan. This SEP must be used at the same time the SEP65 is
+    # used.
+  - value: "34"
+    label: PART B GEP ENROLLMENT
+    # Individuals who are not entitled to premium-free Part A and enroll in Part
+    # B during the Part B General Enrollment Period (GEP). (MA-PD and PDP)
+  - value: "35"
+    label: LOSS OF SNP
+    # Individuals enrolled in a SNP who are no longer eligible for the SNP
+    # because they no longer meet the specific special needs status.
+  - value: "36"
+    label: COST DISENRL OR OPT SUP PART D
+    # Individuals disenrolling from a Cost Plan who also had the Cost Plan
+    # Optional Supplemental Part D Benefit.
+  - value: "37"
+    label: LAWFULLY PRESENT
+    # Non-U.S. citizens who become lawfully present.
+  - value: "38"
+    label: QUALIFIED / LOSE SPAP ELIG
+    # Individuals who belong to a qualified SPAP or who lose SPAP eligibility.
+  - value: "39"
+    label: PLAN IN RECEIVERSHIP
+    # Individuals enrolled in a Plan offered by an MA or PDP organization that
+    # is placed into receivership by a State or territorial regulatory authority.
+  - value: "40"
+    label: CMS ID CONSISTENT POOR PERF
+    # This SEP exists while the individual is enrolled in the low performing MA
+    # or PDP Plan. (Plan with star rating of less than 3 stars for the last 3
+    # years.)
+  - value: "41"
+    label: MA ADD PART D IEP
+    # Individuals eligible for an additional Part D IEP, such as an individual
+    # currently entitled to Medicare due to a disability and who is attaining
+    # age 65, has an MA SEP to coordinate with the additional Part D IEP for MA
+    # only enrollment or MA/ MA-PD disenrollment.
+  - value: "42"
+    label: MA FOR A/B EXCEPT COND ENROLL
+    # SEP begins on submission of the application for premium-Part A and B, or
+    # Part B only, and continues for the first 2 months from the premium Part A
+    # and/or Part B entitlement date.
+  - value: "43"
+    label: PT D-A/B EXCEPT COND ENROLL
+    # SEP begins on submission of the application for premium-Part A or Part B,
+    # and continues for the first 2 months of enrollment in premium Part A or
+    # Part B. (MA-PD, PDP, COST Drug)
+
+  # GROUP: CMS Approval Required ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  - value: "23"
+    label: DISENROLL DUE TO CMS SANCTION
+    # Individuals who disenroll in connection with a CMS sanction.
+  # Most values skipped are defined earlier; 44-89 are completely undefined.
+  - value: "90"
+    label: MISINFORM CREDITABLE STATUS
+    # CMS determined that the beneficiary was not adequately informed of the
+    # creditable status of drug coverage provided by a Plan required to give
+    # such notice, or a loss of creditable coverage. Permits enrollment in MA-PD
+    # or PDP only. (Different from marketing mis-representation)
+  - value: "91"
+    label: PROVIDER NETWORK
+    # CMS determines that changes to a Plan's provider network are significant
+    # based on the affect, or potential to affect, current Plan enrollees.
+  - value: "92"
+    label: CONTRACT VIOLATION
+    # CMS determined the individual is able to demonstrate to CMS that the
+    # MA/MA-PD/PDP organization of which he/she is a member substantially
+    # violated a material provision of its contract.
+  - value: "93"
+    label: OTHER EXCEPTIONAL CIRCUMSTANCE
+    # Circumstances beyond the beneficiary’s control that prevented him or her
+    # from submitting a timely request to enroll or disenroll from a Plan during
+    # a valid election period.
+  - value: "94"
+    label: INSULIN SEP
+    # All Medicare beneficiaries who use a Part B or Part D covered insulin
+    # product and assert that they wish to add, drop, or change to a PDP or MAPD
+    # Plan due to the insulin price cap change. These beneficiaries are entitled
+    # to a one-time SEP. (Code deactivated and was effective 12/8/22 to 12/31/23)
+  - value: "95"
+    label: PLAN LIST CORRECTION SEP
+    # This SEP is available for all LIS beneficiaries who receive the corrected
+    # LIS Plan premium notice from CMS. These LIS beneficiaries are entitled to
+    # a one-time SEP as a result of receiving incorrect information on PY 2023
+    # Plan premiums and subsidies. (Code deactivated and was effective 12/19/22
+    # to 12/31/22 only)
+  - value: "96"
+    label: OTH EXC CIRC- MARKET MISREP
+    # Other exceptional circumstance SEP specific to marketing misrepresentation
+    # established by CMS on a case-by-case basis where the enrollment or
+    # disenrollment in an MA Plan or PDP was based on misleading or incorrect
+    # information provided by a Plan representative or SHIP, or enrollment in a
+    # Plan without knowledge or consent of the beneficiary.
+  - value: "97"
+    label: PROVIDER DIRECTORY
+    # An MA Plan enrollee used Plan Finder to enroll in an MA Plan (MA only or
+    # MA-PD) based on incorrect information found in the Medicare Plan Finder
+    # Provider Directory.

@@ -57,3 +57,56 @@ fields:
 
       [^retronote]: For RPC Retroactive transactions only effective 1/1/2025. Plan
       disenrollment transactions after 1/1/2025 will reject.
+  - name: contract_number
+    title: "Contract #"
+    type: string
+    constraints:
+      maxLength: 5
+      required: true
+  - !filler 8
+  - name: transaction_code
+    type: string
+    constraints:
+      enum:
+        - "51"
+        - "54"
+      required: true
+    __metadata__:
+      deserialization:
+        is_record_type_id: true
+  - !special-election-period-code
+    name: disenrollment_reason_code
+    title: Disenrollment Reason Code
+    description: >-
+      Required for Involuntary Disenrollments. Optional for Voluntary Disenrollments.
+  - !date8
+    name: effective_date
+    title: Effective Date
+    constraints:
+      required: true
+  - name: segment_id
+    title: Segment ID
+    type: string
+    constraints:
+      maxLength: 3
+  - !filler 24
+  - !bool-yn
+    name: part_d_opt_out_flag
+    title: Part D Opt-Out Flag
+    description: >-
+      Optional for all Part D Plans; otherwise blank.
+  - !bool-yn
+    name: mmp_opt_out_flag
+    title: MMP Opt-Out Flag
+  - !plan-election-type
+    name: election_type
+    title: Election Type
+    constraints:
+      maxLength: 2
+  - !filler 107
+  - name: plan_transaction_tracking_id
+    title: Plan Transaction Tracking ID
+    type: string
+    constraints:
+      maxLength: 15
+  - !filler 76
