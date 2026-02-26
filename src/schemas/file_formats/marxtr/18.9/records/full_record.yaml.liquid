@@ -293,4 +293,120 @@ fields:
     type: string
     constraints:
       maxLength: 15
-  - !filler 76
+{% if enable_part_d_rx_bin_field %}
+  - name: part_d_rx_bin
+    title: Part D Rx BIN
+    description: >-
+      Required for all Part D plans except PACE National and MMP; otherwise, blank.
+    type: string
+    constraints:
+      maxLength: 6
+{% else %}
+  - !filler 6
+{% endif %}
+{% if enable_part_d_rx_pcn_field %}
+  - name: part_d_rx_pcn
+    title: Part D Rx PCN
+    description: Optional for all Part D plans, otherwise blank.
+    type: string
+    constraints:
+      maxLength: 10
+      pattern: "[a-zA-Z0-9]*"
+{% else %}
+  - !filler 10
+{% endif %}
+{% if enable_part_d_rx_group_field %}
+  - name: part_d_rx_group
+    title: Part D Rx Group
+    description: Optional for all Part D plans, otherwise blank.
+    type: string
+    constraints:
+      maxLength: 15
+      pattern: "[a-zA-Z0-9]*"
+{% else %}
+  - !filler 15
+{% endif %}
+{% if enable_part_d_rx_id_field %}
+  - name: part_d_rx_id
+    title: Part D Rx ID
+    description: Optional for all Part D plans, otherwise blank.
+    type: string
+    constraints:
+      maxLength: 20
+      pattern: "[a-zA-Z0-9]*"
+{% else %}
+  - !filler 20
+{% endif %}
+{% if enable_secondary_drug_bin_field %}
+  - name: secondary_drug_bin
+    title: Secondary Drug BIN
+    description: >-
+      Required when the secondary drug insurance flag = Y; otherwise, blank.
+    type: string
+    constraints:
+      maxLength: 6
+{% else %}
+  - !filler 6
+{% endif %}
+{% if enable_secondary_drug_pcn_field %}
+  - name: secondary_drug_pcn
+    title: Secondary Drug PCN
+    description: >-
+      Optional when the secondary drug insurance flag = Y; otherwise, blank.
+    type: string
+    constraints:
+      maxLength: 10
+{% else %}
+  - !filler 10
+{% endif %}
+{% if enable_relationship_to_enrollee_field %}
+  - !bool-yblank
+    name: agent_relationship_to_enrollee
+    title: Relationship to Enrollee -- Agent
+  - !bool-yblank
+    name: broker_relationship_to_enrollee
+    title: Relationship to Enrollee -- Broker
+  - !bool-yblank
+    name: ship_counselors_relationship_to_enrollee
+    title: Relationship to Enrollee -- SHIP Counselors
+  - !bool-yblank
+    name: authorized_representatives_relationship_to_enrollee
+    title: Relationship to Enrollee -- Authorized Representatives
+  - !bool-yblank
+    name: other_third_parties_relationship_to_enrollee
+    title: Relationship to Enrollee -- Other (Third Parties)
+  - !bool-yblank
+    name: self_relationship_to_enrollee
+    title: Relationship to Enrollee -- Self
+  - !bool-yblank
+    name: form_left_blank_relationship_to_enrollee
+    title: Relationship to Enrollee -- Form Left Blank
+{% else %}
+  - !filler 7
+{% endif %}
+{% if enable_national_producer_number_field %}
+  - name: national_producer_number
+    title: National Producer Number (NPN)
+    type: string
+    constraints:
+      maxLength: 10
+      pattern: "[1-9][0-9]*"
+{% else %}
+  - !filler 10
+{% endif %}
+{% if enable_oec_flag_field %}
+  - !bool-yn
+    name: oec_flag
+    title: OEC Flag
+    constraints:
+      required: true
+{% else %}
+  - !filler 1
+{% endif %}
+{% if enable_oec_application_date_field %}
+  - !date8
+    name: oec_application_date
+    title: OEC Application Date
+{% else %}
+  - !filler 8
+{% endif %}
