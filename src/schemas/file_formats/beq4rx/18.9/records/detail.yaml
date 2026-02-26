@@ -31,7 +31,6 @@ fields:
         MBI.
       * The last position may be a space.
     type: string
-    rdfType: http://schema.org/Person
     constraints:
       minLength: 11
       maxLength: 12
