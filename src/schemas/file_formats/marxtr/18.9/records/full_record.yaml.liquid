@@ -191,7 +191,103 @@ fields:
   - !plan-election-type
     name: sep_reason_code
     title: Election Type/SEP Reason Code
-  - !filler 107
+  - !filler 21
+{% if enable_preferred_language_other_than_english_field %}
+  - name: preferred_language_other_than_english
+    title: Preferred Language Other than English
+    type: string
+    categories:
+      - value: O
+        label: Other
+      - value: S
+        label: Spanish
+    constraints:
+      maxLength: 1
+{% else %}
+  - !filler 1
+{% endif %}
+{% if enable_accessible_format_field %}
+  - name: accessible_format
+    title: Accessible Format
+    type: string
+    categories:
+      - value: A
+        label: Audio
+      - value: B
+        label: Braille
+      - value: D
+        label: Data CD
+      - value: L
+        label: Large Print
+    constraints:
+      maxLength: 1
+{% else %}
+  - !filler 1
+{% endif %}
+  - !filler 9
+{% if enable_secondary_drug_insurance_flag_field %}
+  - !bool-yn
+    name: secondary_drug_insurance_flag
+    title: Secondary Drug Insurance Flag
+    description: >-
+      'Y' or 'N' for Part D plans. For auto/facilitated enrollments and
+      rollovers, value should be blank. For non-Part D plans, value should be
+      blank.
+{% else %}
+  - !filler 1
+{% endif %}
+{% if enable_secondary_rx_id_flag %}
+  - name: secondary_rx_id
+    title: Secondary Rx ID
+    type: string
+    constraints:
+      maxLength: 20
+{% else %}
+  - !filler 20
+{% endif %}
+{% if enable_secondary_rx_group_field %}
+  - name: secondary_rx_group
+    title: Secondary Rx Group
+    type: string
+    constraints:
+      maxLength: 15
+{% else %}
+  - !filler 15
+{% endif %}
+{% if enable_enrollment_source_code_field %}
+  - !enrollment_source_type_code
+    name: enrollment_source_code
+    title: Enrollment Source Code
+{% else %}
+  - !filler 1
+{% endif %}
+{% if enable_rolled_from_contract_field %}
+  - name: enrolled_from_contract
+    title: Enrolled From Contract
+    description: >-
+      Required for Rollover enrollment transactions submitted on a POVER special
+      batch file. For all other transactions the value is blank.
+    type: string
+    constraints:
+      minLength: 5
+      maxLength: 5
+{% else %}
+  - !filler 5
+{% endif %}
+{% if enable_rolled_from_pbp_field %}
+  - name: rolled_from_pbp_id
+    title: Rolled From PBP
+    description: >-
+      Required for Rollover enrollment transactions submitted on a POVER special
+      batch file. For all other transactions the value is blank.
+    type: string
+    constraints:
+      minLength: 3
+      maxLength: 3
+{% else %}
+  - !filler 3
+{% endif %}
+  - !filler 30
   - name: plan_transaction_tracking_id
     title: Plan Transaction Tracking ID
     type: string
