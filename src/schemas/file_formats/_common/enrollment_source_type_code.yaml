@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: BSD-3-Clause
 description: An indicator providing the type of enrollment performed.
 type: string
 categories:
