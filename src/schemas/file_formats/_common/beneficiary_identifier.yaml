@@ -1,0 +1,9 @@
+# SPDX-License-Identifier: BSD-3-Clause
+name: beneficiary_identifier
+title: Beneficiary Identifier
+constraints:
+  maxLength: 12
+  required: true
+  pattern: "([A-Z][0-9]{6})|([A-Z]{3}[0-9]{9})|([0-9]{9}[A-Z][A-Z0-9]?)|[0-9A-Z]{11}"
+  #          | RRB (7)_____| RRB (12)_________| HICN __________________| MBI ______|
+  # TODO (dargueta): The regex for the MBI is too lax.
