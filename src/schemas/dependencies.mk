@@ -4,7 +4,7 @@ GENERIC_HEADER_DETAIL_TRAILER_TARGETS=$(foreach f,$(GENERIC_HEADER_DETAIL_TRAILE
 
 BEQ4RX_RENDERED_YAML_TARGETS=$(addprefix build/beq4rx/,$(GENERIC_HEADER_DETAIL_TRAILER_TARGETS))
 BQN4_RENDERED_YAML_TARGETS=$(addprefix build/bqn4/,$(GENERIC_HEADER_DETAIL_TRAILER_TARGETS))
-MARXTR_RENDERED_TARGETS=$(addprefix build/marxtr/18.9/,\
+MARXTR_RENDERED_TARGETS=$(addprefix build/marxtr/19.0/,\
     record_layout.mmd \
     records/header.yaml \
     records/enrollment.yaml \
