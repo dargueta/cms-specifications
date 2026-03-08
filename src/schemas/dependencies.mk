@@ -1,5 +1,5 @@
 GENERIC_HEADER_DETAIL_TRAILER_FILE_COMPONENTS=records/detail.yaml records/header.yaml records/trailer.yaml record_layout.mmd
-GENERIC_HEADER_DETAIL_TRAILER_VERSIONS=18.0 18.1 18.2 18.3 18.4 18.5 18.6 18.7 18.8 18.9
+GENERIC_HEADER_DETAIL_TRAILER_VERSIONS=18.0 18.1 18.2 18.3 18.4 18.5 18.6 18.7 18.8 18.9 19.0
 GENERIC_HEADER_DETAIL_TRAILER_TARGETS=$(foreach f,$(GENERIC_HEADER_DETAIL_TRAILER_FILE_COMPONENTS),$(foreach v,$(GENERIC_HEADER_DETAIL_TRAILER_VERSIONS),$(v)/$(f)))
 
 BEQ4RX_RENDERED_YAML_TARGETS=$(addprefix build/beq4rx/,$(GENERIC_HEADER_DETAIL_TRAILER_TARGETS))
@@ -18,6 +18,8 @@ ALL_RENDERED_YAML_TARGETS=\
 
 # TODO (dargueta): Consolidate these rules to avoid so much repetition?
 # BEQ4RX -----------------------------------------------------------------------
+build/beq4rx/18.9/%: build/beq4rx/19.0/%
+	mkdir -p $(@D) && ln -f $< $@
 build/beq4rx/18.8/%: build/beq4rx/18.9/%
 	mkdir -p $(@D) && ln -f $< $@
 build/beq4rx/18.7/%: build/beq4rx/18.8/%
@@ -38,6 +40,8 @@ build/beq4rx/18.0/%: build/beq4rx/18.1/%
 	mkdir -p $(@D) && ln -f $< $@
 
 # BQN4 -------------------------------------------------------------------------
+build/bqn4/18.9/%: build/bqn4/19.0/%
+	mkdir -p $(@D) && ln -f $< $@
 build/bqn4/18.8/%: build/bqn4/18.9/%
 	mkdir -p $(@D) && ln -f $< $@
 build/bqn4/18.7/%: build/bqn4/18.8/%
