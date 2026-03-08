@@ -35,6 +35,7 @@ SCHEMAS_ROOT_DIR = HERE.parent
     "--output",
     type=click.File(mode="w", atomic=True),
     help="The file to write the output to. Use `-` or omit to write to stdout.",
+    default=sys.stdout,
 )
 @click.option(
     "-I",

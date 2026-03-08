@@ -1,0 +1,153 @@
+# SPDX-License-Identifier: BSD-3-Clause
+$schema: https://datapackage.org/profiles/2.0/tableschema.json
+fieldsMatch: [subset]
+fields:
+  - !beneficiary-identifier
+  - name: surname
+    title: Surname
+    type: string
+    constraints:
+      maxLength: 12
+      required: true
+  - name: first_name
+    title: First Name
+    type: string
+    constraints:
+      maxLength: 7
+      required: true
+  - name: middle_initial
+    title: Middle Initial
+    type: string
+    constraints:
+      maxLength: 1
+  - !sex-code
+  - !date8
+    name: date_of_birth
+  - !filler 1  # Medicaid indicator
+  - !filler 5  # Contract number
+  - !filler 2  # State code
+  - !filler 3  # County code
+  - !filler 1  # Disability indicator
+  - !filler 1  # Hospice indicator
+  - !filler 1  # Institutional/NHC/HCBS Indicator
+  - !filler 1  # ESRD Indicator
+  - !const "999"  # Transaction Reply Code
+  - name: transaction_code
+    type: string
+    constraints:
+      maxLength: 2
+      missingValues: ["01"]
+  - !filler 1  # Entitlement type code
+  - !date8
+     name: effective_date
+     title: Effective Date
+  - !filler 1  # WA Indicator
+  - name: pbp_id
+    title: Plan Benefit Package (PBP) ID
+    type: string
+    constraints:
+      maxLength: 3
+  - !race-code
+  - !date8
+    name: transaction_date
+    title: Transaction Date
+    constraints:
+      required: true
+  - !filler 1
+  - !date8
+    name: subsidy_end_date
+    title: Subsidy End Date
+    description: >-
+      End date of LIS Period (Present if Beneficiary is deemed for the full year,
+      or if the Beneficiary is losing Low Income status before the end of the
+      current year.)
+  - !filler 3   # District office code
+  - !filler 8   # (No description)
+  - !filler 8   # (No description)
+  - !filler 5   # Source ID
+  - !filler 3   # Prior plan benefit package ID
+  - !filler 8   # Application date
+  - !filler 2
+  - !filler 1   # Out of area flag
+  - name: segment_number
+    title: Segment Number
+    type: string
+    constraints:
+      maxLength: 3
+      missingValues: ["000"]
+  # TODO (dargueta): Determine if the decimal is present or implicit.
+  - name: part_c_beneficiary_premium
+    title: Part C Beneficiary Premium
+    description: >-
+      Part C Premium Amount; the amount submitted on the enrollment record for
+      Part C premium.
+    type: number
+    constraints:
+      minimum: 0
+      maximum: 99999999
+      decimalChar: ""
+  # TODO (dargueta): Determine if the decimal is present or implicit.
+  - name: part_d_beneficiary_premium
+    title: Part D Beneficiary Premium
+    description: >-
+      Part D Premium Amount: the Part D Total Premium Net of Rebate from the
+      HPMS file.)
+    type: number
+    constraints:
+      minimum: 0
+      maximum: 99999999
+      decimalChar: ""
+  - !filler 1   # Election type
+  - !enrollment-source-type-code
+    name: enrollment_source_code
+  - !filler 1   # Part D opt-out flag
+  - !filler 1
+  - !filler 3   # Number of uncovered months
+  - !filler 1   # Creditable coverage flag
+  - !filler 1   # Employer subsidy override flag
+  - !filler 20  # Rx ID
+  - !filler 15  # Rx Group
+  - !filler 1   # Secondary drug insurance flag
+  - !filler 20  # Secondary Rx ID
+  - !filler 15  # Secondary Rx Group
+  - !filler 1   # EGHP
+  - name: part_d_lips_level
+    title: Part D LIPS Level
+    type: integer
+    constraints:
+      minimum: 0
+      maximum: 100
+    __metadata__:
+      serialization:
+        align: right
+        padding_character: "0"
+  - name: low_income_copay_category
+    title: Low-Income Co-Pay Category
+    type: string
+    categories:
+      - value: "0"
+        label: None, not low-income
+      - value: "1"
+        label: High
+      - value: "2"
+        label: Low
+      - value: "3"
+        label: $0
+      - value: "4"
+        label: 15%
+      - value: "5"
+        label: Unknown
+  - !date8
+    name: low_income_copay_effective_date
+    title: Low-Income Co-Pay Effective Date
+  - !filler 8   # Part D LEP amount
+  - !filler 8   # Part D LEP waived amount
+  - !filler 8   # Part D LEP subsidy amount
+  # TODO (dargueta): Determine if the decimal is present or implicit.
+  - name: low_income_part_d_premium_subsidy_amount
+    title: Low-Income Part D Premium Subsidy Amount
+    type: number
+    constraints:
+      minimum: 0
+      maximum: 99999999
+      decimalChar: ""
