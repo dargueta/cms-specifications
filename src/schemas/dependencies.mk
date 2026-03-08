@@ -42,6 +42,38 @@ build/beq4rx/18.1/%: build/beq4rx/18.2/%
 	mkdir -p $(@D) && ln -f $< $@
 build/beq4rx/18.0/%: build/beq4rx/18.1/%
 	mkdir -p $(@D) && ln -f $< $@
+build/beq4rx/17.9/%: build/beq4rx/18.0/%
+	mkdir -p $(@D) && ln -f $< $@
+build/beq4rx/17.8/%: build/beq4rx/17.9/%
+	mkdir -p $(@D) && ln -f $< $@
+build/beq4rx/17.7/%: build/beq4rx/17.8/%
+	mkdir -p $(@D) && ln -f $< $@
+build/beq4rx/17.6/%: build/beq4rx/17.7/%
+	mkdir -p $(@D) && ln -f $< $@
+build/beq4rx/17.5/%: build/beq4rx/17.6/%
+	mkdir -p $(@D) && ln -f $< $@
+build/beq4rx/17.4/%: build/beq4rx/17.5/%
+	mkdir -p $(@D) && ln -f $< $@
+build/beq4rx/17.3/%: build/beq4rx/17.4/%
+	mkdir -p $(@D) && ln -f $< $@
+build/beq4rx/17.2/%: build/beq4rx/17.3/%
+	mkdir -p $(@D) && ln -f $< $@
+build/beq4rx/17.1/%: build/beq4rx/17.2/%
+	mkdir -p $(@D) && ln -f $< $@
+build/beq4rx/16.4/%: build/beq4rx/17.1/%
+	mkdir -p $(@D) && ln -f $< $@
+build/beq4rx/16.3/%: build/beq4rx/16.4/%
+	mkdir -p $(@D) && ln -f $< $@
+build/beq4rx/16.2/%: build/beq4rx/16.3/%
+	mkdir -p $(@D) && ln -f $< $@
+build/beq4rx/16.1/%: build/beq4rx/16.2/%
+	mkdir -p $(@D) && ln -f $< $@
+build/beq4rx/16.0/%: build/beq4rx/16.1/%
+	mkdir -p $(@D) && ln -f $< $@
+build/beq4rx/15.4/%: build/beq4rx/16.0/%
+	mkdir -p $(@D) && ln -f $< $@
+build/beq4rx/15.3/%: build/beq4rx/15.4/%
+	mkdir -p $(@D) && ln -f $< $@
 
 # BQN4 -------------------------------------------------------------------------
 build/bqn4/18.9/%: build/bqn4/19.0/%
@@ -63,6 +95,38 @@ build/bqn4/18.2/%: build/bqn4/18.3/%
 build/bqn4/18.1/%: build/bqn4/18.2/%
 	mkdir -p $(@D) && ln -f $< $@
 build/bqn4/18.0/%: build/bqn4/18.1/%
+	mkdir -p $(@D) && ln -f $< $@
+build/bqn4/17.9/%: build/bqn4/18.0/%
+	mkdir -p $(@D) && ln -f $< $@
+build/bqn4/17.8/%: build/bqn4/17.9/%
+	mkdir -p $(@D) && ln -f $< $@
+build/bqn4/17.7/%: build/bqn4/17.8/%
+	mkdir -p $(@D) && ln -f $< $@
+build/bqn4/17.6/%: build/bqn4/17.7/%
+	mkdir -p $(@D) && ln -f $< $@
+build/bqn4/17.5/%: build/bqn4/17.6/%
+	mkdir -p $(@D) && ln -f $< $@
+build/bqn4/17.4/%: build/bqn4/17.5/%
+	mkdir -p $(@D) && ln -f $< $@
+build/bqn4/17.3/%: build/bqn4/17.4/%
+	mkdir -p $(@D) && ln -f $< $@
+build/bqn4/17.2/%: build/bqn4/17.3/%
+	mkdir -p $(@D) && ln -f $< $@
+build/bqn4/17.1/%: build/bqn4/17.2/%
+	mkdir -p $(@D) && ln -f $< $@
+build/bqn4/16.4/%: build/bqn4/17.1/%
+	mkdir -p $(@D) && ln -f $< $@
+build/bqn4/16.3/%: build/bqn4/16.4/%
+	mkdir -p $(@D) && ln -f $< $@
+build/bqn4/16.2/%: build/bqn4/16.3/%
+	mkdir -p $(@D) && ln -f $< $@
+build/bqn4/16.1/%: build/bqn4/16.2/%
+	mkdir -p $(@D) && ln -f $< $@
+build/bqn4/16.0/%: build/bqn4/16.1/%
+	mkdir -p $(@D) && ln -f $< $@
+build/bqn4/15.4/%: build/bqn4/16.0/%
+	mkdir -p $(@D) && ln -f $< $@
+build/bqn4/15.3/%: build/bqn4/15.4/%
 	mkdir -p $(@D) && ln -f $< $@
 
 # FEFD -----------------------------------------------------------------------
@@ -89,4 +153,32 @@ build/fefd/18.0/%: build/fefd/18.1/%
 build/fefd/17.9/%: build/fefd/18.0/%
 	mkdir -p $(@D) && ln -f $< $@
 build/fefd/17.8/%: build/fefd/17.9/%
+	mkdir -p $(@D) && ln -f $< $@
+build/fefd/17.7/%: build/fefd/17.8/%
+	mkdir -p $(@D) && ln -f $< $@
+build/fefd/17.6/%: build/fefd/17.7/%
+	mkdir -p $(@D) && ln -f $< $@
+build/fefd/17.5/%: build/fefd/17.6/%
+	mkdir -p $(@D) && ln -f $< $@
+build/fefd/17.4/%: build/fefd/17.5/%
+	mkdir -p $(@D) && ln -f $< $@
+build/fefd/17.3/%: build/fefd/17.4/%
+	mkdir -p $(@D) && ln -f $< $@
+build/fefd/17.2/%: build/fefd/17.3/%
+	mkdir -p $(@D) && ln -f $< $@
+build/fefd/17.1/%: build/fefd/17.2/%
+	mkdir -p $(@D) && ln -f $< $@
+build/fefd/16.4/%: build/fefd/17.1/%
+	mkdir -p $(@D) && ln -f $< $@
+build/fefd/16.3/%: build/fefd/16.4/%
+	mkdir -p $(@D) && ln -f $< $@
+build/fefd/16.2/%: build/fefd/16.3/%
+	mkdir -p $(@D) && ln -f $< $@
+build/fefd/16.1/%: build/fefd/16.2/%
+	mkdir -p $(@D) && ln -f $< $@
+build/fefd/16.0/%: build/fefd/16.1/%
+	mkdir -p $(@D) && ln -f $< $@
+build/fefd/15.4/%: build/fefd/16.0/%
+	mkdir -p $(@D) && ln -f $< $@
+build/fefd/15.3/%: build/fefd/15.4/%
 	mkdir -p $(@D) && ln -f $< $@
