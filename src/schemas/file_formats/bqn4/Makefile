@@ -30,6 +30,8 @@ all:
 	$(call f_default_header_detail_trailer_command,15.4)
 	$(call f_default_header_detail_trailer_command,15.3)
 
+.INTERMEDIATE: $(CURDIR)/19.0/records/detail.yaml
+
 $(CURDIR)/19.0/records/detail.yaml: $(CURDIR)/19.0/records/detail.yaml.liquid
 
 $(TARGET_FORMAT_DIR)/$(FILE_VERSION)/%: $(TARGET_FORMAT_DIR)/19.0/%
