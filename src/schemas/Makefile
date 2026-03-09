@@ -1,40 +1,20 @@
 # SPDX-License-Identifier: BSD-3-Clause
 
-include dependencies.mk
-
-TABLESCHEMA_URL=https://datapackage.org/profiles/2.0/tableschema.json
-
-FINAL_JSON_TARGETS=$(ALL_RENDERED_TARGETS:.yaml=.json)
-FINAL_MIN_JSON_TARGETS=$(FINAL_JSON_TARGETS:.json=-min.json)
-
-ALL_TARGETS=$(ALL_RENDERED_TARGETS) $(FINAL_JSON_TARGETS) $(FINAL_MIN_JSON_TARGETS)
-
+BUILD_DIR=$(CURDIR)/build
+PYTHONPATH:=$(CURDIR):$(PYTHONPATH)
+export PYTHONPATH
 
 .PHONY: all
-all: $(ALL_TARGETS)
+all: beq4rx bqn4 fefd
 
 .PHONY: clean
 clean:
-	$(RM) -r build
+	$(RM) -r $(BUILD_DIR)
 	find $(CURDIR) -depth -type d -empty -exec rmdir -v '{}' \+
 
-%-min.json: %.json
-	python3 -m scripts.minijson $< $@
-
-build/%.yaml: build/%.json
-	python3 -m scripts.json2yaml $< $@
-
-build/%.json: file_formats/%.yaml
-	mkdir -p $(@D)
-	python3 -m scripts.postprocess_yaml -I file_formats/_common -o $@ --json $<
-	check-jsonschema --schemafile $(TABLESCHEMA_URL) $@
-
-# *Never* symlink from `file_formats` into `build`! There's a race condition where,
-# depending on the order Make picks, you could end up modifying original files.
-# Always copy from `file_formats` into `build`, and link `build` to `build`.
-build/%: file_formats/%
-	mkdir -p $(@D)
-	cp $< $@
-
-file_formats/%: file_formats/%.liquid
-	python3 -m scripts.render_templates -I file_formats -o $@ $^
+%:
+	$(MAKE) -C 'file_formats/$@' \
+	    BUILD_ROOT='$(BUILD_DIR)' \
+	    TARGET_FORMAT_DIR='$(BUILD_DIR)/$@' \
+	    FORMATS_ROOT='$(CURDIR)/file_formats' \
+	    all
