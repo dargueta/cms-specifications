@@ -24,7 +24,7 @@ keep-runtime-typing = true
 
 [lint.per-file-ignores]
 "__init__.py" = ["F403", "PLC0414"]
-"code/schemas/scripts/schemas.py" = ["I002"]
+"src/schemas/scripts/schemas.py" = ["I002", "N815", "TC003"]
 
 [lint.isort]
 force-single-line = true
