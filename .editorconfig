@@ -11,5 +11,8 @@ trim_trailing_whitespace = true
 [Makefile]
 indent_style = unset
 
+[*.mk]
+indent_style = unset
+
 [*.{json,yaml,yaml.liquid}]
 indent_size = 2
