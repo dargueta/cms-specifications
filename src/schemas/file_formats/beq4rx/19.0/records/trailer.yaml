@@ -2,15 +2,7 @@
 $schema: https://datapackage.org/profiles/2.0/tableschema.json
 fieldsMatch: [subset]
 fields:
-  - !const
-    __value: MMABEQRT
-    name: file_id_name
-    title: File ID Name
-    description: >-
-      Critical Field
-
-      This code identifies the record as the
-      Trailer Record of a BEQ Request File.
+  - !const MMABEQRT
   - name: sending_entity
     title: Sending Entity (CMS)
     description: >-

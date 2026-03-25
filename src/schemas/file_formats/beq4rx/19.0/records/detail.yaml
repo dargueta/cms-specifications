@@ -2,39 +2,8 @@
 $schema: https://datapackage.org/profiles/2.0/tableschema.json
 fieldsMatch: [subset]
 fields:
-  - !const
-    __value: DTL01
-    name: record_type
-    title: Record Type
-    description: >-
-      Critical Field
-
-      This code identifies the record as a
-      Detail Record for processing
-      specifically for BEQ Service.
-  - name: beneficiary_id
-    title: Beneficiary ID
-    description: >-
-      Critical Field
-
-      * Before the Medicare Beneficiary
-        Identifier (MBI) Transition period,
-        the acceptable values are the Health
-        Insurance Claim Number (HICN)
-        and the Railroad Retirement Board
-        (RRB) Number.
-      * During the MBI Transition period,
-        the acceptable values are the HICN,
-        RRB Number and MBI.
-      * When the MBI Transition period
-        ends, the acceptable value is the
-        MBI.
-      * The last position may be a space.
-    type: string
-    constraints:
-      minLength: 11
-      maxLength: 12
-      required: true
+  - !const DTL01
+  - !beneficiary-identifier
   - !filler 9
   - !date8
     name: dob
