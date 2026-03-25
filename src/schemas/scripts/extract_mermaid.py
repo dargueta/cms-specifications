@@ -9,6 +9,7 @@ import json
 import re
 import sys
 import typing
+from pathlib import Path
 
 import click
 
@@ -19,9 +20,12 @@ if typing.TYPE_CHECKING:
 
 
 @click.argument("output", type=click.File("w", atomic=True), default=sys.stdout)
-@click.argument("source", type=str, default="-")
+@click.argument(
+    "source",
+    type=click.Path(exists=True, dir_okay=False, path_type=Path, allow_dash=True),
+)
 @click.command()
-def main(source: str, output: TextIO) -> None:
+def main(source: Path | None, output: TextIO) -> None:
     """Extract a Mermaid and convert it to JSON.
 
     This supports both Mermaid-only (.mmd) and Markdown (.md) files. As these diagrams
@@ -62,18 +66,17 @@ def main(source: str, output: TextIO) -> None:
         ]
     }
     """  # noqa: D301
-    if source == "-":
+    if not source:
         mermaid_text = sys.stdin.read()
-    elif source.endswith(".mmd"):
-        with open(source, "r") as fd:
-            mermaid_text = fd.read()
+    elif source.suffix == ".mmd":
+        mermaid_text = source.read_text()
     else:
-        with open(source, "r") as fd:
+        with click.open_file(source) as fd:
             try:
-                mermaid_text = find_mermaid_in_markdown(fd)
+                mermaid_text = find_mermaid_in_markdown(typing.cast("TextIO", fd))
             except ValueError:
                 sys.exit(
-                    "Couldn't find Mermaid text in (assumed) Markdown file: {source}"
+                    f"Couldn't find Mermaid text in (assumed) Markdown file: {source}"
                 )
 
     try:
