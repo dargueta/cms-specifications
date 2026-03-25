@@ -134,8 +134,8 @@ class Filler:
     def from_yaml(cls, constructor: Constructor, node: Node) -> dict[str, Any]:
         """Create a field representing filler space in a file."""
         width = constructor.construct_yaml_int(node)
+        name = "_filler" if cls.count == 0 else f"_filler_{cls.count}"
         cls.count += 1
-        name = "_filler" if cls.count == 1 else f"_filler_{cls.count}"
         return {
             "name": name,
             "title": "Filler",
@@ -166,7 +166,7 @@ class Const:
             string_value = dict_value.pop("__value")
 
         base = {
-            "name": "_const" if cls.count == 1 else f"_const_{cls.count}",
+            "name": "_const" if cls.count == 0 else f"_const_{cls.count}",
             "type": "string",
             "constraints": {
                 "enum": [string_value],
@@ -175,6 +175,7 @@ class Const:
                 "required": True,
             },
         }
+        cls.count += 1
 
         return deep_merge_dicts(dict_value, base)
 
