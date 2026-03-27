@@ -9,11 +9,12 @@ The directory structure is strictly:
 ```
 file_formats
 └ <file type slug>
+  └ Makefile
   └ <version>
     ├ records
     │ ├ <record type>.yaml
     │ └ ...
-    └ parser-state-table.csv
+    └ record_layout.mmd
 ```
 
 For example:
@@ -21,17 +22,18 @@ For example:
 ```
 file_formats
 └ beq4rx
+   ├ Makefile
    ├ 18.7
    │  ├ records
    │  │ ├ header.yaml
    │  │ ├ detail.yaml
    │  │ └ trailer.yaml
-   │  └ parser-state-table.csv
+   │  └ record_layout.mmd
    └ 18.6
      └ ...
 ```
 
-`parser-state-table.csv` describes the states of a [finite-state machine (FSM)](https://en.wikipedia.org/wiki/Finite-state_machine) that processes the records of the file. See [_Describing File Layouts_](#describing-file-layouts) below.
+`record_layout.mmd` is a [Mermaid state diagram](https://mermaid.ai/open-source/syntax/stateDiagram.html) describing the expected ordering of the records and how to parse the file.
 
 Any file can be templatized using [Liquid](https://shopify.github.io/liquid). For schemas, this mostly serves to remove the tedium of making "arrays" -- sequences of otherwise-identical columns that repeat.
 
@@ -39,52 +41,93 @@ Any Liquid template must have both the desired file extension *and* `.liquid` at
 
 ## Describing File Layouts
 
-_This section assumes basic familiarity with finite-state machines. See [the Wikipedia article](https://en.wikipedia.org/wiki/Finite-state_machine) for a refresher._
-
-To process a file, we describe an FSM by storing the state transition table in a CSV. There are three required columns; others may be present and are ignored.
-
-* `from`: The name of the state to transition from. The special state `START` indicates where the FSM should begin execution.
-* `to`: The name of the state to transition to. The special state `END` indicates where the FSM should stop execution successfully.
-* `action`: the action to perform when transitioning from `from` to `to`. This can be empty. See below for supported actions.
-
-State names are Python or C-style identifiers consisting of letters, numbers, and underscores. Names must start with a letter or underscore. Names using all uppercase letters are reserved for system use and should be avoided.
-
-### Supported Actions
-
-* **ASSERT *condition***: Checks the given condition and halts parsing if the condition fails. Currently the only supported value for *condition* is `EOF`, true when there are no more records to parse.
-* **CHECK *record-type | `EOF`***: Checks the current record being parsed to see if it matches *record-type*. If the result is false, the parser will try a different transition.
-* **CHECKNOT *record-type* | `EOF`**: Like `CHECK` but succeeds if the current record is *not* the given record type.
-* **PARSE *record-type***: Parse the current record using the given record type.
+File layouts -- where and when to expect particular records -- are described using a Mermaid state diagram.
 
 ### Examples
 
 Here are a few examples to get you started.
 
-#### Single record type
+#### Single Record Type
 
 The simplest file consists of an arbitrary number of records of a single type.
 
-| from       | to         | action     |
-| ---------- | ---------- | ---------- |
-| START      | check_data | CHECK data |
-| check_data | parse_data | PARSE data |
-| parse_data | check_data |            |
-| parse_data | check_eof  | CHECK EOF  |
-| check_eof  | END        |            |
+```
+stateDiagram-v2
+    [*]    --> [*]
+    [*]    --> record
+    record --> record
+    record --> [*]
+```
 
 
 #### Header, Detail, Trailer
 
 A very common file layout consists of a single header, zero or more detail records, and a trailer row.
 
-| from          | to            | action        |
-| ------------- | ------------- | ------------- |
-| START         | check_header  | CHECK header  |
-| check_header  | parse_header  | PARSE header  |
-| parse_header  | check_detail  | CHECK detail  |
-| parse_header  | check_trailer | CHECK trailer |
-| check_detail  | parse_detail  | PARSE detail  |
-| parse_detail  | check_detail  |               |
-| parse_detail  | check_trailer |               |
-| check_trailer | parse_trailer | CHECK trailer |
-| parse_trailer | END           | ASSERT EOF    |
+```
+stateDiagram-v2
+    [*]     --> header
+    header  --> trailer
+    header  --> detail
+    detail  --> trailer
+    detail  --> detail
+    trailer --> [*]
+```
+
+#### Hierarchical
+
+A few files have detail records with "supplemental" subrecords associated with it. For example, we could have a detail record "DET" that gives a patient's demographic information; every subsequent "SUB" record contains medications associated with that patient, up until the next "DET" record which describes a new patient.
+
+```
+stateDiagram-v2
+    [*]     --> header
+    header  --> trailer
+    header  --> detail
+
+    detail  --> trailer
+    detail  --> detail
+    detail  --> subrecord
+
+    subrecord --> detail
+    subrecord --> subrecord
+
+    trailer --> [*]
+```
+
+##### TODO: Support Mermaid Composite States
+
+Supporting hierarchical organization within a file would be _very_ helpful. It'd allow us to autogenerate nested structs rather than having users manually cobble together something themselves. For example, it'd be neat if we could write this:
+
+```
+stateDiagram-v2
+    [*]     --> header
+
+    header  --> trailer
+    header  --> Patient
+    Patient --> Patient
+    Patient --> trailer
+    trailer --> [*]
+
+    state Patient {
+        [*]       --> detail
+        detail    --> [*]
+        detail    --> subrecord
+        subrecord --> subrecord
+        subrecord --> [*]
+    }
+```
+
+and autogenerate something this:
+
+```c
+struct detail {
+    // Detail fields...
+
+    size_t n_subrecords;
+    struct {
+        // Subrecord fields...
+    } subrecord[];  // (Requires C99+; must be last element of struct)
+}
+```
+
+Currently, we're only capable of defining the structs individually. Users have to write their own way of mapping subrecords to a detail record.
