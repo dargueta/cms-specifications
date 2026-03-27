@@ -94,7 +94,15 @@ stateDiagram-v2
     trailer --> [*]
 ```
 
-##### TODO: Support Mermaid Composite States
+## TODOs
+
+Future directions and/or features to add.
+
+### Default Layouts in README
+
+Most files have the exact same structure across all versions. Furthermore, it'd be useful for users looking at a file's documentation to look at the README and see right there how the file is laid out. Perhaps we should give the ability to define a file's layout in the file type's README and use that as the default layout if there's no overriding `record_layout.mmd` in a specific definition's directory.
+
+### Support Mermaid Composite States
 
 Supporting hierarchical organization within a file would be _very_ helpful. It'd allow us to autogenerate nested structs rather than having users manually cobble together something themselves. For example, it'd be neat if we could write this:
 
