@@ -66,11 +66,22 @@ fields:
 {% endfor %}
   - name: sending_entity
     title: Sending Entity
+    description: >-
+      The Sending Entity provided on the Header Record of the BEQ Request File
+      in which the Transaction (Detail Record) was found.
+
+      The Sending Entity may be a Part D Organization.
     type: string
     constraints:
+      minLength: 5
       maxLength: 8
+      required: true
   - name: file_control_number
     title: File Control Number
+    description: >-
+      The File Control Number provided by the Sending Entity on the Header
+      record of the BEQ Request File in which the Transaction (Detail Record)
+      was found.
     type: string
     constraints:
       maxLength: 9
@@ -79,6 +90,9 @@ fields:
   - !date8
     name: file_creation_date
     title: File Creation Date
+    description: >-
+      The File Creation Date provided on the Header Record of the BEQ Request
+      File in which the Transaction (Detail Record) was found.
     constraints:
       required: true
   - !date8
@@ -121,8 +135,12 @@ fields:
   - name: rds_part_d_indicator_{{ i }}
     title: RDS / Part D Indicator (Occurrence {{ i }})
     type: string
+    categories:
+      - value: D
+        label: Part D
+      - value: R
+        label: RDS
     constraints:
-      enum: ["D", "R"]
       maxLength: 1
 {% endfor %}
 {% for i in (1..20) %}
@@ -137,13 +155,17 @@ fields:
       minimum: 0
       maximum: 999
       maxLength: 3
+    __metadata__:
+      serialization:
+        align: right
+        padding_character: "0"
   - name: number_of_uncovered_months_status_indicator_{{ i }}
     title: Number of Uncovered Months Status Indicator (Occurrence {{ i }})
     type: string
     constraints:
       maxLength: 1
   - name: total_number_of_uncovered_months_{{ i }}
-    title: Number of Uncovered Months Status Indicator (Occurrence {{ i }})
+    title: Total Number of Uncovered Months Status Indicator (Occurrence {{ i }})
     type: integer
     constraints:
       minimum: 0
