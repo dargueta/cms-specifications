@@ -9,21 +9,17 @@ fields:
     constraints:
       maxLength: 5
       required: true
-  - name: beneficiary_id
-    title: Beneficiary ID
+  - !beneficiary-identifier
     description: >-
       This field will contain exactly what is received in the same field of the
       beneficiary's Detail record in the related BEQ Request file.
-    type: string
-    constraints:
-      minLength: 11
-      maxLength: 12
-      required: true
   - !filler 9
   - !date8
-    name: beneficiary_dob
-    title: Beneficiary's Date of Birth
+    name: sent_date_of_birth
+    title: Beneficiary's Date of Birth Sent
   - !sex-code
+    name: sent_sex_code
+    title: Beneficiary's Sex Code Sent
   - name: detail_record_sequence_number
     title: Detail Record Sequence Number
     type: integer
@@ -99,8 +95,8 @@ fields:
     name: part_d_eligibility_start_date
     title: Part D Eligibility Start Date
     description: >-
-      (Note: The 18.7 specs do not specify a format for the date field, but it's almost
-      certainly YYYYMMDD as in all the other fields.)
+      This field identifies the date the beneficiary became eligible for Part D
+      Benefits.
 {% for i in (1..2) %}
   - !date8
     name: deemed_lis_effective_date_{{ i }}
@@ -121,6 +117,8 @@ fields:
       minimum: 25
       maximum: 100
       enum:
+        # NOTE: 0 is a valid value in earlier versions, but isn't in the
+        # specification for this version.
         - 25
         - 50
         - 75
