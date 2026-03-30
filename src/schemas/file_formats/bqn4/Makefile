@@ -31,15 +31,9 @@ all:
 	$(call f_default_header_detail_trailer_command,18.9)
 	$(call f_default_header_detail_trailer_command,19.0)
 
-.INTERMEDIATE: $(CURDIR)/15.3/records/detail.yaml \
-    $(CURDIR)/5.0/record_layout.mmd \
-	$(CURDIR)/5.0/records/detail.yaml
 
-$(CURDIR)/5.0/records/detail.yaml: $(CURDIR)/5.0/records/detail.yaml.liquid
-$(CURDIR)/15.3/records/detail.yaml: $(CURDIR)/15.3/records/detail.yaml.liquid
+include ../../shared_rules.mk
 
 $(TARGET_FORMAT_DIR)/$(FILE_VERSION)/%: $(TARGET_FORMAT_DIR)/15.3/%
 	mkdir -p $(@D)
 	ln -f $< $@
-
-include ../../shared_rules.mk
