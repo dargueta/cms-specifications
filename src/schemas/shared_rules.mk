@@ -11,9 +11,5 @@ $(TARGET_FORMAT_DIR)/%.json: $(CURDIR)/%.yaml
 	python3 -m scripts.postprocess_yaml -I $(FORMATS_ROOT)/_common -o $@ --json $<
 	check-jsonschema --schemafile $(TABLESCHEMA_URL) $@
 
-$(TARGET_FORMAT_DIR)/%: $(CURDIR)/%
-	mkdir -p $(@D)
-	cp $< $@
-
 %: %.liquid
 	python3 -m scripts.render_templates -I $(FORMATS_ROOT) -o $@ $^
