@@ -6,6 +6,19 @@ all:
 	$(call f_default_header_detail_trailer_command,5.1)
 	$(call f_default_header_detail_trailer_command,5.2)
 	$(call f_default_header_detail_trailer_command,5.3)
+	$(call f_default_header_detail_trailer_command,6.0)
+	$(call f_default_header_detail_trailer_command,6.1)
+	$(call f_default_header_detail_trailer_command,6.2)
+	$(call f_default_header_detail_trailer_command,6.3)
+	$(call f_default_header_detail_trailer_command,7.0)
+	$(call f_default_header_detail_trailer_command,7.1)
+	$(call f_default_header_detail_trailer_command,7.2)
+	# v7.3 does not appear to exist.
+	$(call f_default_header_detail_trailer_command,8.0)
+	$(call f_default_header_detail_trailer_command,8.1)
+	$(call f_default_header_detail_trailer_command,8.2)
+	$(call f_default_header_detail_trailer_command,8.3)
+	$(call f_default_header_detail_trailer_command,9.0)
 	$(call f_default_header_detail_trailer_command,15.3)
 	$(call f_default_header_detail_trailer_command,15.4)
 	$(call f_default_header_detail_trailer_command,16.0)
@@ -48,6 +61,34 @@ $(TARGET_FORMAT_DIR)/5.2/%: $(TARGET_FORMAT_DIR)/5.1/%
 	ln -f $< $@
 
 $(TARGET_FORMAT_DIR)/5.3/%: $(TARGET_FORMAT_DIR)/5.1/%
+	mkdir -p $(@D)
+	ln -f $< $@
+
+$(TARGET_FORMAT_DIR)/6.0/%: $(TARGET_FORMAT_DIR)/5.1/%
+	mkdir -p $(@D)
+	ln -f $< $@
+
+$(TARGET_FORMAT_DIR)/6.1/%: $(TARGET_FORMAT_DIR)/5.1/%
+	mkdir -p $(@D)
+	ln -f $< $@
+
+$(TARGET_FORMAT_DIR)/6.2/%: $(TARGET_FORMAT_DIR)/5.1/%
+	mkdir -p $(@D)
+	ln -f $< $@
+
+$(TARGET_FORMAT_DIR)/6.3/%: $(TARGET_FORMAT_DIR)/5.1/%
+	mkdir -p $(@D)
+	ln -f $< $@
+
+$(TARGET_FORMAT_DIR)/7.%: $(TARGET_FORMAT_DIR)/6.%
+	mkdir -p $(@D)
+	ln -f $< $@
+
+$(TARGET_FORMAT_DIR)/8.%: $(TARGET_FORMAT_DIR)/6.%
+	mkdir -p $(@D)
+	ln -f $< $@
+
+$(TARGET_FORMAT_DIR)/9.0/%: $(TARGET_FORMAT_DIR)/5.1/%
 	mkdir -p $(@D)
 	ln -f $< $@
 
