@@ -16,4 +16,4 @@ jobs:
       - name: Install Python Dependencies
         run: pip3 install -Ur src/requirements.txt
       - name: Test generating files
-        run: make -C src/schemas
+        run: make
