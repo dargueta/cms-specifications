@@ -2,7 +2,7 @@
 
 This repository consists of two major parts:
 
-* An archive of technical documentation made publicly available by [US Centers for Medicare and Medicaid Services ("CMS")](https://www.cms.gov/) ("CMS") on their website, and
+* An archive of technical documentation made publicly available by [US Centers for Medicare and Medicaid Services](https://www.cms.gov/) ("CMS") on their website, and
 * Language-agnostic [schemas](https://datapackage.org/standard/table-schema/) and tools to generate parsers, SQL DDL, and more.
 
 It's intended for software engineers looking to implement, for example, file parsing for CMS' plan communications (BEQR, MONMEMD, and the like). Only the latest version of the PCUG specification is available on their site, making any previous release very difficult to find, hence this.
