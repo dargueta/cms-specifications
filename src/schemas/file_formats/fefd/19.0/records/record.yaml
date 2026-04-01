@@ -74,7 +74,11 @@ fields:
     type: string
     constraints:
       maxLength: 3
-      missingValues: ["000"]
+      missingValues: ["000", ""]
+    __metadata__:
+      serialization:
+        align: right
+        padding_character: "0"
   # TODO (dargueta): Determine if the decimal is present or implicit.
   - name: part_c_beneficiary_premium
     title: Part C Beneficiary Premium
