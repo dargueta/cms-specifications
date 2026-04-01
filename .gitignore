@@ -6,7 +6,7 @@
 .venv/
 .vscode/
 __pycache__/
-
+build/
 
 *.a
 *.dll
