@@ -2,6 +2,37 @@ include ../../functions.mk
 
 .PHONY: all
 all:
+	$(call f_default_single_record_command,5.0)
+	$(call f_default_single_record_command,5.1)
+	$(call f_default_single_record_command,5.2)
+	$(call f_default_single_record_command,5.3)
+	$(call f_default_single_record_command,6.0)
+	$(call f_default_single_record_command,6.1)
+	$(call f_default_single_record_command,6.2)
+	$(call f_default_single_record_command,6.3)
+	$(call f_default_single_record_command,7.0)
+	$(call f_default_single_record_command,7.1)
+	$(call f_default_single_record_command,7.2)
+	$(call f_default_single_record_command,8.0)
+	$(call f_default_single_record_command,8.1)
+	$(call f_default_single_record_command,8.2)
+	$(call f_default_single_record_command,8.3)
+	$(call f_default_single_record_command,9.0)
+	$(call f_default_single_record_command,9.1)
+	$(call f_default_single_record_command,9.2)
+	$(call f_default_single_record_command,9.3)
+	$(call f_default_single_record_command,10.0)
+	$(call f_default_single_record_command,10.1)
+	$(call f_default_single_record_command,10.2)
+	$(call f_default_single_record_command,10.3)
+	$(call f_default_single_record_command,11.0)
+	$(call f_default_single_record_command,11.1)
+	$(call f_default_single_record_command,11.2)
+	$(call f_default_single_record_command,11.3)
+	$(call f_default_single_record_command,12.0)
+	$(call f_default_single_record_command,12.1)
+	$(call f_default_single_record_command,12.2)
+	$(call f_default_single_record_command,12.3)
 	$(call f_default_single_record_command,19.0)
 	$(call f_default_single_record_command,18.9)
 	$(call f_default_single_record_command,18.8)
@@ -29,6 +60,55 @@ all:
 	$(call f_default_single_record_command,16.0)
 	$(call f_default_single_record_command,15.4)
 	$(call f_default_single_record_command,15.3)
+
+
+$(TARGET_FORMAT_DIR)/5.1/%: $(TARGET_FORMAT_DIR)/5.0/%
+	mkdir -p $(@D)
+	ln -f $< $@
+
+$(TARGET_FORMAT_DIR)/5.3/%: $(TARGET_FORMAT_DIR)/5.2/%
+	mkdir -p $(@D)
+	ln -f $< $@
+
+$(TARGET_FORMAT_DIR)/6.0/%: $(TARGET_FORMAT_DIR)/5.2/%
+	mkdir -p $(@D)
+	ln -f $< $@
+
+$(TARGET_FORMAT_DIR)/6.1/%: $(TARGET_FORMAT_DIR)/5.2/%
+	mkdir -p $(@D)
+	ln -f $< $@
+
+$(TARGET_FORMAT_DIR)/6.2/%: $(TARGET_FORMAT_DIR)/5.2/%
+	mkdir -p $(@D)
+	ln -f $< $@
+
+$(TARGET_FORMAT_DIR)/6.3/%: $(TARGET_FORMAT_DIR)/5.2/%
+	mkdir -p $(@D)
+	ln -f $< $@
+
+$(TARGET_FORMAT_DIR)/7.%: $(TARGET_FORMAT_DIR)/6.%
+	mkdir -p $(@D)
+	ln -f $< $@
+
+$(TARGET_FORMAT_DIR)/8.%: $(TARGET_FORMAT_DIR)/6.%
+	mkdir -p $(@D)
+	ln -f $< $@
+
+$(TARGET_FORMAT_DIR)/9.%: $(TARGET_FORMAT_DIR)/6.%
+	mkdir -p $(@D)
+	ln -f $< $@
+
+$(TARGET_FORMAT_DIR)/10.%: $(TARGET_FORMAT_DIR)/6.%
+	mkdir -p $(@D)
+	ln -f $< $@
+
+$(TARGET_FORMAT_DIR)/11.%: $(TARGET_FORMAT_DIR)/6.%
+	mkdir -p $(@D)
+	ln -f $< $@
+
+$(TARGET_FORMAT_DIR)/12.%: $(TARGET_FORMAT_DIR)/6.%
+	mkdir -p $(@D)
+	ln -f $< $@
 
 $(TARGET_FORMAT_DIR)/$(FILE_VERSION)/%: $(TARGET_FORMAT_DIR)/19.0/%
 	mkdir -p $(@D)
