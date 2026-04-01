@@ -37,6 +37,9 @@ all:
 
 include ../../shared_rules.mk
 
+$(CURDIR)/5.0/detail.yaml.liquid: $(CURDIR)/common/detail_record.liquid
+$(CURDIR)/5.1/detail.yaml.liquid: $(CURDIR)/common/detail_record.liquid
+
 $(CURDIR)/5.1/%: $(CURDIR)/5.0/%
 	ln -f $< $@
 

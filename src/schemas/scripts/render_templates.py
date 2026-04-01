@@ -67,7 +67,8 @@ def main(
     environment = liquid.Environment(
         autoescape=False,
         loader=liquid.CachingFileSystemLoader(
-            search_path=[p.absolute() for p in include[::-1]] + [pathlib.Path.cwd()]
+            ext=".liquid",
+            search_path=[p.absolute() for p in include[::-1]] + [pathlib.Path.cwd()],
         ),
     )
 

@@ -1,0 +1,196 @@
+# SPDX-License-Identifier: BSD-3-Clause
+$schema: https://datapackage.org/profiles/2.0/tableschema.json
+fieldsMatch: [subset]
+fields:
+  - !const DTL
+  - name: original_record_type
+    title: Record Type
+    type: string
+    constraints:
+      maxLength: 5
+      required: true
+  - !beneficiary-identifier
+    description: >-
+      This field will contain exactly what is received in the same field of the
+      beneficiary's Detail record in the related BEQ Request file.
+  - !filler 9
+  - !date8
+    name: sent_date_of_birth
+    title: Beneficiary's Date of Birth Sent
+  - !sex-code
+    name: sent_sex_code
+    title: Beneficiary's Sex Code Sent
+  - name: detail_record_sequence_number
+    title: Detail Record Sequence Number
+    type: integer
+    constraints:
+      minLength: 1
+      maxLength: 7
+      minimum: 0
+      maximum: 9999999
+      required: true
+      unique: true
+  - !bool-yn
+    name: processed_flag
+    title: Processed Flag
+    constraints:
+      required: true
+  - !bool-yn
+    name: beneficiary_matched_flag
+    title: Beneficiary Matched Flag
+    description: |-
+      * "Y": The beneficiary was matched (located) successfully.
+      * "N": The beneficiary was not matched (located) successfully.
+      * " " (SPACE) = Beneficiary match was not attempted due to an Invalid
+        condition in the Transaction (Detail Record).
+  - !date8
+    name: medicare_part_a_entitlement_start_date
+    title: Medicare Part A Entitlement Start Date
+  - !date8
+    name: medicare_part_a_entitlement_end_date
+    title: Medicare Part A Entitlement End Date
+  - !date8
+    name: medicare_part_b_entitlement_start_date
+    title: Medicare Part B Entitlement Start Date
+  - !date8
+    name: medicare_part_b_entitlement_end_date
+    title: Medicare Part B Entitlement End Date
+  - !bool-10
+    name: medicaid_indicator
+    title: Medicaid Indicator
+    description: >-
+      An indicator of the presence of current Medicaid coverage for the beneficiary.
+
+      The value for this field is based upon the presence of Medicaid reported
+      for the beneficiary by states in the previous calendar month via the MMA
+      State Files.
+{% for i in (1..10) %}
+  - !date8
+    name: part_d_enrollment_effective_date_{{ i }}
+    title: Part D Enrollment Effective Date or Employer Subsidy Start Date (Occurrence {{ i }})
+  - !date8
+    name: part_d_disenrollment_date_{{ i }}
+    title: Part D Disenrollment Date or Employer Subsidy End Date (Occurrence {{ i }})
+{% endfor %}
+  - name: sending_entity
+    title: Sending Entity
+    description: >-
+      The Sending Entity provided on the Header Record of the BEQ Request File
+      in which the Transaction (Detail Record) was found.
+
+      The Sending Entity may be a Part D Organization.
+    type: string
+    constraints:
+      minLength: 5
+      maxLength: 8
+      required: true
+  - name: file_control_number
+    title: File Control Number
+    description: >-
+      The File Control Number provided by the Sending Entity on the Header
+      record of the BEQ Request File in which the Transaction (Detail Record)
+      was found.
+    type: string
+    constraints:
+      maxLength: 9
+      minLength: 1
+      required: true
+  - !date8
+    name: file_creation_date
+    title: File Creation Date
+    description: >-
+      The File Creation Date provided on the Header Record of the BEQ Request
+      File in which the Transaction (Detail Record) was found.
+    constraints:
+      required: true
+  - !date8
+    name: part_d_eligibility_start_date
+    title: Part D Eligibility Start Date
+    description: >-
+      This field identifies the date the beneficiary became eligible for Part D
+      Benefits.
+{% for i in (1..2) %}
+  - !date8
+    name: deemed_lis_effective_date_{{ i }}
+    title: Deemed / Low-Income Subsidy Effective Date (Occurrence {{ i }})
+  - !date8
+    name: deemed_lis_end_date_{{ i }}
+    title: Deemed / Low-Income Subsidy End Date (Occurrence {{ i }})
+  - name: copayment_level_identifier_{{ i }}
+    title: Co-Payment Level Identifier
+    type: string
+    constraints:
+      enum: ["1", "2", "3", "4", "5"]
+      maxLength: 1
+  - name: part_d_premium_subsidy_percent
+    title: Part D Premium Subsidy Percent
+    type: integer
+    constraints:
+      minimum: 0
+      maximum: 100
+      enum:
+        # NOTE: 0 is not valid in later versions.
+        - 0
+        - 25
+        - 50
+        - 75
+        - 100
+      maxLength: 3
+    __metadata__:
+      serialization:
+        align: right
+        padding_character: "0"
+{% endfor %}
+{% for i in (1..10) %}
+  - name: rds_part_d_indicator_{{ i }}
+    title: RDS / Part D Indicator (Occurrence {{ i }})
+    type: string
+    categories:
+      - value: D
+        label: Part D
+      - value: R
+        label: RDS
+    constraints:
+      maxLength: 1
+{% endfor %}
+{% for i in (1..20) %}
+  - !date8
+    name: start_date_{{ i }}
+    title: Start Date (Occurrence {{ i }})
+  - name: number_of_uncovered_months_{{ i }}
+    title: Number of Uncovered Months (Occurrence {{ i }})
+    type: integer
+    rdfType: http://purl.org/dc/terms/SizeOrDuration
+    constraints:
+      minimum: 0
+      maximum: 999
+      maxLength: 3
+    __metadata__:
+      serialization:
+        align: right
+        padding_character: "0"
+  - name: number_of_uncovered_months_status_indicator_{{ i }}
+    title: Number of Uncovered Months Status Indicator (Occurrence {{ i }})
+    type: string
+    constraints:
+      maxLength: 1
+  - name: total_number_of_uncovered_months_{{ i }}
+    title: Total Number of Uncovered Months Status Indicator (Occurrence {{ i }})
+    type: integer
+    constraints:
+      minimum: 0
+      maximum: 999
+      maxLength: 3
+    __metadata__:
+      serialization:
+        align: right
+        padding_character: "0"
+{% endfor %}
+  - !date8
+    name: retrieved_date_of_birth
+    title: Beneficiary's Retrieved Date of Birth
+    description: As retrieved from CMS database for matching beneficiary.
+  - !sex-code
+    name: retrieved_sex_code
+    title: Beneficiary's Retrieved Sex Code
+    description: As retrieved from CMS database for matching beneficiary.
