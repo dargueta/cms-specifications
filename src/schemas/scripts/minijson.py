@@ -2,8 +2,8 @@
 
 """Minify JSON.
 
-As with json2yaml.py, ormally a command line tool like `jq` would suffice, but we want
-users to be able to use this repo with minimal other installation.
+Normally a command line tool like `jq` would suffice for this, but we want users to be
+able to use this repo with minimal other installation.
 """
 
 from __future__ import annotations
