@@ -3,12 +3,12 @@
 %-min.json: %.json
 	python3 -m scripts.minijson $< $@
 
-%.json: %.yaml
-	python3 -m scripts.yaml2json $< $@
+$(TARGET_FORMAT_DIR)/%.yaml: $(TARGET_FORMAT_DIR)/%.json
+	python3 -m scripts.json2yaml $< $@
 
-$(TARGET_FORMAT_DIR)/%.yaml: $(CURDIR)/%.yaml
+$(TARGET_FORMAT_DIR)/%.json: $(CURDIR)/%.yaml
 	mkdir -p $(@D)
-	python3 -m scripts.postprocess_yaml -I $(FORMATS_ROOT)/_common -o $@ $<
+	python3 -m scripts.postprocess_yaml --json -I $(FORMATS_ROOT)/_common -o $@ $<
 	check-jsonschema --schemafile $(TABLESCHEMA_URL) $@
 
 $(TARGET_FORMAT_DIR)/%: $(CURDIR)/%
