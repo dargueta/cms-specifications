@@ -2,12 +2,7 @@
 $schema: https://datapackage.org/profiles/2.0/tableschema.json
 fieldsMatch: [subset]
 fields:
-  - !const CMSBEQRH
-  - !const
-    __value: "MBD     "
-    name: sending_entity
-    title: Sending Entity
-    rdfType: https://schema.org/Organization
+  - !const "CMSBEQRHMBD     "
   - !date8
     name: file_creation_date
     title: File Creation Date

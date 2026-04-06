@@ -28,4 +28,4 @@ fields:
       serialization:
         align: right
         padding_character: "0"
-  - !filler 710
+  - !filler 1960
