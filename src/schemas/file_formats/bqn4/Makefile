@@ -127,6 +127,10 @@ $(TARGET_FORMAT_DIR)/9.3/%: $(TARGET_FORMAT_DIR)/9.2/%
 	mkdir -p $(@D)
 	ln -f $< $@
 
+$(TARGET_FORMAT_DIR)/10.0/%: $(TARGET_FORMAT_DIR)/9.2/%
+	mkdir -p $(@D)
+	ln -f $< $@
+
 $(TARGET_FORMAT_DIR)/10.1/%: $(TARGET_FORMAT_DIR)/10.0/%
 	mkdir -p $(@D)
 	ln -f $< $@
@@ -148,6 +152,10 @@ $(TARGET_FORMAT_DIR)/11.2/%: $(TARGET_FORMAT_DIR)/10.3/%
 	ln -f $< $@
 
 $(TARGET_FORMAT_DIR)/11.3/%: $(TARGET_FORMAT_DIR)/10.3/%
+	mkdir -p $(@D)
+	ln -f $< $@
+
+$(TARGET_FORMAT_DIR)/12.0/%: $(TARGET_FORMAT_DIR)/10.3/%
 	mkdir -p $(@D)
 	ln -f $< $@
 
@@ -192,6 +200,10 @@ $(TARGET_FORMAT_DIR)/15.1/%: $(TARGET_FORMAT_DIR)/12.3/%
 	ln -f $< $@
 
 $(TARGET_FORMAT_DIR)/15.2/%: $(TARGET_FORMAT_DIR)/12.3/%
+	mkdir -p $(@D)
+	ln -f $< $@
+
+$(TARGET_FORMAT_DIR)/15.3/%: $(TARGET_FORMAT_DIR)/12.3/%
 	mkdir -p $(@D)
 	ln -f $< $@
 
