@@ -72,8 +72,11 @@ all:
 	$(call f_default_single_record_command,18.9)
 	$(call f_default_single_record_command,19.0)
 
+$(TARGET_FORMAT_DIR)/$(FILE_VERSION)/record_layout.mmd: $(CURDIR)/common/record_layout.mmd
+	mkdir -p $(@D)
+	ln -f $< $@
 
-$(TARGET_FORMAT_DIR)/5.1/%: $(TARGET_FORMAT_DIR)/5.0/%
+$(TARGET_FORMAT_DIR)/5.1/: $(TARGET_FORMAT_DIR)/5.0/%
 	mkdir -p $(@D)
 	ln -f $< $@
 
