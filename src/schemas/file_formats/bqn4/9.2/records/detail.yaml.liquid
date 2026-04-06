@@ -1,0 +1,56 @@
+{% render "bqn4/9.1/records/detail.yaml.liquid", exclude_trailing_filler: true %}
+{% for i in (1..6) %}
+  - name: mailing_address_line_{{ i }}
+    title: Mailing Address Line {{ i }}
+    type: string
+    constraints:
+      maxLength: 40
+{% endfor %}
+  - name: mailing_address_city
+    title: Mailing Address City
+    type: string
+    rdfType: https://schema.org/City
+    constraints:
+      maxLength: 40
+  - name: mailing_address_state
+    title: Mailing Address Postal State Code
+    type: string
+    rdfType: https://schema.org/State
+    constraints:
+      maxLength: 2
+  - name: mailing_address_zip_code
+    title: Mailing Address ZIP Code
+    type: string
+    constraints:
+      maxLength: 9
+  - !date8
+    name: mailing_address_start_date
+    title: Mailing Address Start Date
+  - name: residence_address_line_1
+    title: Residence Address Line 1
+    type: string
+    constraints:
+      maxLength: 60
+  - name: residence_address_city
+    title: Residence Address City
+    type: string
+    rdfType: https://schema.org/City
+    constraints:
+      maxLength: 40
+  - name: residence_address_state
+    title: Residence Address Postal State Code
+    type: string
+    rdfType: https://schema.org/State
+    constraints:
+      maxLength: 2
+  - name: residence_address_zip_code
+    title: Residence Address ZIP Code
+    type: string
+    constraints:
+      maxLength: 9
+  - !date8
+    name: residence_address_start_date
+    title: Residence Address Start Date
+{% unless exclude_trailing_filler %}
+  - !filler 325
+{% endunless %}
