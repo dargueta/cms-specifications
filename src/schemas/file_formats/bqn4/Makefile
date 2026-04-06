@@ -19,6 +19,10 @@ all:
 	$(call f_default_header_detail_trailer_command,8.2)
 	$(call f_default_header_detail_trailer_command,8.3)
 	$(call f_default_header_detail_trailer_command,9.0)
+	$(call f_default_header_detail_trailer_command,9.1)
+	$(call f_default_header_detail_trailer_command,9.2)
+	$(call f_default_header_detail_trailer_command,9.3)
+	$(call f_default_header_detail_trailer_command,10.0)
 	$(call f_default_header_detail_trailer_command,15.3)
 	$(call f_default_header_detail_trailer_command,15.4)
 	$(call f_default_header_detail_trailer_command,16.0)
@@ -89,6 +93,26 @@ $(TARGET_FORMAT_DIR)/8.%: $(TARGET_FORMAT_DIR)/6.%
 	ln -f $< $@
 
 $(TARGET_FORMAT_DIR)/9.0/%: $(TARGET_FORMAT_DIR)/5.1/%
+	mkdir -p $(@D)
+	ln -f $< $@
+
+$(TARGET_FORMAT_DIR)/9.1/%: $(TARGET_FORMAT_DIR)/5.1/%
+	mkdir -p $(@D)
+	ln -f $< $@
+
+$(TARGET_FORMAT_DIR)/9.2/%: $(TARGET_FORMAT_DIR)/5.1/%
+	mkdir -p $(@D)
+	ln -f $< $@
+
+$(TARGET_FORMAT_DIR)/9.3/%: $(TARGET_FORMAT_DIR)/9.2/%
+	mkdir -p $(@D)
+	ln -f $< $@
+
+$(TARGET_FORMAT_DIR)/10.1/%: $(TARGET_FORMAT_DIR)/10.0/%
+	mkdir -p $(@D)
+	ln -f $< $@
+
+$(TARGET_FORMAT_DIR)/10.2/%: $(TARGET_FORMAT_DIR)/10.0/%
 	mkdir -p $(@D)
 	ln -f $< $@
 
