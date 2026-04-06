@@ -35,7 +35,9 @@ categories:
     label: Employer/Union Only Direct Contract PDP
   - value: "31"
     label: Regional PPO
-  # 32-39 undefined
+  - value: "32"
+    label: Fallback
+  # 33-39 undefined
   - value: "40"
     label: Employer/Union Only Direct Contract PFFS
   # 41 undefined
