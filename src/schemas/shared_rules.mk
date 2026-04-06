@@ -4,7 +4,7 @@
 	python3 -m scripts.minijson $< $@
 
 $(TARGET_FORMAT_DIR)/%.yaml: $(TARGET_FORMAT_DIR)/%.json
-	python3 -m scripts.json2yaml $< $@
+	python3 -m ruamel.yaml.cmd from-json -o $@ $<
 
 $(TARGET_FORMAT_DIR)/%.json: $(CURDIR)/%.yaml
 	mkdir -p $(@D)
