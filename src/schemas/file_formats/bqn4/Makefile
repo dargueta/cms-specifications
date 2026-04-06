@@ -78,6 +78,14 @@ $(TARGET_FORMAT_DIR)/$(FILE_VERSION)/record_layout.mmd: $(CURDIR)/common/record_
 	mkdir -p $(@D)
 	ln -f $< $@
 
+$(TARGET_FORMAT_DIR)/5.1/records/header%: $(TARGET_FORMAT_DIR)/5.0/records/header%
+	mkdir -p $(@D)
+	ln -f $< $@
+
+$(TARGET_FORMAT_DIR)/5.1/records/trailer%: $(TARGET_FORMAT_DIR)/5.0/records/trailer%
+	mkdir -p $(@D)
+	ln -f $< $@
+
 $(TARGET_FORMAT_DIR)/5.2/%: $(TARGET_FORMAT_DIR)/5.1/%
 	mkdir -p $(@D)
 	ln -f $< $@
@@ -102,11 +110,19 @@ $(TARGET_FORMAT_DIR)/9.0/%: $(TARGET_FORMAT_DIR)/5.1/%
 	mkdir -p $(@D)
 	ln -f $< $@
 
-$(TARGET_FORMAT_DIR)/9.1/%: $(TARGET_FORMAT_DIR)/5.1/%
+$(TARGET_FORMAT_DIR)/9.1/records/header%: $(TARGET_FORMAT_DIR)/5.1/records/header%
 	mkdir -p $(@D)
 	ln -f $< $@
 
-$(TARGET_FORMAT_DIR)/9.2/%: $(TARGET_FORMAT_DIR)/5.1/%
+$(TARGET_FORMAT_DIR)/9.1/records/trailer%: $(TARGET_FORMAT_DIR)/5.1/records/trailer%
+	mkdir -p $(@D)
+	ln -f $< $@
+
+$(TARGET_FORMAT_DIR)/9.2/records/header%: $(TARGET_FORMAT_DIR)/9.1/records/header%
+	mkdir -p $(@D)
+	ln -f $< $@
+
+$(TARGET_FORMAT_DIR)/9.2/records/trailer%: $(TARGET_FORMAT_DIR)/9.1/records/trailer%
 	mkdir -p $(@D)
 	ln -f $< $@
 
@@ -114,7 +130,11 @@ $(TARGET_FORMAT_DIR)/9.3/%: $(TARGET_FORMAT_DIR)/9.2/%
 	mkdir -p $(@D)
 	ln -f $< $@
 
-$(TARGET_FORMAT_DIR)/10.0/%: $(TARGET_FORMAT_DIR)/9.2/%
+$(TARGET_FORMAT_DIR)/10.0/records/header%: $(TARGET_FORMAT_DIR)/9.2/records/header%
+	mkdir -p $(@D)
+	ln -f $< $@
+
+$(TARGET_FORMAT_DIR)/10.0/records/trailer%: $(TARGET_FORMAT_DIR)/9.2/records/trailer%
 	mkdir -p $(@D)
 	ln -f $< $@
 
@@ -130,6 +150,14 @@ $(TARGET_FORMAT_DIR)/11.$(FILE_VERSION_MINOR)/%: $(TARGET_FORMAT_DIR)/10.3/%
 	mkdir -p $(@D)
 	ln -f $< $@
 
+$(TARGET_FORMAT_DIR)/12.0/records/header%: $(TARGET_FORMAT_DIR)/10.3/records/header%
+	mkdir -p $(@D)
+	ln -f $< $@
+
+$(TARGET_FORMAT_DIR)/12.0/records/trailer%: $(TARGET_FORMAT_DIR)/10.3/records/trailer%
+	mkdir -p $(@D)
+	ln -f $< $@
+
 $(TARGET_FORMAT_DIR)/12.1/%: $(TARGET_FORMAT_DIR)/12.0/%
 	mkdir -p $(@D)
 	ln -f $< $@
@@ -138,7 +166,11 @@ $(TARGET_FORMAT_DIR)/12.2/%: $(TARGET_FORMAT_DIR)/12.0/%
 	mkdir -p $(@D)
 	ln -f $< $@
 
-$(TARGET_FORMAT_DIR)/12.3/%: $(TARGET_FORMAT_DIR)/12.0/%
+$(TARGET_FORMAT_DIR)/12.3/records/header%: $(TARGET_FORMAT_DIR)/12.0/records/header%
+	mkdir -p $(@D)
+	ln -f $< $@
+
+$(TARGET_FORMAT_DIR)/12.3/records/trailer%: $(TARGET_FORMAT_DIR)/12.0/records/trailer%
 	mkdir -p $(@D)
 	ln -f $< $@
 
@@ -162,11 +194,31 @@ $(TARGET_FORMAT_DIR)/15.2/%: $(TARGET_FORMAT_DIR)/12.3/%
 	mkdir -p $(@D)
 	ln -f $< $@
 
+$(TARGET_FORMAT_DIR)/15.3/records/header%: $(TARGET_FORMAT_DIR)/12.3/records/header%
+	mkdir -p $(@D)
+	ln -f $< $@
+
+$(TARGET_FORMAT_DIR)/15.3/records/trailer%: $(TARGET_FORMAT_DIR)/12.3/records/trailer%
+	mkdir -p $(@D)
+	ln -f $< $@
+
 $(TARGET_FORMAT_DIR)/15.4/%: $(TARGET_FORMAT_DIR)/15.3/%
 	mkdir -p $(@D)
 	ln -f $< $@
 
-$(TARGET_FORMAT_DIR)/$(FILE_VERSION)/%: $(TARGET_FORMAT_DIR)/15.3/%
+$(TARGET_FORMAT_DIR)/16.$(FILE_VERSION_MINOR)/%: $(TARGET_FORMAT_DIR)/15.3/%
+	mkdir -p $(@D)
+	ln -f $< $@
+
+$(TARGET_FORMAT_DIR)/17.$(FILE_VERSION_MINOR)/%: $(TARGET_FORMAT_DIR)/15.3/%
+	mkdir -p $(@D)
+	ln -f $< $@
+
+$(TARGET_FORMAT_DIR)/18.$(FILE_VERSION_MINOR)/%: $(TARGET_FORMAT_DIR)/15.3/%
+	mkdir -p $(@D)
+	ln -f $< $@
+
+$(TARGET_FORMAT_DIR)/19.$(FILE_VERSION_MINOR)/%: $(TARGET_FORMAT_DIR)/15.3/%
 	mkdir -p $(@D)
 	ln -f $< $@
 
