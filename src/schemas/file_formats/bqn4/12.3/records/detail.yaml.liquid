@@ -1,0 +1,15 @@
+{% render "bqn4/12.0/records/detail.yaml.liquid", exclude_trailing_filler: true %}
+  - !date8
+    name: most_recent_duals_sep_use_date
+    title: Most Recent Duals SEP Use Date
+{% for i in (1..10) %}
+  - !date8
+    name: cara_status_start_date_{{ i }}
+    title: CARA Status Start Date ({{ i }})
+  - !date8
+    name: cara_status_end_date_{{ i }}
+    title: CARA Status End Date ({{ i }})
+{% endfor %}
+{% unless exclude_trailing_filler %}
+  - !filler 266
+{% endunless %}

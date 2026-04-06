@@ -23,6 +23,13 @@ all:
 	$(call f_default_header_detail_trailer_command,9.2)
 	$(call f_default_header_detail_trailer_command,9.3)
 	$(call f_default_header_detail_trailer_command,10.0)
+	$(call f_default_header_detail_trailer_command,10.1)
+	$(call f_default_header_detail_trailer_command,10.2)
+	$(call f_default_header_detail_trailer_command,10.3)
+	$(call f_default_header_detail_trailer_command,11.0)
+	$(call f_default_header_detail_trailer_command,11.1)
+	$(call f_default_header_detail_trailer_command,11.2)
+	$(call f_default_header_detail_trailer_command,11.3)
 	$(call f_default_header_detail_trailer_command,15.3)
 	$(call f_default_header_detail_trailer_command,15.4)
 	$(call f_default_header_detail_trailer_command,16.0)
@@ -113,6 +120,58 @@ $(TARGET_FORMAT_DIR)/10.1/%: $(TARGET_FORMAT_DIR)/10.0/%
 	ln -f $< $@
 
 $(TARGET_FORMAT_DIR)/10.2/%: $(TARGET_FORMAT_DIR)/10.0/%
+	mkdir -p $(@D)
+	ln -f $< $@
+
+$(TARGET_FORMAT_DIR)/11.0/%: $(TARGET_FORMAT_DIR)/10.3/%
+	mkdir -p $(@D)
+	ln -f $< $@
+
+$(TARGET_FORMAT_DIR)/11.1/%: $(TARGET_FORMAT_DIR)/10.3/%
+	mkdir -p $(@D)
+	ln -f $< $@
+
+$(TARGET_FORMAT_DIR)/11.2/%: $(TARGET_FORMAT_DIR)/10.3/%
+	mkdir -p $(@D)
+	ln -f $< $@
+
+$(TARGET_FORMAT_DIR)/11.3/%: $(TARGET_FORMAT_DIR)/10.3/%
+	mkdir -p $(@D)
+	ln -f $< $@
+
+$(TARGET_FORMAT_DIR)/12.1/%: $(TARGET_FORMAT_DIR)/12.0/%
+	mkdir -p $(@D)
+	ln -f $< $@
+
+$(TARGET_FORMAT_DIR)/12.2/%: $(TARGET_FORMAT_DIR)/12.0/%
+	mkdir -p $(@D)
+	ln -f $< $@
+
+$(TARGET_FORMAT_DIR)/13.0/%: $(TARGET_FORMAT_DIR)/12.3/%
+	mkdir -p $(@D)
+	ln -f $< $@
+
+$(TARGET_FORMAT_DIR)/13.1/%: $(TARGET_FORMAT_DIR)/12.3/%
+	mkdir -p $(@D)
+	ln -f $< $@
+
+$(TARGET_FORMAT_DIR)/13.2/%: $(TARGET_FORMAT_DIR)/12.3/%
+	mkdir -p $(@D)
+	ln -f $< $@
+
+$(TARGET_FORMAT_DIR)/13.3/%: $(TARGET_FORMAT_DIR)/12.3/%
+	mkdir -p $(@D)
+	ln -f $< $@
+
+$(TARGET_FORMAT_DIR)/14.%: $(TARGET_FORMAT_DIR)/13.%
+	mkdir -p $(@D)
+	ln -f $< $@
+
+$(TARGET_FORMAT_DIR)/15.1/%: $(TARGET_FORMAT_DIR)/12.3/%
+	mkdir -p $(@D)
+	ln -f $< $@
+
+$(TARGET_FORMAT_DIR)/15.2/%: $(TARGET_FORMAT_DIR)/12.3/%
 	mkdir -p $(@D)
 	ln -f $< $@
 
