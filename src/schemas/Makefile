@@ -5,7 +5,7 @@ PYTHONPATH:=$(CURDIR):$(PYTHONPATH)
 export PYTHONPATH
 
 .PHONY: all
-all: beq4rx bqn4 fefd
+all: beq4rx bqn4 fefd marxtr
 
 .PHONY: clean
 clean:

@@ -1,0 +1,51 @@
+# SPDX-License-Identifier: BSD-3-Clause
+$schema: https://datapackage.org/profiles/2.0/tableschema.json
+fieldsMatch: [subset]
+fields:
+  - !const "AAAAAAHEADER"
+  - !filler 1
+  - name: batch_file_type
+    title: Batch File Type
+    type: string
+    constraints:
+      maxLength: 5
+      categories:
+        - value: null
+          label: No special approval required.
+        - value: RETRO
+          label: Retroactive submission.
+        - value: POVER
+          label: Plan rollover submission.
+        - value: SVIEW
+          label: Special review submission.
+  - !filler 1
+  - name: cms_approval_request_id
+    title: CMS Approval Request ID
+    description: >-
+      Spaces when Batch File Type, Field 3, contains spaces; otherwise, the right
+      justified CMS pre-approval request ID from the special batch request utility.
+    type: string
+    constraints:
+      maxLength: 10
+    __metadata__:
+      serialization:
+        align: right
+  - !filler 4
+  - name: current_calendar_month
+    title: Current Calendar Month (CCM)
+    description: >-
+      Reference month for enrollment processing. The CCM date determines whether
+      to accept a file and evaluates the appropriate effective date for submitted
+      transactions.
+    type: date
+    format: "%m%Y"
+    constraints:
+      maxLength: 6
+  - !filler 7
+  - name: idm_user_id
+    title: IDM User ID
+    type: string
+    constraints:
+      maxLength: 74
+      required: true
+  - !filler 180
