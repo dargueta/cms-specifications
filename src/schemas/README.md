@@ -9,7 +9,8 @@ The directory structure is strictly:
 ```
 file_formats
 └ <file type slug>
-  └ Makefile
+  ├ Makefile
+  ├ README.md
   └ <version>
     ├ records
     │ ├ <record type>.yaml
@@ -23,6 +24,7 @@ For example:
 file_formats
 └ beq4rx
    ├ Makefile
+   ├ README.md
    ├ 18.7
    │  ├ records
    │  │ ├ header.yaml
@@ -41,7 +43,9 @@ Any Liquid template must have both the desired file extension *and* `.liquid` at
 
 ## Describing File Layouts
 
-File layouts -- where and when to expect particular records -- are described using a Mermaid state diagram.
+File layouts -- where and when to expect particular records -- are described using a Mermaid state diagram. Because layouts are usually fairly stable, and it's helpful for the user to see at a glance how a file is laid out, so by default we store the record layout in the file format's README.
+
+Files that have had layout changes over time will need to define `record_layout.mmd` in the base directory for that version.
 
 ### Examples
 
