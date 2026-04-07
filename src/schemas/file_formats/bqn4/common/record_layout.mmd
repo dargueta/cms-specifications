@@ -1,7 +1,0 @@
-flowchart TD
-    start                       -- is header?   --> parse_header
-    parse_header[parse header]  -- is detail?   --> parse_detail
-    parse_header                -- is trailer?  --> parse_trailer
-    parse_detail[parse detail]  -- is detail?   --> parse_detail
-    parse_detail                -- is trailer?  --> parse_trailer
-    parse_trailer[parse trailer]                --> eof
