@@ -78,9 +78,6 @@ all:
 	$(call f_default_header_detail_trailer_command,19,0)
 
 
-$(TARGET_FORMAT_DIR)/5.0/record_layout.mmd: $(CURDIR)/README.md
-	python3 -m scripts.mermaid_from_markdown $< $@
-
 $(TARGET_FORMAT_DIR)/$(FILE_VERSION)/%: $(TARGET_FORMAT_DIR)/5.0/%
 	mkdir -p $(@D)
 	ln -f $< $@

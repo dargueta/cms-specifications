@@ -73,13 +73,6 @@ all:
 	$(call f_default_single_record_command,19,0)
 
 
-$(TARGET_FORMAT_DIR)/5.0/record_layout.mmd: $(CURDIR)/README.md
-	python3 -m scripts.mermaid_from_markdown $< $@
-
-$(TARGET_FORMAT_DIR)/$(FILE_VERSION)/record_layout.mmd: $(TARGET_FORMAT_DIR)/5.0/record_layout.mmd
-	mkdir -p $(@D)
-	ln -f $< $@
-
 $(TARGET_FORMAT_DIR)/5.1/%: $(TARGET_FORMAT_DIR)/5.0/%
 	mkdir -p $(@D)
 	ln -f $< $@
