@@ -29,9 +29,8 @@ def main(source_file: TextIO, output_file: TextIO) -> None:
     if not diagram_text:
         sys.exit("The file doesn't contain a Mermaid diagram, or it's empty.")
 
-    # We do this weird little thing to ensure that the diagram file ends with a single
-    # trailing newline, and any leading blank lines are ignored.
-    output_file.write(diagram_text.strip() + "\n")
+    # Ensure that the diagram file ends with a single trailing newline.
+    output_file.write(diagram_text + "\n")
 
 
 def process_mermaid(source_file: TextIO) -> str:
@@ -49,10 +48,8 @@ def process_mermaid(source_file: TextIO) -> str:
     #     "blah\n".
     #   * Converts tabs to spaces. This is necessary because `textwrap.dedent()` doesn't
     #     treat tabs and spaces equally. A tab is 4 spaces.
-    diagram_text = "\n".join(
-        ln.rstrip(ln).replace("\t", "    ") for ln in diagram_lines
-    )
-    return textwrap.dedent(diagram_text)
+    diagram_text = "\n".join(ln.rstrip().replace("\t", "    ") for ln in diagram_lines)
+    return textwrap.dedent(diagram_text).strip()
 
 
 if __name__ == "__main__":
