@@ -120,14 +120,6 @@ $(TARGET_FORMAT_DIR)/9.1/records/trailer%: $(TARGET_FORMAT_DIR)/5.1/records/trai
 	mkdir -p $(@D)
 	ln -f $< $@
 
-$(TARGET_FORMAT_DIR)/9.2/records/header%: $(TARGET_FORMAT_DIR)/9.1/records/header%
-	mkdir -p $(@D)
-	ln -f $< $@
-
-$(TARGET_FORMAT_DIR)/9.2/records/trailer%: $(TARGET_FORMAT_DIR)/9.1/records/trailer%
-	mkdir -p $(@D)
-	ln -f $< $@
-
 $(TARGET_FORMAT_DIR)/9.3/%: $(TARGET_FORMAT_DIR)/9.2/%
 	mkdir -p $(@D)
 	ln -f $< $@
