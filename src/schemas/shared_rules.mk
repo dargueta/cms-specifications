@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: BSD-3-Clause
 
-.SECONDARY: $(CURDIR)/record_layout.mmd
+.INTERMEDIATE: $(CURDIR)/record_layout.mmd
 
 %-min.json: %.json
 	python3 -m scripts.minijson $< $@
@@ -18,7 +18,7 @@ $(TARGET_FORMAT_DIR)/%/record_layout.mmd: $(CURDIR)/record_layout.mmd
 	ln -f $< $@
 
 $(CURDIR)/record_layout.mmd: $(CURDIR)/README.md
-	python3 -m scripts.mermaid_from_markdown $< $@
+	awk '/^```mermaid$$/{f=1;next} f&&/^```$$/{exit} f' $< > $@
 
 $(TARGET_FORMAT_DIR)/%: $(CURDIR)/%
 	mkdir -p $(@D)
