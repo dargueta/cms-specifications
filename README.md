@@ -11,6 +11,10 @@ It's intended for software engineers looking to implement, for example, file par
 
 Instead of links I've included the actual files here because I hate dead links, and, quite frankly, I don't trust [DOGE](https://doge.gov/) to not break everything.
 
+## System Requirements
+
+Python 3.12 or higher is required for building all the schema references. I strongly recommend using a virtual environment so you can install the required dependencies without affecting your system.
+
 ## Licensing
 
 * Except as noted, all files in the `us_federal_government_docs` directory are works of the U.S. Federal Government. Under 17 U.S.C. §105 these are public domain. *I did not create these, nor do I claim any rights on these files or their contents.*
