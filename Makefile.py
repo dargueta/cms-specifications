@@ -9,11 +9,20 @@ the myriad of other Python packages that have `pymake` in the name.
 from __future__ import annotations
 
 import configparser
+import dataclasses
+import operator
+import re
+import typing
 from pathlib import Path
+from typing import ClassVar
 
 from pymake import sh
 from pymake import task
 
+
+if typing.TYPE_CHECKING:
+    from collections.abc import Callable
+    from typing import Self
 
 HERE = Path(__file__).parent
 BUILD_DIR = HERE / "build"
@@ -65,6 +74,54 @@ def create_build_dir() -> None:
     BUILD_DIR.mkdir(parents=True, exist_ok=True)
 
 
+@dataclasses.dataclass(frozen=True)
+class VersionConstraint:
+    """A specification for comparing versions against a single constraint."""
+
+    comparison: str
+    major: int
+    minor: int
+
+    CHECKS: ClassVar[dict[str, Callable[..., bool]]] = {
+        "<": operator.lt,
+        "<=": operator.le,
+        ">": operator.gt,
+        ">=": operator.ge,
+        "==": operator.eq,
+        "!=": operator.ne,
+    }
+
+    @classmethod
+    def from_spec_string(cls, spec: str) -> Self:
+        """Parse a specification into a class that can compare versions."""
+        parts = re.match(
+            r"^(?P<constraint>[><=!]+)?(?P<major>\d+)\.(?P<minor>)\d+)$",
+            spec.replace(" ", ""),
+        )
+        if not parts:
+            raise ValueError(f"Invalid constraint definition: {spec!r}")
+
+        return cls(
+            comparison=parts["constraint"] or "==",
+            major=int(parts["major"]),
+            minor=int(parts["minor"]),
+        )
+
+    def check(self, version: tuple[int, int]) -> bool:
+        """Check the given version against this constraint."""
+        comparator = self.CHECKS.get(self.comparison)
+        if not comparator:
+            raise ValueError(f"Unexpected version check: {self.comparison!r}")
+        return comparator((self.major, self.minor), version)
+
+    def __post_init__(self) -> None:
+        if self.comparison not in self.CHECKS:
+            raise ValueError(
+                f"Invalid comparator: {self.comparison!r} not one of "
+                + ", ".join(self.CHECKS.keys())
+            )
+
+
 def generate_tasks_for_format(format_name: str, source_path: Path) -> None:
     """Register tasks to generate all output files for the given format."""
     # A file named build_rules.ini will tell us how to generate versions.
@@ -80,8 +137,8 @@ def generate_tasks_for_format(format_name: str, source_path: Path) -> None:
     # "5.0: >=5.1, <=8.0" that means that version 5.0 must exist in the source tree, and
     # all PCUG versions from 5.1 through 8.0 are identical to it.
     for parent_version, child_version_spec in build_rules["generated-versions"].items():
-        child_version_rules = [
-            p.replace(" ", "") for p in child_version_spec.split(",")
+        constraints = [
+            VersionConstraint.from_spec_string(s) for s in child_version_spec.split(",")
         ]
 
 
