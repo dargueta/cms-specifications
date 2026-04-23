@@ -10,11 +10,13 @@ from __future__ import annotations
 
 import configparser
 import dataclasses
+import logging
 import operator
 import re
 import typing
 from pathlib import Path
 from typing import ClassVar
+from typing import TypeAlias
 
 from pymake import sh
 from pymake import task
@@ -22,7 +24,14 @@ from pymake import task
 
 if typing.TYPE_CHECKING:
     from collections.abc import Callable
+    from collections.abc import Mapping
     from typing import Self
+
+
+VersionSpec: TypeAlias = tuple[int, int]
+
+
+LOG = logging.getLogger(__name__)
 
 HERE = Path(__file__).parent
 BUILD_DIR = HERE / "build"
@@ -30,7 +39,7 @@ SOURCE_DIR = HERE / "src"
 SCHEMAS_SOURCE_DIR = SOURCE_DIR / "schemas"
 FORMATS_BASE_DIR = SCHEMAS_SOURCE_DIR / "file_formats"
 
-ALL_PCUG_VERSIONS = [
+ALL_PCUG_VERSIONS: list[VersionSpec] = [
     # Versions 5 through 14 all have minor versions 0-3, except "7.3" may not exist.
     *((major, minor) for minor in range(4) for major in range(1, 15)),
     # 15 and 16 have minor versions 0-4.
@@ -127,19 +136,76 @@ def generate_tasks_for_format(format_name: str, source_path: Path) -> None:
     # A file named build_rules.ini will tell us how to generate versions.
     build_rules_file = source_path / "build_rules.ini"
     if not build_rules_file.exists():
+        LOG.error()
         return
 
-    parser = configparser.ConfigParser()
-    build_rules = parser.read(build_rules_file)
+    build_rules = configparser.ConfigParser().read(build_rules_file)
 
-    # In [generated-versions], all keys indicate a concrete defined version, and all
-    # values are versions generated from this concrete version. For example, if we have
-    # "5.0: >=5.1, <=8.0" that means that version 5.0 must exist in the source tree, and
-    # all PCUG versions from 5.1 through 8.0 are identical to it.
-    for parent_version, child_version_spec in build_rules["generated-versions"].items():
+    identical_versions = enumerate_identical_versions(build_rules)
+    identical_files = enumerate_identical_files(build_rules)
+
+
+def enumerate_identical_versions(
+    build_rules: Mapping[str, Mapping[str, str]],
+) -> dict[VersionSpec, list[VersionSpec]]:
+    """Find all versions declared to be identical to another version.
+
+    In the "identical-versions" section of the `build_rules.ini` file, all keys indicate
+    a concrete defined version, and all values are versions generated from this concrete
+    version.
+
+    For example, if we have "5.0: >=5.1, <=8.0" that means that version 5.0 must exist
+    in the source tree, and all PCUG versions from 5.1 through 8.0 are identical to it.
+
+    Arguments:
+        build_rules:
+            The build rules associated with this file format. If the
+            `identical-versions` section is missing or empty, this is taken to mean that
+            no supported version has any derived versions.
+
+    Returns:
+        A mapping of versions to a list of all versions identical to it. This list is
+        guaranteed to be in ascending order.
+    """
+    identical_versions = build_rules.get("identical-versions")
+
+    # Some formats don't have any versions that are identical to another. This is fine.
+    if not identical_versions:
+        return {}
+
+    result = {}
+    for parent_version_string, child_version_spec in identical_versions.items():
+        parent_version = tuple(parent_version_string.split("."))
         constraints = [
             VersionConstraint.from_spec_string(s) for s in child_version_spec.split(",")
         ]
+
+        # If there are no constraints, it's just an explicit way of stating that this
+        # version has no versions identical to it.
+        if not constraints:
+            continue
+
+        for pcug_version in ALL_PCUG_VERSIONS:
+            if all(c.check(pcug_version) for c in constraints):
+                result.setdefault(parent_version, []).append(pcug_version)
+
+    return result
+
+
+def enumerate_identical_files(
+    build_rules: Mapping[str, Mapping[str, str]],
+) -> dict[VersionSpec, dict[VersionSpec, Path]]:
+    """Get a mapping of all files derived from another version."""
+    identical_files = build_rules.get("identical-files")
+
+    # Some formats don't have any files that are identical to another. This is usually
+    # the case.
+    if not identical_files:
+        return {}
+
+    result = {}
+    # TODO
+    return result
 
 
 main()
