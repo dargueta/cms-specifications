@@ -195,11 +195,17 @@ def enumerate_identical_versions(
 def enumerate_identical_files(
     build_rules: Mapping[str, Mapping[str, str]],
 ) -> dict[VersionSpec, dict[VersionSpec, Path]]:
-    """Get a mapping of all files derived from another version."""
+    """Get a mapping of individual files derived from another version.
+
+    Most formats have entire versions that are identical to each other, not individual
+    files. That's usually only the case when a format has multiple record types and
+    only a subset of them changed between versions.
+
+    BQN4 is an example, where the detail record changed multiple times between v5.0 and
+    9.1, but the header and trailer records were always the same.
+    """
     identical_files = build_rules.get("identical-files")
 
-    # Some formats don't have any files that are identical to another. This is usually
-    # the case.
     if not identical_files:
         return {}
 
