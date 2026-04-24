@@ -10,13 +10,14 @@ from __future__ import annotations
 
 import configparser
 import dataclasses
+import functools
 import logging
 import operator
 import re
 import typing
 from pathlib import Path
 from typing import ClassVar
-from typing import TypeAlias
+from typing import NamedTuple
 
 from pymake import sh
 from pymake import task
@@ -24,11 +25,10 @@ from pymake import task
 
 if typing.TYPE_CHECKING:
     from collections.abc import Callable
+    from collections.abc import Container
+    from collections.abc import Iterable
     from collections.abc import Mapping
     from typing import Self
-
-
-VersionSpec: TypeAlias = tuple[int, int]
 
 
 LOG = logging.getLogger(__name__)
@@ -39,16 +39,27 @@ SOURCE_DIR = HERE / "src"
 SCHEMAS_SOURCE_DIR = SOURCE_DIR / "schemas"
 FORMATS_BASE_DIR = SCHEMAS_SOURCE_DIR / "file_formats"
 
+
+class VersionSpec(NamedTuple):
+    major: int
+    minor: int
+
+    @classmethod
+    def from_string(cls, spec: str) -> Self:
+        major, _, minor = spec.partition(".")
+        return cls(int(major), int(minor))
+
+
 ALL_PCUG_VERSIONS: list[VersionSpec] = [
     # Versions 5 through 14 all have minor versions 0-3, except "7.3" may not exist.
-    *((major, minor) for minor in range(4) for major in range(1, 15)),
+    *(VersionSpec(major, minor) for minor in range(4) for major in range(1, 15)),
     # 15 and 16 have minor versions 0-4.
-    *((major, minor) for minor in range(5) for major in (15, 16)),
+    *(VersionSpec(major, minor) for minor in range(5) for major in (15, 16)),
     # 17 and 18 have minor versions 0-9.I can't find the PDF for 17.0, but every other
     # major version has a minor version 0 so I assume it exists.
-    *((major, minor) for minor in range(10) for major in (17, 18)),
+    *(VersionSpec(major, minor) for minor in range(10) for major in (17, 18)),
     # 19.0 is the most recent version as of 2026-04-20.
-    (19, 0),
+    VersionSpec(19, 0),
 ]
 ALL_PCUG_VERSIONS.remove((7, 3))  # I can't find mention of v7.3 anywhere.
 
@@ -87,11 +98,10 @@ def create_build_dir() -> None:
 class VersionConstraint:
     """A specification for comparing versions against a single constraint."""
 
-    comparison: str
-    major: int
-    minor: int
+    comparator: Callable[[VersionSpec, VersionSpec], bool]
+    version: VersionSpec
 
-    CHECKS: ClassVar[dict[str, Callable[..., bool]]] = {
+    CHECKS: ClassVar[dict[str, Callable[[VersionSpec, VersionSpec], bool]]] = {
         "<": operator.lt,
         "<=": operator.le,
         ">": operator.gt,
@@ -103,32 +113,42 @@ class VersionConstraint:
     @classmethod
     def from_spec_string(cls, spec: str) -> Self:
         """Parse a specification into a class that can compare versions."""
-        parts = re.match(
-            r"^(?P<constraint>[><=!]+)?(?P<major>\d+)\.(?P<minor>)\d+)$",
-            spec.replace(" ", ""),
-        )
+        spec = spec.strip()
+
+        if spec == "*":
+            return cls(lambda _a, _b: True, VersionSpec(0, 0))
+
+        parts = re.match(r"^(?P<constraint>[><=!]+)?\s*(?P<version>\d+\.\d+)$", spec)
         if not parts:
             raise ValueError(f"Invalid constraint definition: {spec!r}")
 
+        comparator = parts["constraint"]
+        if comparator not in cls.CHECKS:
+            raise ValueError(
+                f"Invalid constraint definition {spec!r}: {comparator!r} not one of: "
+                + ", ".join(sorted(cls.CHECKS))
+            )
+
         return cls(
-            comparison=parts["constraint"] or "==",
-            major=int(parts["major"]),
-            minor=int(parts["minor"]),
+            comparator=cls.CHECKS[comparator],
+            version=VersionSpec.from_string(parts["version"]),
         )
 
     def check(self, version: tuple[int, int]) -> bool:
         """Check the given version against this constraint."""
-        comparator = self.CHECKS.get(self.comparison)
-        if not comparator:
-            raise ValueError(f"Unexpected version check: {self.comparison!r}")
-        return comparator((self.major, self.minor), version)
+        return self.comparator(self.version, version)
 
-    def __post_init__(self) -> None:
-        if self.comparison not in self.CHECKS:
-            raise ValueError(
-                f"Invalid comparator: {self.comparison!r} not one of "
-                + ", ".join(self.CHECKS.keys())
-            )
+
+@dataclasses.dataclass
+class FileDependency:
+    file_path: Path
+    source_version: VersionSpec | None = None
+    target_versions: Container[VersionSpec] = ()
+
+
+def _generic_symlink_task(parent: Path, children: Iterable[Path]) -> None:
+    for child in children:
+        child.symlink_to(parent)
 
 
 def generate_tasks_for_format(format_name: str, source_path: Path) -> None:
@@ -141,8 +161,28 @@ def generate_tasks_for_format(format_name: str, source_path: Path) -> None:
 
     build_rules = configparser.ConfigParser().read(build_rules_file)
 
+    target_root = BUILD_DIR / format_name
+
+    # Create tasks that will symlink the build directories of identical versions to
+    # a concrete parent version. This allows us to reproduce the outputs of entire
+    # versions, rather than having to symlink or copy each file directly.
     identical_versions = enumerate_identical_versions(build_rules)
-    identical_files = enumerate_identical_files(build_rules)
+    for parent_version, children in identical_versions.items():
+        parent_output_dir = Path(target_root / str(parent_version))
+        child_output_dirs = [Path(target_root / str(v)) for v in children]
+
+        task.register(
+            functools.partial(
+                _generic_symlink_task,
+                parent=parent_output_dir,
+                children=child_output_dirs,
+            ),
+            name=f"{format_name}_{parent_version.major}_{parent_version.minor}",
+            inputs=[parent_output_dir],
+            outputs=child_output_dirs,
+        )
+
+    # identical_files = enumerate_identical_files(build_rules)
 
 
 def enumerate_identical_versions(
@@ -173,33 +213,18 @@ def enumerate_identical_versions(
     if not identical_versions:
         return {}
 
-    result = {}
-    for parent_version_string, child_version_spec in identical_versions.items():
-        parent_version = tuple(parent_version_string.split("."))
-        constraints = [
-            VersionConstraint.from_spec_string(s) for s in child_version_spec.split(",")
-        ]
-
-        # If there are no constraints, it's just an explicit way of stating that this
-        # version has no versions identical to it.
-        if not constraints:
-            continue
-
-        for pcug_version in ALL_PCUG_VERSIONS:
-            if all(c.check(pcug_version) for c in constraints):
-                result.setdefault(parent_version, []).append(pcug_version)
-
-    return result
+    result = enumerate_versions_matching_constraints(identical_versions)
+    return {VersionSpec.from_string(k): v for k, v in result.items()}
 
 
 def enumerate_identical_files(
     build_rules: Mapping[str, Mapping[str, str]],
-) -> dict[VersionSpec, dict[VersionSpec, Path]]:
+) -> list[FileDependency]:
     """Get a mapping of individual files derived from another version.
 
     Most formats have entire versions that are identical to each other, not individual
-    files. That's usually only the case when a format has multiple record types and
-    only a subset of them changed between versions.
+    files. Usually, this only happens when a format has multiple record types, and only
+    a subset of them change between versions.
 
     BQN4 is an example, where the detail record changed multiple times between v5.0 and
     9.1, but the header and trailer records were always the same.
@@ -207,10 +232,59 @@ def enumerate_identical_files(
     identical_files = build_rules.get("identical-files")
 
     if not identical_files:
-        return {}
+        return []
 
+    matching_versions = enumerate_versions_matching_constraints(identical_files)
+
+    result = []
+    for raw_path, dependent_versions in matching_versions:
+        match = re.match(r"^(\d+\.\d+)")
+        source_version = VersionSpec.from_string(match[1]) if match else None
+
+        result.append(
+            FileDependency(
+                file_path=Path(raw_path),
+                source_version=source_version,
+                target_versions=dependent_versions,
+            )
+        )
+    return result
+
+
+def enumerate_versions_matching_constraints(
+    rules: Mapping[str, str],
+) -> dict[str, list[VersionSpec]]:
+    """Map keys to lists of PCUG versions matching the version constraint values.
+
+    .. python::
+        >>> enumerate_versions_matching_constraints({"abc": ">=5.0, <6"})
+        ... {
+        ...     "abc": [
+        ...         VersionSpec(5, 0),
+        ...         VersionSpec(5, 1),
+        ...         VersionSpec(5, 2),
+        ...         VersionSpec(5, 3)
+        ...     ]
+        ... }
+    """
     result = {}
-    # TODO
+    for key, child_version_spec in rules.items():
+        constraints = [
+            VersionConstraint.from_spec_string(s)
+            for s in child_version_spec.split(",", 1)
+        ]
+
+        if not constraints:
+            raise ValueError(
+                f"Version constraint lists cannot be empty. Offender: {key!r}"
+            )
+
+        result[key] = [
+            pcug_version
+            for pcug_version in ALL_PCUG_VERSIONS
+            if all(c.check(pcug_version) for c in constraints)
+        ]
+
     return result
 
 
