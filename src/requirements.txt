@@ -6,5 +6,6 @@ deep_chainmap~=0.1.0
 hayeah-pymake
 python-liquid~=2.0
 more_itertools>=9.0
+pyfixwidth~=0.3.2
 ruamel.yaml>=0.18.15, <0.20.0
 ruamel.yaml.cmd
