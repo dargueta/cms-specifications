@@ -22,7 +22,6 @@ from pathlib import Path
 from typing import ClassVar
 from typing import NamedTuple
 
-from pymake import sh
 from pymake import task
 
 
@@ -44,13 +43,23 @@ FORMATS_BASE_DIR = SCHEMAS_SOURCE_DIR / "file_formats"
 
 
 class VersionSpec(NamedTuple):
+    """A version number that can be compared directly.
+
+    Versions that are left as strings can't be reliably compared, because "2.0" would
+    sort higher than "10.0".
+    """
+
     major: int
     minor: int
 
     @classmethod
     def from_string(cls, spec: str) -> Self:
-        major, _, minor = spec.partition(".")
+        """Parse a string like `5.0` into a VersionSpec."""
+        major, _, minor = spec.strip().partition(".")
         return cls(int(major), int(minor))
+
+    def __str__(self) -> str:
+        return f"{self.major}.{self.minor}"
 
 
 ALL_PCUG_VERSIONS: list[VersionSpec] = [
@@ -144,12 +153,18 @@ class VersionConstraint:
 
 @dataclasses.dataclass
 class FileDependency:
+    """Keep track of which PCUG versions depend on a specific file."""
+
     file_path: Path
     source_version: VersionSpec | None = None
     target_versions: Container[VersionSpec] = ()
 
 
-def _generic_symlink_task(parent: Path, children: Iterable[Path]) -> None:
+def _generic_link_or_copy_task(parent: Path, children: Iterable[Path]) -> None:
+    """Link one or more "children" to point to a "parent", or copy if not possible.
+
+    This works with both files and directories.
+    """
     for child in children:
         if parent.is_dir():
             _link_or_copy_directory(child, parent)
@@ -213,7 +228,7 @@ def generate_tasks_for_format(format_name: str, source_path: Path) -> None:
 
         task.register(
             functools.partial(
-                _generic_symlink_task,
+                _generic_link_or_copy_task,
                 parent=parent_output_dir,
                 children=child_output_dirs,
             ),
