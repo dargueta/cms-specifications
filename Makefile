@@ -23,12 +23,12 @@ clean: | $(PYTHON_BIN)
 
 .PHONY: format
 format:
-	ruff check --select I --fix src
-	ruff format src
+	ruff check --select I --fix src Makefile.py
+	ruff format src Makefile.py
 
 .PHONY: lint
 lint:
-	ruff check src
+	ruff check src Makefile.py
 
 $(VENV_DIR):
 	python3 -m venv $@

@@ -17,7 +17,6 @@ import operator
 import pathlib
 import re
 import shutil
-import sys
 from collections.abc import Callable
 from collections.abc import Container
 from collections.abc import Iterable

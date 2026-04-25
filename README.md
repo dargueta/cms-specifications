@@ -13,7 +13,7 @@ Instead of links I've included the actual files here because I hate dead links, 
 
 ## System Requirements
 
-Python 3.12 or higher is required for building all the schema references. I strongly recommend using a virtual environment so you can install the required dependencies without affecting your system.
+Python 3.11 or higher is required for building all the schema references. I strongly recommend using a virtual environment so you can install the required dependencies without affecting your system.
 
 ## Licensing
 
