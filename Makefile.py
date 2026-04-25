@@ -9,11 +9,14 @@ the myriad of other Python packages that have `pymake` in the name.
 from __future__ import annotations
 
 import configparser
+import contextlib
 import dataclasses
 import functools
 import logging
 import operator
+import pathlib
 import re
+import shutil
 import typing
 from pathlib import Path
 from typing import ClassVar
@@ -148,7 +151,37 @@ class FileDependency:
 
 def _generic_symlink_task(parent: Path, children: Iterable[Path]) -> None:
     for child in children:
-        child.symlink_to(parent)
+        if parent.is_dir():
+            _link_or_copy_directory(child, parent)
+        else:
+            _link_or_copy_file(child, parent)
+
+
+def _link_or_copy_directory(link: Path, existing: Path) -> None:
+    """Try linking a directory, falling back to copying if that doesn't work."""
+    # Hard links to a directory generally aren't allowed, so we won't bother trying. Go
+    # for a symlink first instead.
+    with contextlib.suppress(pathlib.UnsupportedOperation, NotImplementedError):
+        link.symlink_to(existing)
+        return
+
+    # Symlink didn't work, we have to copy.
+    shutil.copytree(existing, link)
+
+
+def _link_or_copy_file(link: Path, existing: Path) -> None:
+    """Try linking a file, falling back to copying if that doesn't work."""
+    # Try a hard link first.
+    with contextlib.suppress(pathlib.UnsupportedOperation, NotImplementedError):
+        link.hardlink_to(existing)
+        return
+
+    # Hard links not supported, try symlinking.
+    with contextlib.suppress(pathlib.UnsupportedOperation, NotImplementedError):
+        link.symlink_to(existing)
+        return
+
+    shutil.copyfile(existing, link)
 
 
 def generate_tasks_for_format(format_name: str, source_path: Path) -> None:
@@ -156,19 +189,26 @@ def generate_tasks_for_format(format_name: str, source_path: Path) -> None:
     # A file named build_rules.ini will tell us how to generate versions.
     build_rules_file = source_path / "build_rules.ini"
     if not build_rules_file.exists():
-        LOG.error()
+        LOG.warning(
+            "Format %r doesn't define required build rules file %r. Ignoring for now,"
+            " but this may become an error in the future.",
+            format_name,
+            str(source_path),
+        )
         return
 
     build_rules = configparser.ConfigParser().read(build_rules_file)
 
     target_root = BUILD_DIR / format_name
+    parent_targets = []
 
-    # Create tasks that will symlink the build directories of identical versions to
-    # a concrete parent version. This allows us to reproduce the outputs of entire
-    # versions, rather than having to symlink or copy each file directly.
+    # Create tasks that will symlink the build directories of identical versions to a
+    # concrete parent version. This lets us reproduce the output of entire versions with
+    # one command, rather than having to symlink or copy each file separately.
     identical_versions = enumerate_identical_versions(build_rules)
     for parent_version, children in identical_versions.items():
         parent_output_dir = Path(target_root / str(parent_version))
+        parent_targets.append(parent_output_dir)
         child_output_dirs = [Path(target_root / str(v)) for v in children]
 
         task.register(
@@ -227,7 +267,7 @@ def enumerate_identical_files(
     a subset of them change between versions.
 
     BQN4 is an example, where the detail record changed multiple times between v5.0 and
-    9.1, but the header and trailer records were always the same.
+    v9.1, but the header and trailer records were always the same.
     """
     identical_files = build_rules.get("identical-files")
 
@@ -238,6 +278,8 @@ def enumerate_identical_files(
 
     result = []
     for raw_path, dependent_versions in matching_versions:
+        # If the file path starts with what appears to be a version number, record that
+        # as the "source version".
         match = re.match(r"^(\d+\.\d+)")
         source_version = VersionSpec.from_string(match[1]) if match else None
 
@@ -257,13 +299,14 @@ def enumerate_versions_matching_constraints(
     """Map keys to lists of PCUG versions matching the version constraint values.
 
     .. python::
-        >>> enumerate_versions_matching_constraints({"abc": ">=5.0, <6"})
+        >>> enumerate_versions_matching_constraints({"abc": ">=5.0, <6.2, !=5.3"})
         ... {
         ...     "abc": [
         ...         VersionSpec(5, 0),
         ...         VersionSpec(5, 1),
         ...         VersionSpec(5, 2),
-        ...         VersionSpec(5, 3)
+        ...         VersionSpec(6, 0),
+        ...         VersionSpec(6, 1),
         ...     ]
         ... }
     """
