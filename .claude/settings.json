@@ -1,0 +1,20 @@
+{
+  "model": "claude-opus-4-6",
+  "effortLevel": "medium",
+  "defaultMode": "default",
+  "autoMemoryEnabled": true,
+  "permissions": {
+    "allow": [
+      "Read",
+      "Bash(head *)",
+      "Bash(ls *)",
+      "Bash(tail *)",
+      "Bash(tr *)",
+      "Bash(wc *)"
+    ],
+    "deny": [
+      "Bash(rm -rf *)",
+      "Edit(/us_federal_government_docs/**)"
+    ]
+  }
+}

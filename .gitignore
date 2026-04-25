@@ -7,6 +7,8 @@
 .vscode/
 __pycache__/
 build/
+.claude/settings.local.json
+.claude/CLAUDE.local.md
 
 *.a
 *.dll
