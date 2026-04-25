@@ -36,4 +36,4 @@ $(VENV_DIR):
 $(ACTIVATE): | $(VENV_DIR)
 
 $(PYTHON_BIN): | $(ACTIVATE)
-	$(PIP) install -Ur requirements.txt
+	$(PIP) install -Ur src/requirements.txt -r src/test-requirements.txt
