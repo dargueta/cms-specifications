@@ -6,11 +6,20 @@
   "permissions": {
     "allow": [
       "Read",
+      "Bash(find *)",
+      "Bash(grep *)",
       "Bash(head *)",
       "Bash(ls *)",
       "Bash(tail *)",
       "Bash(tr *)",
-      "Bash(wc *)"
+      "Bash(wc *)",
+      "Bash(rtk find *)",
+      "Bash(rtk grep *)",
+      "Bash(rtk head *)",
+      "Bash(rtk ls *)",
+      "Bash(rtk tail *)",
+      "Bash(rtk tr *)",
+      "Bash(rtk wc *)"
     ],
     "deny": [
       "Bash(rm -rf *)",
