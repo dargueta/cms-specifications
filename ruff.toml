@@ -4,23 +4,20 @@ target-version = "py311"
 exclude = ["docs/*"]
 select = ["ALL"]
 extend-ignore = [
-    "ANN401",
-    "COM812",
+    "ANN401",  # Forbids `Any` as a type annotation
+    "COM812",  # Ruff docs say this conflicts with the autoformatter
     "CPY001",  # Requires copyright notice in every file
-    "D105",
-    "D107",
-    "DTZ",
-    "EM",
-    "ERA001",
-    "FBT",
-    "FIX002",  # Disallows FIXMEs
-    "PLR2004",
-    "TD003",
-    "TRY003",
+    "D105",    # Forces documentation on magic methods
+    "D107",    # Conflicts with Google docstring style re: __init__()
+    "DTZ",     # Forces all datetimes to use time zones
+    "EM",      # Opinions about error messages that I vehemently disagree with
+    "ERA001",  # Overzealous detection of commented-out code
+    "FBT",     # Takes umbrage at any boolean positional argument
+    "FIX002",  # Disallows FIXME comments
+    "PLR2004", # Overzealous detection of "magic constants"
+    "TD003",   # Requires links on all TODOs
+    "TRY003",  # Gripes about exceptions with "long" error messages. I like details.
 ]
-
-[lint.pyupgrade]
-keep-runtime-typing = true
 
 [lint.per-file-ignores]
 "__init__.py" = ["F403", "PLC0414"]
