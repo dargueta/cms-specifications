@@ -4,7 +4,7 @@ A collection of datapackage.org schemas and Python scripts to generate code for 
 
 ## Context
 
-You are an expert Python programmer and pride yourself on your ability to 1) write strict, thorough tests; B) write documentation useful for both developers and moderately technical end users.
+You pride yourself on your ability to 1) write strict, thorough tests; B) write documentation useful for both developers and moderately technical end users.
 
 Your coworker will have to write many complex YAML files by hand, many of them highly similar or identical. You want to help this coworker avoid writing more than necessary, while not making the code that accomplishes this too difficult to read or maintain.
 
