@@ -12,12 +12,13 @@ import configparser
 import contextlib
 import dataclasses
 import functools
-import glob
 import logging
 import operator
+import os
 import pathlib
 import re
 import shutil
+import sys
 from collections.abc import Callable
 from collections.abc import Container
 from collections.abc import Iterable
@@ -27,6 +28,7 @@ from typing import NamedTuple
 from typing import Self
 from typing import TypeVar
 
+from pymake import sh
 from pymake import task
 
 
@@ -39,6 +41,7 @@ SCHEMAS_SOURCE_DIR = SOURCE_DIR / "schemas"
 FORMATS_BASE_DIR = SCHEMAS_SOURCE_DIR / "file_formats"
 
 T = TypeVar("T")
+C = TypeVar("C", bound=Callable)
 
 
 class VersionSpec(NamedTuple):
@@ -100,7 +103,7 @@ def main() -> None:
 
 
 @task(outputs=[BUILD_DIR])
-def create_build_dir() -> None:
+def zzzcreate_build_dir() -> None:
     """Create the build directory."""
     BUILD_DIR.mkdir(parents=True, exist_ok=True)
 
@@ -205,6 +208,164 @@ def _touch_files(paths: Iterable[Path]) -> None:
         path.touch()
 
 
+def _run_render_template(source: Path, output: Path, include_dirs: list[Path]) -> None:
+    output.parent.mkdir(parents=True, exist_ok=True)
+    cmd = [sys.executable, "-m", "scripts.render_templates"]
+    for d in include_dirs:
+        cmd.extend(["-I", str(d)])
+    sh([*cmd, "-o", str(output), str(source)])
+
+
+def _run_postprocess_yaml(source: Path, output: Path, include_dirs: list[Path]) -> None:
+    output.parent.mkdir(parents=True, exist_ok=True)
+    cmd = [sys.executable, "-m", "scripts.postprocess_yaml", "--json"]
+    for d in include_dirs:
+        cmd.extend(["-I", str(d)])
+    sh([*cmd, "-o", str(output), str(source)])
+
+
+def _run_json_to_yaml(json_path: Path, yaml_path: Path) -> None:
+    sh(
+        [
+            sys.executable,
+            "-m",
+            "ruamel.yaml.cmd",
+            "from-json",
+            "-o",
+            yaml_path,
+            json_path,
+        ]
+    )
+
+
+def _cleanup_intermediate(path: Path) -> None:
+    path.unlink(missing_ok=True)
+
+
+def _task_name_from_path(output_path: Path) -> str:
+    """Derive a unique task name from an output path relative to BUILD_DIR."""
+    return "zzz" + (
+        str(output_path.relative_to(BUILD_DIR))
+        .replace(os.path.sep, "_")
+        .replace(".", "_")
+    )
+
+
+def _bind_function(func: C, docstring: str, /, *args: object, **kwargs: object) -> C:
+    """Bind a function using `functools.partial()`, but assign a docstring too."""
+    bound = functools.partial(func, *args, **kwargs)
+    bound.__doc__ = docstring
+    return bound
+
+
+def _register_yaml_postprocess_tasks(
+    yaml_source: Path,
+    build_dir: Path,
+    common_include: Path,
+    output_stem: str | None = None,
+) -> None:
+    """Register tasks to postprocess a YAML file to JSON, then back to clean YAML."""
+    stem = output_stem or yaml_source.stem
+    json_path = build_dir / (stem + ".json")
+    yaml_path = build_dir / (stem + ".yaml")
+
+    task.register(
+        _bind_function(
+            _run_postprocess_yaml,
+            f"Generate JSON DataPackage file: {json_path.relative_to(BUILD_DIR)}",
+            source=yaml_source,
+            output=json_path,
+            include_dirs=[common_include],
+        ),
+        name=_task_name_from_path(json_path),
+        inputs=[yaml_source],
+        outputs=[json_path],
+    )
+
+    task.register(
+        _bind_function(
+            _run_json_to_yaml,
+            f"Render YAML DataPackage file: {yaml_path.relative_to(BUILD_DIR)}",
+            json_path,
+            yaml_path,
+        ),
+        name=_task_name_from_path(yaml_path),
+        inputs=[json_path],
+        outputs=[yaml_path],
+    )
+
+
+def _register_tasks_for_source_file(
+    source_file: Path, version_build_dir: Path, common_include: Path
+) -> None:
+    """Register build tasks for a single source file in a records directory."""
+    if source_file.suffix == ".liquid":
+        rendered_name = source_file.stem
+        is_yaml = Path(rendered_name).suffix == ".yaml"
+
+        if is_yaml:
+            rendered_path = version_build_dir / (
+                Path(rendered_name).stem + ".rendered.yaml"
+            )
+        else:
+            rendered_path = version_build_dir / rendered_name
+
+        task.register(
+            _bind_function(
+                _run_render_template,
+                f"Render {source_file.relative_to(HERE)}",
+                source=source_file,
+                output=rendered_path,
+                include_dirs=[FORMATS_BASE_DIR],
+            ),
+            name=_task_name_from_path(rendered_path),
+            inputs=[source_file],
+            outputs=[rendered_path],
+        )
+
+        if is_yaml:
+            _register_yaml_postprocess_tasks(
+                rendered_path,
+                version_build_dir,
+                common_include,
+                output_stem=Path(rendered_name).stem,
+            )
+            task.register(
+                _bind_function(
+                    _cleanup_intermediate,
+                    f"Delete intermediate file {rendered_path.relative_to(BUILD_DIR)}",
+                    rendered_path,
+                ),
+                name=_task_name_from_path(rendered_path) + "_cleanup",
+                inputs=[rendered_path],
+                outputs=[],
+            )
+
+    elif source_file.suffix == ".yaml":
+        _register_yaml_postprocess_tasks(source_file, version_build_dir, common_include)
+
+
+def generate_file_build_tasks(source_path: Path, target_root: Path) -> None:
+    """Register render/postprocess/convert tasks for all source files in a format."""
+    common_include = FORMATS_BASE_DIR / "_common"
+
+    for version_dir in sorted(source_path.iterdir()):
+        if not re.match(r"\d+\.\d+$", version_dir.name) or not version_dir.is_dir():
+            continue
+
+        records_dir = version_dir / "records"
+        if not records_dir.exists():
+            continue
+
+        version_build_dir = target_root / version_dir.name / "records"
+
+        for source_file in sorted(records_dir.iterdir()):
+            if source_file.is_file():
+                _register_tasks_for_source_file(
+                    source_file, version_build_dir, common_include
+                )
+
+
 def generate_tasks_for_format(source_path: Path) -> None:
     """Register tasks to generate all output files for the given file format."""
     format_name = source_path.stem
@@ -245,13 +406,18 @@ def generate_tasks_for_format(source_path: Path) -> None:
             already_handled_versions=already_handled_versions,
         )
 
-    identical_files = enumerate_identical_files(build_rules)
+    identical_files = enumerate_identical_files(build_rules, source_path)
     for file, dependents in identical_files.items():
         task.register(
-            functools.partial(_touch_files, dependents),
+            _bind_function(
+                _touch_files, "(Force rebuild if parent template changes)", dependents
+            ),
+            name=f"zzztouch_{format_name}_{file.parent.parent.name}_{file.stem}",
             inputs=[file],
             outputs=dependents,
         )
+
+    generate_file_build_tasks(source_path, target_root)
 
 
 def generate_tasks_for_identical_versions(
@@ -284,10 +450,12 @@ def generate_tasks_for_identical_versions(
     child_output_dirs = [format_build_root / str(v) for v in child_versions]
     parent_output_dir = format_build_root / str(parent_version)
 
+    child_version_strings = ", ".join(map(str, child_versions))
     try:
         task.register(
-            functools.partial(
+            _bind_function(
                 _generic_link_or_copy_task,
+                f"Create {format_name} v{parent_version}: {child_version_strings}",
                 parent=parent_output_dir,
                 children=child_output_dirs,
             ),
@@ -305,7 +473,7 @@ def generate_tasks_for_identical_versions(
         )
         raise
 
-    already_handled_versions |= dict.fromkeys(child_versions, value=parent_version)
+    already_handled_versions |= dict.fromkeys(child_versions, parent_version)
 
 
 def enumerate_identical_versions(
