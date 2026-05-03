@@ -1,0 +1,6 @@
+[tool.pip-tools.compile]
+annotate = true
+generate_hashes = true
+reuse_hashes = true
+allow_unsafe = true
+strip_extras = true

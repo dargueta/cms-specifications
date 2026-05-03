@@ -1,2 +1,4 @@
+-c requirements.txt
+-c test-requirements.txt
 pip-tools
 tox

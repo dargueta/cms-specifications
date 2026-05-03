@@ -5,11 +5,15 @@ ACTIVATE_SCRIPT=$(VENV_DIR)/bin/activate
 PYTHON_BIN=$(VENV_DIR)/bin/python3
 ACTIVATE=source $(ACTIVATE_SCRIPT)
 PYTHON=$(ACTIVATE) && python3
-PIP=$(ACTIVATE) && pip
+PIP=$(PYTHON) -m pip
+PIP_COMPILE=$(ACTIVATE) && pip-compile
+PIP_SYNC=$(ACTIVATE) && pip-sync
 BUILD_SCRIPT=$(ACTIVATE) && doit
 
 .PHONY: setup
-setup: | $(PYTHON_BIN)
+setup: dev-requirements.txt test-requirements.txt requirements.txt | $(ACTIVATE_SCRIPT)
+	$(PIP) install -r $<
+	$(PIP_SYNC) $^
 
 
 .PHONY: schemas
@@ -36,15 +40,13 @@ $(VENV_DIR):
 
 $(ACTIVATE_SCRIPT): | $(VENV_DIR)
 
-$(PYTHON_BIN): | $(ACTIVATE_SCRIPT)
-	$(PIP) install -Ur src/requirements.txt -r src/test-requirements.txt
-
 #---------------------------------------------------------------------------------------
 # Handle dependencies
-PIP_COMPILE=pip-compile --strip-extra --annotate --header --allow-unsafe --generate-hashes --reuse-hashes
+requirements.txt: requirements.in .pip-tools.toml
+	$(PIP_COMPILE) -v -o $@ $<
 
-requirements.txt: requirements.in
-	$(PIP_COMPILE) -o $@ $<
+test-requirements.txt: test-requirements.in requirements.txt .pip-tools.toml
+	$(PIP_COMPILE) -v -o $@ $<
 
-%-requirements.txt: requirements.txt %-requirements.in
-	$(PIP_COMPILE) -o $@ -c $^
+dev-requirements.txt: dev-requirements.in requirements.txt test-requirements.txt .pip-tools.toml
+	$(PIP_COMPILE) -v -o $@ $<
