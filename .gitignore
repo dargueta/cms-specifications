@@ -6,7 +6,6 @@
 .venv/
 .vscode/
 __pycache__/
-build/
 .claude/settings.local.json
 .claude/CLAUDE.local.md
 
@@ -19,4 +18,7 @@ build/
 *.py[cow]
 *.so
 *~
+build/
+src/build
+src/schemas/build
 .doit.db
