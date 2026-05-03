@@ -36,7 +36,7 @@ def task_create_build_dir() -> TaskDict:
     }
 
 
-def task_build() -> Iterator[list[TaskDict]]:
+def task_build() -> Iterator[TaskDict]:
     """Build all file format outputs."""
     for format_name, source_path in sorted(FORMAT_SOURCE_DIRS_BY_NAME.items()):
         subtasks = generate_tasks_for_format(source_path)
