@@ -31,12 +31,12 @@ clean: | $(PYTHON_BIN)
 
 .PHONY: format
 format:
-	ruff check --select I --fix src Makefile.py
-	ruff format src Makefile.py
+	ruff check --select I --fix src
+	ruff format src
 
 .PHONY: lint
 lint:
-	ruff check src Makefile.py
+	ruff check src
 
 .PHONY: typing
 typing:

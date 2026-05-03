@@ -11,7 +11,6 @@ from typing import Any
 from typing import TYPE_CHECKING
 
 from .build_rules import parse_build_rules
-from .constants import BUILD_DIR
 from .file_ops import link_or_copy
 from .render_tasks import _path_to_slug
 from .render_tasks import render_template_task
@@ -35,6 +34,8 @@ def tasks_for_source_file(
     source_file: Path,
     version_build_dir: Path,
     extra_file_deps: Collection[Path] = (),
+    *,
+    output_root: Path,
 ) -> list[TaskDict]:
     """Generate doit task dicts for a single source file in a records directory."""
     tasks: list[TaskDict] = []
@@ -50,7 +51,11 @@ def tasks_for_source_file(
         else:
             rendered_path = version_build_dir / rendered_name
 
-        tasks.append(render_template_task(source_file, rendered_path, extra_file_deps))
+        tasks.append(
+            render_template_task(
+                source_file, rendered_path, extra_file_deps, output_root=output_root
+            )
+        )
 
         if is_yaml:
             tasks.extend(
@@ -58,6 +63,7 @@ def tasks_for_source_file(
                     rendered_path,
                     version_build_dir,
                     output_stem=Path(rendered_name).stem,
+                    output_root=output_root,
                 )
             )
             # Clean up intermediate rendered YAML when `doit clean` is run.
@@ -68,7 +74,9 @@ def tasks_for_source_file(
 
     elif source_file.suffix == ".yaml":
         tasks.extend(
-            yaml_postprocess_tasks(source_file, version_build_dir, extra_file_deps)
+            yaml_postprocess_tasks(
+                source_file, version_build_dir, extra_file_deps, output_root=output_root
+            )
         )
 
     return tasks
@@ -78,6 +86,8 @@ def tasks_for_file_builds(
     source_path: Path,
     target_root: Path,
     dep_map: Mapping[Path, Collection[Path]],
+    *,
+    output_root: Path,
 ) -> list[TaskDict]:
     """Generate render/postprocess/convert tasks for all source files in a format."""
     tasks: list[TaskDict] = []
@@ -103,26 +113,31 @@ def tasks_for_file_builds(
                     source_file,
                     version_build_dir,
                     extra_file_deps=extra_deps,
+                    output_root=output_root,
                 )
             )
 
         if version_tasks:
             tasks.extend(version_tasks)
-            tasks.append({
-                "name": _path_to_slug(target_root / version_dir.name),
-                "actions": None,
-                "task_dep": [f"build:{t['name']}" for t in version_tasks],
-            })
+            tasks.append(
+                {
+                    "name": _path_to_slug(target_root / version_dir.name, output_root),
+                    "actions": None,
+                    "task_dep": [f"build:{t['name']}" for t in version_tasks],
+                }
+            )
 
     return tasks
 
 
-def tasks_for_identical_versions(
+def tasks_for_identical_versions(  # noqa: PLR0913
     parent_version: VersionSpec,
     child_versions: Collection[VersionSpec],
     format_name: str,
     format_build_root: Path,
     already_handled: MutableMapping[VersionSpec, str],
+    *,
+    output_root: Path,
 ) -> list[TaskDict]:
     """Create tasks that symlink/copy child version directories from a parent."""
     child_set = set(child_versions)
@@ -149,7 +164,7 @@ def tasks_for_identical_versions(
             "name": f"_cp_{format_name}_{parent_version.major}_{parent_version.minor}",
             "doc": f"Clone {format_name} v{parent_version} to: {child_version_strings}",
             "actions": [(link_or_copy, [parent_output_dir, child_output_dirs])],
-            "task_dep": [f"build:{_path_to_slug(parent_output_dir)}"],
+            "task_dep": [f"build:{_path_to_slug(parent_output_dir, output_root)}"],
             "uptodate": [all(d.exists() for d in child_output_dirs)],
             "targets": [str(d) for d in child_output_dirs],
         }
@@ -159,7 +174,7 @@ def tasks_for_identical_versions(
     return tasks
 
 
-def generate_tasks_for_format(source_path: Path) -> list[TaskDict]:
+def generate_tasks_for_format(source_path: Path, *, build_dir: Path) -> list[TaskDict]:
     """Generate all doit task dicts for a given file format."""
     format_name = source_path.stem
     build_rules_file = source_path / "build_rules.yaml"
@@ -174,20 +189,22 @@ def generate_tasks_for_format(source_path: Path) -> list[TaskDict]:
 
     rules = parse_build_rules(build_rules_file, source_path)
 
-    target_root = BUILD_DIR / format_name
+    target_root = build_dir / format_name
     already_handled: dict[VersionSpec, str] = {}
     all_tasks: list[TaskDict] = []
 
     # File tasks first — these also create per-version grouping tasks that the
     # identical-version copy tasks depend on.
     all_tasks.extend(
-        tasks_for_file_builds(source_path, target_root, rules.file_dep_map)
+        tasks_for_file_builds(
+            source_path, target_root, rules.file_dep_map, output_root=build_dir
+        )
     )
 
     built_version_slugs = {t["name"] for t in all_tasks}
 
     for parent_version, children in rules.identical_versions.items():
-        parent_slug = _path_to_slug(target_root / str(parent_version))
+        parent_slug = _path_to_slug(target_root / str(parent_version), build_dir)
         if parent_slug not in built_version_slugs:
             LOG.debug(
                 "Skipping identical-version rule for %s v%s: no file tasks found.",
@@ -204,6 +221,7 @@ def generate_tasks_for_format(source_path: Path) -> list[TaskDict]:
                 format_name=format_name,
                 format_build_root=target_root,
                 already_handled=already_handled,
+                output_root=build_dir,
             )
         )
 

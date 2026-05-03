@@ -10,7 +10,9 @@ from __future__ import annotations
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from build_tasks.constants import BUILD_DIR
+from doit import get_var
+
+from build_tasks.constants import DEFAULT_BUILD_DIR
 from build_tasks.constants import FORMAT_SOURCE_DIRS_BY_NAME
 from build_tasks.format_tasks import generate_tasks_for_format
 
@@ -26,6 +28,10 @@ DOIT_CONFIG = {
     "verbosity": 2,
 }
 
+BUILD_DIR = Path(
+    get_var("build_dir", str(DEFAULT_BUILD_DIR)) or DEFAULT_BUILD_DIR
+).resolve()
+
 
 def task_create_build_dir() -> TaskDict:
     """Create the build output directory."""
@@ -39,7 +45,7 @@ def task_create_build_dir() -> TaskDict:
 def task_build() -> Iterator[TaskDict]:
     """Build all file format outputs."""
     for format_name, source_path in sorted(FORMAT_SOURCE_DIRS_BY_NAME.items()):
-        subtasks = generate_tasks_for_format(source_path)
+        subtasks = generate_tasks_for_format(source_path, build_dir=BUILD_DIR)
         subtask_names = [f"build:{t['name']}" for t in subtasks]
         for subtask in subtasks:
             subtask.setdefault("task_dep", []).append("create_build_dir")

@@ -8,7 +8,7 @@ from pathlib import Path
 
 
 REPO_ROOT = Path(__file__).parent.parent.parent
-BUILD_DIR = REPO_ROOT / "build"
+DEFAULT_BUILD_DIR = REPO_ROOT / "build"
 SOURCE_DIR = REPO_ROOT / "src"
 SCHEMAS_SOURCE_DIR = SOURCE_DIR / "schemas"
 FORMATS_BASE_DIR = SCHEMAS_SOURCE_DIR / "file_formats"
