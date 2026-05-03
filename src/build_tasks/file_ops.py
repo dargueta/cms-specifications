@@ -7,17 +7,18 @@ from __future__ import annotations
 import contextlib
 import pathlib
 import shutil
-from pathlib import Path
+import sys
 from typing import TYPE_CHECKING
 
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
+    from pathlib import Path
 
 
-try:
-    _SUPPRESS_PATHLIB_EXCEPTIONS = pathlib.UnsupportedOperation, NotImplementedError
-except AttributeError:  # pragma: no cover (>=py313)
+if sys.version_info[:2] >= (3, 13):  # pragma: no cover (<py313)
+    _SUPPRESS_PATHLIB_EXCEPTIONS = NotImplementedError, pathlib.UnsupportedOperation
+else:  # pragma: no cover (>=py313)
     _SUPPRESS_PATHLIB_EXCEPTIONS = (NotImplementedError,)
 
 
