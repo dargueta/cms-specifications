@@ -35,6 +35,10 @@ format:
 lint:
 	ruff check src Makefile.py
 
+.PHONY: typing
+typing:
+	pyrefly check
+
 $(VENV_DIR):
 	python3 -m venv $@
 

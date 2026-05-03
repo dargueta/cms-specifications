@@ -49,7 +49,7 @@ ALL_PCUG_VERSIONS: list[VersionSpec] = [
     # 19.0 is the most recent version as of 2026-04-20.
     VersionSpec(19, 0),
 ]
-ALL_PCUG_VERSIONS.remove((7, 3))  # I can't find mention of v7.3 anywhere.
+ALL_PCUG_VERSIONS.remove(VersionSpec(7, 3))  # I can't find mention of v7.3 anywhere.
 
 
 _VERSION_CONSTRAINT_CHECKS: dict[str, Callable[[VersionSpec, VersionSpec], bool]] = {
@@ -93,7 +93,7 @@ class VersionConstraint:
             version=VersionSpec.from_string(parts["version"]),
         )
 
-    def check(self, other_version: tuple[int, int]) -> bool:
+    def check(self, other_version: VersionSpec) -> bool:
         """Check the given version against this constraint."""
         return self.comparator(other_version, self.version)
 

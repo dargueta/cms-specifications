@@ -26,6 +26,7 @@ LOG = logging.getLogger(__name__)
 if TYPE_CHECKING:
     from collections.abc import Collection
     from collections.abc import Mapping
+    from collections.abc import MutableMapping
 
     from .versions import VersionSpec
 
@@ -119,7 +120,7 @@ def tasks_for_identical_versions(
     child_versions: Collection[VersionSpec],
     format_name: str,
     format_build_root: Path,
-    already_handled: Mapping[VersionSpec, str],
+    already_handled: MutableMapping[VersionSpec, str],
 ) -> list[TaskDict]:
     """Create tasks that symlink/copy child version directories from a parent."""
     child_set = set(child_versions)
@@ -152,7 +153,7 @@ def tasks_for_identical_versions(
         }
     ]
 
-    already_handled |= dict.fromkeys(child_versions, str(parent_version))
+    already_handled.update(dict.fromkeys(child_versions, str(parent_version)))
     return tasks
 
 

@@ -15,6 +15,12 @@ if TYPE_CHECKING:
     from collections.abc import Iterable
 
 
+try:
+    _SUPPRESS_PATHLIB_EXCEPTIONS = pathlib.UnsupportedOperation, NotImplementedError
+except AttributeError:  # pragma: no cover (>=py313)
+    _SUPPRESS_PATHLIB_EXCEPTIONS = (NotImplementedError,)
+
+
 def link_or_copy(parent: Path, children: Iterable[Path]) -> None:
     """Link one or more "children" to point to a "parent", or copy if not possible.
 
@@ -28,17 +34,17 @@ def link_or_copy(parent: Path, children: Iterable[Path]) -> None:
 
 
 def _link_or_copy_directory(link: Path, existing: Path) -> None:
-    with contextlib.suppress(pathlib.UnsupportedOperation, NotImplementedError):
+    with contextlib.suppress(*_SUPPRESS_PATHLIB_EXCEPTIONS):
         link.symlink_to(existing)
         return
     shutil.copytree(existing, link)
 
 
 def _link_or_copy_file(link: Path, existing: Path) -> None:
-    with contextlib.suppress(pathlib.UnsupportedOperation, NotImplementedError):
+    with contextlib.suppress(*_SUPPRESS_PATHLIB_EXCEPTIONS):
         link.hardlink_to(existing)
         return
-    with contextlib.suppress(pathlib.UnsupportedOperation, NotImplementedError):
+    with contextlib.suppress(*_SUPPRESS_PATHLIB_EXCEPTIONS):
         link.symlink_to(existing)
         return
     shutil.copyfile(existing, link)
