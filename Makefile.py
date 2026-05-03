@@ -21,12 +21,12 @@ import shutil
 import sys
 from collections.abc import Callable
 from collections.abc import Container
+from collections.abc import Hashable
 from collections.abc import Iterable
 from collections.abc import Mapping
 from pathlib import Path
 from typing import NamedTuple
 from typing import Self
-from typing import TypeVar
 
 from pymake import sh
 from pymake import task
@@ -39,9 +39,6 @@ BUILD_DIR = HERE / "build"
 SOURCE_DIR = HERE / "src"
 SCHEMAS_SOURCE_DIR = SOURCE_DIR / "schemas"
 FORMATS_BASE_DIR = SCHEMAS_SOURCE_DIR / "file_formats"
-
-T = TypeVar("T")
-C = TypeVar("C", bound=Callable)
 
 
 class VersionSpec(NamedTuple):
@@ -251,7 +248,9 @@ def _task_name_from_path(output_path: Path) -> str:
     )
 
 
-def _bind_function(func: C, docstring: str, /, *args: object, **kwargs: object) -> C:
+def _bind_function[C: Callable](
+    func: C, docstring: str, /, *args: object, **kwargs: object
+) -> C:
     """Bind a function using `functools.partial()`, but assign a docstring too."""
     bound = functools.partial(func, *args, **kwargs)
     bound.__doc__ = docstring
@@ -263,7 +262,7 @@ def _register_yaml_postprocess_tasks(
     build_dir: Path,
     common_include: Path,
     output_stem: str | None = None,
-) -> None:
+) -> list[Path]:
     """Register tasks to postprocess a YAML file to JSON, then back to clean YAML."""
     stem = output_stem or yaml_source.stem
     json_path = build_dir / (stem + ".json")
@@ -294,11 +293,14 @@ def _register_yaml_postprocess_tasks(
         outputs=[yaml_path],
     )
 
+    return [json_path, yaml_path]
+
 
 def _register_tasks_for_source_file(
     source_file: Path, version_build_dir: Path, common_include: Path
-) -> None:
+) -> list[Path]:
     """Register build tasks for a single source file in a records directory."""
+    outputs: list[Path] = []
     if source_file.suffix == ".liquid":
         rendered_name = source_file.stem
         is_yaml = Path(rendered_name).suffix == ".yaml"
@@ -324,11 +326,13 @@ def _register_tasks_for_source_file(
         )
 
         if is_yaml:
-            _register_yaml_postprocess_tasks(
-                rendered_path,
-                version_build_dir,
-                common_include,
-                output_stem=Path(rendered_name).stem,
+            outputs.extend(
+                _register_yaml_postprocess_tasks(
+                    rendered_path,
+                    version_build_dir,
+                    common_include,
+                    output_stem=Path(rendered_name).stem,
+                )
             )
             task.register(
                 _bind_function(
@@ -340,14 +344,22 @@ def _register_tasks_for_source_file(
                 inputs=[rendered_path],
                 outputs=[],
             )
+        else:
+            outputs.append(rendered_path)
 
     elif source_file.suffix == ".yaml":
-        _register_yaml_postprocess_tasks(source_file, version_build_dir, common_include)
+        outputs.extend(
+            _register_yaml_postprocess_tasks(
+                source_file, version_build_dir, common_include
+            )
+        )
+    return outputs
 
 
-def generate_file_build_tasks(source_path: Path, target_root: Path) -> None:
+def generate_file_build_tasks(source_path: Path, target_root: Path) -> list[Path]:
     """Register render/postprocess/convert tasks for all source files in a format."""
     common_include = FORMATS_BASE_DIR / "_common"
+    all_outputs: list[Path] = []
 
     for version_dir in sorted(source_path.iterdir()):
         if not re.match(r"\d+\.\d+$", version_dir.name) or not version_dir.is_dir():
@@ -361,9 +373,12 @@ def generate_file_build_tasks(source_path: Path, target_root: Path) -> None:
 
         for source_file in sorted(records_dir.iterdir()):
             if source_file.is_file():
-                _register_tasks_for_source_file(
-                    source_file, version_build_dir, common_include
+                all_outputs.extend(
+                    _register_tasks_for_source_file(
+                        source_file, version_build_dir, common_include
+                    )
                 )
+    return all_outputs
 
 
 def generate_tasks_for_format(source_path: Path) -> None:
@@ -417,7 +432,20 @@ def generate_tasks_for_format(source_path: Path) -> None:
             outputs=dependents,
         )
 
-    generate_file_build_tasks(source_path, target_root)
+    file_outputs = generate_file_build_tasks(source_path, target_root)
+
+    all_format_outputs = file_outputs + [
+        target_root / str(v)
+        for children in identical_versions.values()
+        for v in children
+    ]
+
+    task.register(
+        _bind_function(lambda: None, f"Build all {format_name} outputs"),
+        name=format_name,
+        inputs=all_format_outputs,
+        outputs=[],
+    )
 
 
 def generate_tasks_for_identical_versions(
@@ -535,7 +563,7 @@ def enumerate_identical_files(
     return result
 
 
-def enumerate_versions_matching_constraints(
+def enumerate_versions_matching_constraints[T: Hashable](
     rules: Mapping[T, str],
 ) -> dict[T, list[VersionSpec]]:
     """Map keys to lists of PCUG versions matching the version constraint values.

@@ -7,7 +7,6 @@ from collections.abc import MutableSet
 from collections.abc import Sequence
 from collections.abc import Set as AbstractSet
 from typing import overload
-from typing import TypeVar
 
 import deep_chainmap
 
@@ -15,31 +14,29 @@ import deep_chainmap
 if typing.TYPE_CHECKING:
     from typing import Any
 
-T = TypeVar("T")
+
+@overload
+def deep_to_dict[T](item: Mapping[str, T]) -> dict[str, T]: ...
 
 
 @overload
-def deep_to_dict(item: Mapping[str, T]) -> dict[str, T]: ...
+def deep_to_dict[T](item: MutableSequence[T]) -> list[T]: ...
 
 
 @overload
-def deep_to_dict(item: MutableSequence[T]) -> list[T]: ...
+def deep_to_dict[T](item: Sequence[T]) -> tuple[T, ...]: ...
 
 
 @overload
-def deep_to_dict(item: Sequence[T]) -> tuple[T, ...]: ...
+def deep_to_dict[T](item: MutableSet[T]) -> set[T]: ...
 
 
 @overload
-def deep_to_dict(item: MutableSet[T]) -> set[T]: ...
+def deep_to_dict[T](item: AbstractSet[T]) -> frozenset[T]: ...
 
 
 @overload
-def deep_to_dict(item: AbstractSet[T]) -> frozenset[T]: ...
-
-
-@overload
-def deep_to_dict(item: T) -> T: ...
+def deep_to_dict[T](item: T) -> T: ...
 
 
 def deep_to_dict(item: Any) -> Any:
