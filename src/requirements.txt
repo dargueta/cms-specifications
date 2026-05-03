@@ -3,7 +3,7 @@ cattrs
 check-jsonschema>=0.33.2
 click~=8.0
 deep_chainmap~=0.1.0
-hayeah-pymake
+doit~=0.37.0
 python-liquid~=2.0
 more_itertools>=9.0
 pyfixwidth~=0.3.2

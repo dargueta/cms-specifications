@@ -1,11 +1,12 @@
 # SPDX-License-Identifier: BSD-3-Clause
 
 VENV_DIR=$(CURDIR)/.venv
-ACTIVATE=$(VENV_DIR)/bin/activate
+ACTIVATE_SCRIPT=$(VENV_DIR)/bin/activate
 PYTHON_BIN=$(VENV_DIR)/bin/python3
-PYTHON=source $(ACTIVATE) && python3
-PIP=source $(ACTIVATE) && pip
-RUN_BUILD_SCRIPT=pymake
+ACTIVATE=source $(ACTIVATE_SCRIPT)
+PYTHON=$(ACTIVATE) && python3
+PIP=$(ACTIVATE) && pip
+BUILD_SCRIPT=$(ACTIVATE) && doit
 
 .PHONY: setup
 setup: | $(PYTHON_BIN)
@@ -13,12 +14,12 @@ setup: | $(PYTHON_BIN)
 
 .PHONY: schemas
 schemas: | $(PYTHON_BIN)
-	pymake run src/schemas
+	cd src && $(BUILD_SCRIPT) run
 
 
 .PHONY: clean
 clean: | $(PYTHON_BIN)
-	cd src && (BUILD_SCRIPT) clean
+	cd src && $(BUILD_SCRIPT) clean
 	$(RM) -r build
 
 .PHONY: format
@@ -33,7 +34,7 @@ lint:
 $(VENV_DIR):
 	python3 -m venv $@
 
-$(ACTIVATE): | $(VENV_DIR)
+$(ACTIVATE_SCRIPT): | $(VENV_DIR)
 
-$(PYTHON_BIN): | $(ACTIVATE)
+$(PYTHON_BIN): | $(ACTIVATE_SCRIPT)
 	$(PIP) install -Ur src/requirements.txt -r src/test-requirements.txt
