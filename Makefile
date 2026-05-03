@@ -38,3 +38,13 @@ $(ACTIVATE_SCRIPT): | $(VENV_DIR)
 
 $(PYTHON_BIN): | $(ACTIVATE_SCRIPT)
 	$(PIP) install -Ur src/requirements.txt -r src/test-requirements.txt
+
+#---------------------------------------------------------------------------------------
+# Handle dependencies
+PIP_COMPILE=pip-compile --strip-extra --annotate --header --allow-unsafe --generate-hashes --reuse-hashes
+
+requirements.txt: requirements.in
+	$(PIP_COMPILE) -o $@ $<
+
+%-requirements.txt: requirements.txt %-requirements.in
+	$(PIP_COMPILE) -o $@ -c $^
