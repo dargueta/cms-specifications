@@ -40,6 +40,7 @@ def task_build() -> Iterator[TaskDict]:
     """Build all file format outputs."""
     for format_name, source_path in sorted(FORMAT_SOURCE_DIRS_BY_NAME.items()):
         subtasks = generate_tasks_for_format(source_path)
+        subtask_names = [f"build:{t['name']}" for t in subtasks]
         for subtask in subtasks:
             subtask.setdefault("task_dep", []).append("create_build_dir")
             yield subtask
@@ -49,5 +50,5 @@ def task_build() -> Iterator[TaskDict]:
             "name": format_name,
             "actions": None,
             "doc": f"Build all {format_name} outputs",
-            "task_dep": [f"build:{t['name']}" for t in subtasks],
+            "task_dep": subtask_names,
         }

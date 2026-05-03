@@ -10,11 +10,12 @@ import re
 from typing import NamedTuple
 from typing import TYPE_CHECKING
 
+from more_itertools import always_iterable
+
 
 if TYPE_CHECKING:
     from collections.abc import Callable
-    from collections.abc import Hashable
-    from collections.abc import Mapping
+    from collections.abc import Iterable
     from typing import Self
 
 
@@ -98,29 +99,16 @@ class VersionConstraint:
         return self.comparator(other_version, self.version)
 
 
-def enumerate_versions_matching_constraints[T: Hashable](
-    rules: Mapping[T, str],
-) -> dict[T, list[VersionSpec]]:
-    """Map keys to lists of PCUG versions matching the version constraint values.
+def versions_matching(constraints: str | Iterable[str]) -> list[VersionSpec]:
+    """Return all PCUG versions satisfying the given constraint(s).
 
-    The returned dictionary is guaranteed to have all the same keys as ``rules``. This
-    function doesn't examine the keys either, so the keys can be of any hashable type.
+    ``constraints`` may be a single string (e.g. ``">=5.0"``) or an iterable of strings
+    (e.g. ``[">=5.0", "<9.0"]``). All constraints must be satisfied simultaneously.
     """
-    result = {}
-    for key, child_version_spec in rules.items():
-        constraints = [
-            VersionConstraint.from_spec_string(s) for s in child_version_spec.split(",")
-        ]
-
-        if not constraints:
-            raise ValueError(
-                f"Version constraint lists cannot be empty. Offender: {key!r}"
-            )
-
-        result[key] = [
-            pcug_version
-            for pcug_version in ALL_PCUG_VERSIONS
-            if all(c.check(pcug_version) for c in constraints)
-        ]
-
-    return result
+    specs = [
+        VersionConstraint.from_spec_string(s)
+        for s in always_iterable(constraints, base_type=str)
+    ]
+    if not specs:
+        raise ValueError("Version constraint list must not be empty.")
+    return [v for v in ALL_PCUG_VERSIONS if all(c.check(v) for c in specs)]

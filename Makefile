@@ -10,6 +10,9 @@ PIP_COMPILE=$(ACTIVATE) && pip-compile
 PIP_SYNC=$(ACTIVATE) && pip-sync
 BUILD_SCRIPT=$(ACTIVATE) && doit
 
+PYTHONPATH:=$(CURDIR)/src/schemas:$(PYTHONPATH)
+export PYTHONPATH
+
 .PHONY: setup
 setup: dev-requirements.txt test-requirements.txt requirements.txt | $(ACTIVATE_SCRIPT)
 	$(PIP) install -r $<

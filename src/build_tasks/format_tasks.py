@@ -4,19 +4,16 @@
 
 from __future__ import annotations
 
-import configparser
 import logging
-import os
 import re
 from pathlib import Path
 from typing import Any
 from typing import TYPE_CHECKING
 
-from .build_rules import enumerate_file_dependencies
-from .build_rules import enumerate_identical_files
-from .build_rules import enumerate_identical_versions
+from .build_rules import parse_build_rules
 from .constants import BUILD_DIR
 from .file_ops import link_or_copy
+from .render_tasks import _path_to_slug
 from .render_tasks import render_template_task
 from .render_tasks import yaml_postprocess_tasks
 
@@ -32,10 +29,6 @@ if TYPE_CHECKING:
 
 
 TaskDict = dict[str, Any]
-
-
-def _path_to_slug(p: Path) -> str:
-    return str(p.relative_to(BUILD_DIR)).replace(os.sep, "_").replace(".", "_")
 
 
 def tasks_for_source_file(
@@ -98,19 +91,28 @@ def tasks_for_file_builds(
             continue
 
         version_build_dir = target_root / version_dir.name / "records"
+        version_tasks: list[TaskDict] = []
 
         for source_file in sorted(records_dir.iterdir()):
             if not source_file.is_file():
                 continue
 
             extra_deps = dep_map.get(source_file.resolve(), [])
-            tasks.extend(
+            version_tasks.extend(
                 tasks_for_source_file(
                     source_file,
                     version_build_dir,
                     extra_file_deps=extra_deps,
                 )
             )
+
+        if version_tasks:
+            tasks.extend(version_tasks)
+            tasks.append({
+                "name": _path_to_slug(target_root / version_dir.name),
+                "actions": None,
+                "task_dep": [f"build:{t['name']}" for t in version_tasks],
+            })
 
     return tasks
 
@@ -160,7 +162,7 @@ def tasks_for_identical_versions(
 def generate_tasks_for_format(source_path: Path) -> list[TaskDict]:
     """Generate all doit task dicts for a given file format."""
     format_name = source_path.stem
-    build_rules_file = source_path / "build_rules.ini"
+    build_rules_file = source_path / "build_rules.yaml"
 
     if not build_rules_file.exists():
         LOG.warning(
@@ -170,17 +172,30 @@ def generate_tasks_for_format(source_path: Path) -> list[TaskDict]:
         )
         return []
 
-    build_rules = configparser.ConfigParser()
-    build_rules.read(build_rules_file)
+    rules = parse_build_rules(build_rules_file, source_path)
 
     target_root = BUILD_DIR / format_name
     already_handled: dict[VersionSpec, str] = {}
     all_tasks: list[TaskDict] = []
 
-    # --- Identical versions (symlink/copy entire version dirs) ---
-    identical_versions = enumerate_identical_versions(build_rules)
+    # File tasks first — these also create per-version grouping tasks that the
+    # identical-version copy tasks depend on.
+    all_tasks.extend(
+        tasks_for_file_builds(source_path, target_root, rules.file_dep_map)
+    )
 
-    for parent_version, children in identical_versions.items():
+    built_version_slugs = {t["name"] for t in all_tasks}
+
+    for parent_version, children in rules.identical_versions.items():
+        parent_slug = _path_to_slug(target_root / str(parent_version))
+        if parent_slug not in built_version_slugs:
+            LOG.debug(
+                "Skipping identical-version rule for %s v%s: no file tasks found.",
+                format_name,
+                parent_version,
+            )
+            continue
+
         already_handled[parent_version] = "(Defined)"
         all_tasks.extend(
             tasks_for_identical_versions(
@@ -191,18 +206,5 @@ def generate_tasks_for_format(source_path: Path) -> list[TaskDict]:
                 already_handled=already_handled,
             )
         )
-
-    # --- File dependencies: map parent templates to their dependents ---
-    dep_map = enumerate_file_dependencies(build_rules, source_path)
-
-    # --- Identical files: add extra file_dep entries ---
-    identical_files = enumerate_identical_files(build_rules, source_path)
-    for upstream_file, downstream_files in identical_files.items():
-        for downstream in downstream_files:
-            dep_map.setdefault(downstream, []).append(upstream_file)
-
-    # --- Per-file render/postprocess tasks ---
-    file_tasks = tasks_for_file_builds(source_path, target_root, dep_map)
-    all_tasks.extend(file_tasks)
 
     return all_tasks

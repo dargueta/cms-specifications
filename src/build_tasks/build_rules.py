@@ -1,90 +1,58 @@
 # SPDX-License-Identifier: BSD-3-Clause
 
-"""Parsing of build_rules.ini files."""
+"""Parsing of build_rules.yaml files."""
 
 from __future__ import annotations
 
+import dataclasses
 from typing import TYPE_CHECKING
 
-from .versions import enumerate_versions_matching_constraints
+import ruamel.yaml
+
+from .versions import versions_matching
 from .versions import VersionSpec
 
 
 if TYPE_CHECKING:
-    from collections.abc import Mapping
     from pathlib import Path
 
 
-def enumerate_identical_versions(
-    build_rules: Mapping[str, Mapping[str, str]],
-) -> dict[VersionSpec, list[VersionSpec]]:
-    """Find all versions declared to be identical to another version.
+@dataclasses.dataclass
+class ParsedBuildRules:
+    """Fully resolved build rules for a single file format."""
 
-    In the "identical-versions" section of the ``build_rules.ini`` file, all keys
-    indicate a concrete defined version, and all values are versions generated from this
-    concrete version.
-    """
-    if "identical-versions" not in build_rules:
-        return {}
-
-    result = enumerate_versions_matching_constraints(build_rules["identical-versions"])
-    return {VersionSpec.from_string(k): v for k, v in result.items()}
+    identical_versions: dict[VersionSpec, list[VersionSpec]]
+    file_dep_map: dict[Path, list[Path]]
 
 
-def enumerate_identical_files(
-    build_rules: Mapping[str, Mapping[str, str]], source_root: Path
-) -> dict[Path, list[Path]]:
-    """Get a list of individual files derived from another.
+def parse_build_rules(config_path: Path, source_root: Path) -> ParsedBuildRules:
+    """Load a ``build_rules.yaml`` and resolve all versions and paths."""
+    yaml = ruamel.yaml.YAML(typ="safe")
+    with config_path.open() as fh:
+        raw = yaml.load(fh) or {}
 
-    Most formats have entire versions that are identical to each other, not individual
-    files. Usually, this only happens when a format has multiple record types, and only
-    a subset of them change between versions.
-    """
-    result = {}
-    if "identical-files" not in build_rules:
-        return result
+    # --- identical-versions ---
+    identical_versions: dict[VersionSpec, list[VersionSpec]] = {
+        VersionSpec.from_string(str(parent)): versions_matching(constraint)
+        for parent, constraint in raw.get("identical-versions", {}).items()
+    }
 
-    for upstream_file_relpath, raw_constraint_spec in build_rules[
-        "identical-files"
-    ].items():
-        upstream_file_path = (source_root / upstream_file_relpath).resolve()
+    # --- file-dependencies + identical-files → merged dep map ---
+    dep_map: dict[Path, list[Path]] = {}
 
-        version_constraints = enumerate_versions_matching_constraints(
-            {"_": raw_constraint_spec}
-        )["_"]
+    for parent_relpath, glob_pattern in raw.get("file-dependencies", {}).items():
+        parent = (source_root / parent_relpath).resolve()
+        for f in source_root.glob(str(glob_pattern).strip()):
+            if f.resolve() != parent:
+                dep_map.setdefault(f.resolve(), []).append(parent)
 
-        downstream_files = []
-        for version in version_constraints:
-            candidate = source_root / str(version) / "records" / upstream_file_path.name
-            if candidate.resolve() != upstream_file_path and candidate.exists():
-                downstream_files.append(candidate.resolve())
+    for group in raw.get("identical-files", []):
+        source_dir = source_root / group["source"]
+        for filename in group["files"]:
+            upstream = (source_dir / filename).resolve()
+            for version in versions_matching(group["versions"]):
+                candidate = source_root / str(version) / "records" / filename
+                if candidate.resolve() != upstream and candidate.exists():
+                    dep_map.setdefault(candidate.resolve(), []).append(upstream)
 
-        if downstream_files:
-            result[upstream_file_path] = downstream_files
-
-    return result
-
-
-def enumerate_file_dependencies(
-    build_rules: Mapping[str, Mapping[str, str]], source_root: Path
-) -> dict[Path, list[Path]]:
-    """Parse the [file-dependencies] section.
-
-    Returns a mapping from parent template paths to the downstream files that depend on
-    them (resolved via glob patterns).
-    """
-    result = {}
-    if "file-dependencies" not in build_rules:
-        return result
-
-    for parent_relpath, glob_pattern in build_rules["file-dependencies"].items():
-        parent_path = (source_root / parent_relpath).resolve()
-        dependents = [
-            f.resolve()
-            for f in source_root.glob(glob_pattern.strip())
-            if f.resolve() != parent_path
-        ]
-        if dependents:
-            result[parent_path] = dependents
-
-    return result
+    return ParsedBuildRules(identical_versions, dep_map)
