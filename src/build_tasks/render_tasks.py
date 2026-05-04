@@ -31,7 +31,11 @@ def run_render_template(
     for d in include_dirs:
         cmd.extend(["-I", str(d)])
 
-    subprocess.run([*cmd, "-o", str(output), str(source)], check=True)  # noqa: S603
+    subprocess.run(  # noqa: S603
+        [*cmd, "-o", str(output), str(source)],
+        check=True,
+        env={"PYTHONPATH": os.getenv("PYTHONPATH", "")},
+    )
 
 
 def run_postprocess_yaml(
@@ -43,7 +47,7 @@ def run_postprocess_yaml(
     for d in include_dirs:
         cmd.extend(["-I", str(d)])
     cmd.extend(["-o", str(output), str(source)])
-    subprocess.run(cmd, check=True)  # noqa: S603
+    subprocess.run(cmd, check=True, env={"PYTHONPATH": os.getenv("PYTHONPATH", "")})  # noqa: S603
 
 
 def run_json_to_yaml(json_path: Path, yaml_path: Path) -> None:
