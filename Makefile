@@ -1,20 +1,45 @@
 # SPDX-License-Identifier: BSD-3-Clause
 
+PYTHONPATH:=$(CURDIR)/src/schemas:$(PYTHONPATH)
+export PYTHONPATH
+
+
 .PHONY: schemas
 schemas:
-	$(MAKE) -C src/schemas BUILD_DIR='$(CURDIR)/build'
+	cd src && doit
 
 
 .PHONY: clean
 clean:
-	$(MAKE) -C src/schemas clean
+	cd src && doit clean
 	$(RM) -r build
 
 .PHONY: format
 format:
-	ruff check --select I --fix
-	ruff format
+	ruff check --select I --fix src
+	ruff format src
 
 .PHONY: lint
 lint:
-	ruff check
+	ruff check src
+
+.PHONY: typing
+typing:
+	pyrefly check
+
+
+.PHONY: setup
+setup: dev-requirements.txt test-requirements.txt requirements.txt
+	pip3 install -r $<
+	pip-sync $^
+
+#---------------------------------------------------------------------------------------
+# Handle dependencies
+requirements.txt: requirements.in .pip-tools.toml
+	pip-compile -v -o $@ $<
+
+test-requirements.txt: test-requirements.in requirements.txt .pip-tools.toml
+	pip-compile -v -o $@ $<
+
+dev-requirements.txt: dev-requirements.in requirements.txt test-requirements.txt .pip-tools.toml
+	pip-compile -v -o $@ $<

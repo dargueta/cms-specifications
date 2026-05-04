@@ -1,0 +1,6 @@
+check-unannotated-defs = true
+project-includes = ["src"]
+infer-return-types = "never"
+
+[errors]
+bad-override-mutable-attribute = "ignore"
