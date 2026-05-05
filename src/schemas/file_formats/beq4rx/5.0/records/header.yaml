@@ -24,28 +24,21 @@ fields:
     name: file_creation_date
     title: File Creation Date
     description: >-
-      Critical Field: The date that the Sending
-      Entity created the BEQ Request File. For
-      example, January 3 2017 is the value
-      20170103. This value should agree with
-      the corresponding value in the Trailer
-      Record. CMS returns this information to
-      the Sending Entity on all Detail Records
-      of a BEQ Response File.
+      The date that the Sending Entity created the BEQ Request File.
+
+      This value should agree with the corresponding value in the Trailer Record. CMS
+      returns this information to the Sending Entity on all Detail Records of a BEQ
+      Response File.
     constraints:
       required: true
   - name: file_control_number
     title: File Control Number
     description: >-
-      Critical Field
+      The specific Control Number assigned by the Sending Entity to the BEQ Request File.
 
-      The specific Control Number assigned by
-      the Sending Entity to the BEQ Request
-      File. CMS returns this information to the
-      Sending Entity on all Detail Records of a
-      BEQ Response File. This value should
-      agree with the corresponding value in the
-      Trailer Record.
+      CMS returns this information to the Sending Entity on all Detail Records of a BEQ
+      Response File. This value should agree with the corresponding value in the Trailer
+      Record.
     type: string
     constraints:
       maxLength: 9

@@ -8,23 +8,13 @@ fields:
   - !date8
     name: dob
     title: DOB
-    description: >-
-      Critical Field
-
-      The date of the beneficiary's birth.
-      The value should not include dashes,
-      decimals, or commas. The value
-      should include only numbers.
+    description: The date of the beneficiary's birth.
     constraints:
       required: true
   - !sex-code
   - name: detail_record_sequence_number
     title: Detail Record Sequence Number
-    description: >-
-      Critical Field
-
-      A unique number assigned by the
-      Sending Entity to the Detail Record.
+    description: A unique number assigned by the Sending Entity to the Detail Record.
     type: integer
     constraints:
       minLength: 1
