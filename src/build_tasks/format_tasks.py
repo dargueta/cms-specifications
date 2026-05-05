@@ -193,8 +193,8 @@ def generate_tasks_for_format(source_path: Path, *, build_dir: Path) -> list[Tas
     already_handled: dict[VersionSpec, str] = {}
     all_tasks: list[TaskDict] = []
 
-    # File tasks first — these also create per-version grouping tasks that the
-    # identical-version copy tasks depend on.
+    # File tasks first. These also create per-version grouping tasks that the
+    # `tasks_for_identical_versions` needs to create the copying tasks.
     all_tasks.extend(
         tasks_for_file_builds(
             source_path, target_root, rules.file_dep_map, output_root=build_dir
