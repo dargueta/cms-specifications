@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-"""Render Liquid templates."""
+"""Render Jinja2 templates."""
 
 from __future__ import annotations
 
@@ -9,15 +9,10 @@ import sys
 import typing
 
 import click
-import liquid
-import liquid.exceptions
-
-from ._common import deep_merge_dicts
-from ._common import deep_to_dict
+import jinja2
 
 
 if typing.TYPE_CHECKING:
-    from collections.abc import Mapping
     from collections.abc import Sequence
     from typing import TextIO
 
@@ -60,40 +55,39 @@ def main(
     output: TextIO,
     sources: Sequence[str],
 ) -> None:
-    """Render Liquid template files.
+    """Render Jinja2 template files.
 
     The output is the concatenation of all inputs.
     """
-    environment = liquid.Environment(
-        autoescape=False,
-        loader=liquid.CachingFileSystemLoader(
-            ext=".liquid",
-            search_path=[p.absolute() for p in include[::-1]] + [pathlib.Path.cwd()],
-        ),
+    search_paths = [str(p.absolute()) for p in include[::-1]] + [str(pathlib.Path.cwd())]
+    environment = jinja2.Environment(
+        loader=jinja2.FileSystemLoader(searchpath=search_paths),
+        undefined=jinja2.StrictUndefined,
+        keep_trailing_newline=True,
+        trim_blocks=True,
+        lstrip_blocks=True,
     )
 
     definitions = dict(item.partition("=")[::2] for item in define)
     for file in sources:
         try:
             text = render_single_file(file, environment, definitions)
-        except liquid.exceptions.LiquidError as err:
+        except jinja2.TemplateError as err:
             sys.exit(str(err))
 
         output.write(text)
 
 
 def render_single_file(
-    file: str, environment: liquid.Environment, definitions: Mapping[str, str]
+    file: str, environment: jinja2.Environment, definitions: dict[str, str]
 ) -> str:
-    """Render a single Liquid template file."""
+    """Render a single Jinja2 template file."""
     if file == "-":
-        template = environment.parse(sys.stdin.read())
+        template = environment.from_string(sys.stdin.read())
     else:
         template = environment.get_template(file)
 
-    return template.render(
-        deep_merge_dicts=deep_merge_dicts, deep_to_dict=deep_to_dict, **definitions
-    )
+    return template.render(**definitions)
 
 
 if __name__ == "__main__":

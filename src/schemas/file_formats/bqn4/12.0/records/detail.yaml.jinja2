@@ -1,4 +1,6 @@
-{% render "bqn4/10.3/records/detail.yaml.liquid", exclude_trailing_filler: true %}
+{% extends "bqn4/10.3/records/detail.yaml.jinja2" %}
+{% block extra_fields %}
+{{ super() }}
   - name: active_mbi
     title: Active MBI
     description: >-
@@ -10,6 +12,7 @@
       minLength: 11
       maxLength: 11
       required: true
-{% unless exclude_trailing_filler %}
+{% endblock %}
+{% block trailing_filler %}
   - !filler 434
-{% endunless %}
+{% endblock %}

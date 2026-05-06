@@ -25,7 +25,7 @@ if TYPE_CHECKING:
 def run_render_template(
     source: Path, output: Path, include_dirs: Iterable[Path] = ()
 ) -> None:
-    """Render the Liquid template file at `source` into `output`."""
+    """Render the template file at `source` into `output`."""
     output.parent.mkdir(parents=True, exist_ok=True)
     cmd = [sys.executable, "-m", "scripts.render_templates"]
     for d in include_dirs:
@@ -113,7 +113,7 @@ def render_template_task(
     *,
     output_root: Path,
 ) -> dict[str, Any]:
-    """Return a task dict for rendering a .liquid template."""
+    """Return a task dict for rendering a template."""
     return {
         "name": _path_to_slug(output_path, output_root),
         "actions": [

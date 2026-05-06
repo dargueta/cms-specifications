@@ -1,4 +1,6 @@
-{% render "bqn4/5.1/records/detail.yaml.liquid", exclude_trailing_filler: true %}
+{% extends "bqn4/5.1/records/detail.yaml.jinja2" %}
+{% block extra_fields %}
+{{ super() }}
   - !bool-10
     name: esrd_indicator
     title: End Stage Renal Disease Indicator
@@ -30,6 +32,7 @@
     name: part_c_d_eghp_indicator
     title: EGHP Indicator
     description: Associated with contract number in Field 91, positions 731 - 735
-{% unless exclude_trailing_filler %}
+{% endblock %}
+{% block trailing_filler %}
   - !filler 743
-{% endunless %}
+{% endblock %}

@@ -1,4 +1,6 @@
-{% render "bqn4/10.0/records/detail.yaml.liquid", exclude_trailing_filler: true %}
+{% extends "bqn4/10.0/records/detail.yaml.jinja2" %}
+{% block extra_fields %}
+{{ super() }}
   - !enrollment-source-type-code
     name: current_enrollment_source_type_code_95
     title: Current Enrollment Source Type Code
@@ -76,6 +78,7 @@
     name: prior_enrollment_source_type_code
     title: Prior Enrollment Source Type Code
     description: Associated with PBP Number in Field 170, positions 1549-1551.
-{% unless exclude_trailing_filler %}
+{% endblock %}
+{% block trailing_filler %}
   - !filler 455
-{% endunless %}
+{% endblock %}

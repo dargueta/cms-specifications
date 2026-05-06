@@ -1,5 +1,7 @@
-{% render "bqn4/9.1/records/detail.yaml.liquid", exclude_trailing_filler: true %}
-{% for i in (1..6) %}
+{% extends "bqn4/9.1/records/detail.yaml.jinja2" %}
+{% block extra_fields %}
+{{ super() }}
+{% for i in range(1, 7) %}
   - name: mailing_address_line_{{ i }}
     title: Mailing Address Line {{ i }}
     type: string
@@ -51,6 +53,7 @@
   - !date8
     name: residence_address_start_date
     title: Residence Address Start Date
-{% unless exclude_trailing_filler %}
+{% endblock %}
+{% block trailing_filler %}
   - !filler 325
-{% endunless %}
+{% endblock %}

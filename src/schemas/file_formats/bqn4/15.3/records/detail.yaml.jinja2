@@ -1,4 +1,6 @@
-{% render "bqn4/12.3/records/detail.yaml.liquid", exclude_trailing_filler: true %}
+{% extends "bqn4/12.3/records/detail.yaml.jinja2" %}
+{% block extra_fields %}
+{{ super() }}
   - !date8
     name: medicare_part_a_entitlement_start_date_2
     title: Medicare Part A Entitlement Start Date 2
@@ -11,4 +13,7 @@
   - !date8
     name: medicare_part_b_entitlement_end_date_2
     title: Medicare Part B Entitlement End Date 2
+{% endblock %}
+{% block trailing_filler %}
   - !filler 234
+{% endblock %}

@@ -9,16 +9,16 @@ identical-versions:
 
 identical-files:
   - source: "5.0/records"
-    files: [header.yaml.liquid, trailer.yaml.liquid]
+    files: [header.yaml.jinja2, trailer.yaml.jinja2]
     versions: [">=5.1", "<=9.1"]
   - source: "9.2/records"
-    files: [header.yaml.liquid, trailer.yaml.liquid]
+    files: [header.yaml.jinja2, trailer.yaml.jinja2]
     versions: [">=9.3", "<=10.2"]
   - source: "10.3/records"
-    files: [header.yaml.liquid, trailer.yaml.liquid]
+    files: [header.yaml.jinja2, trailer.yaml.jinja2]
     versions: ">=12.0"
 
 file-dependencies:
-  "common/header.liquid": "*/records/header.liquid"
-  "common/detail.liquid": "*/records/detail.liquid"
-  "common/trailer.liquid": "*/records/trailer.liquid"
+  "common/header.jinja2": "*/records/header.jinja2"
+  "common/detail.jinja2": "*/records/detail.jinja2"
+  "common/trailer.jinja2": "*/records/trailer.jinja2"

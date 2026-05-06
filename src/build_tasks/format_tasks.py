@@ -40,7 +40,7 @@ def tasks_for_source_file(
     """Generate doit task dicts for a single source file in a records directory."""
     tasks: list[TaskDict] = []
 
-    if source_file.suffix == ".liquid":
+    if source_file.suffix in (".liquid", ".jinja2"):
         rendered_name = source_file.stem
         is_yaml = Path(rendered_name).suffix == ".yaml"
 
@@ -70,7 +70,7 @@ def tasks_for_source_file(
             tasks[-1].setdefault("clean", []).append(
                 (Path.unlink, [rendered_path], {"missing_ok": True})
             )
-        # Non-YAML liquid files are already handled by the render task.
+        # Non-YAML template files are already handled by the render task.
 
     elif source_file.suffix == ".yaml":
         tasks.extend(
