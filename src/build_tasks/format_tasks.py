@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: BSD-3-Clause
 
-"""Per-format doit task generation — the core orchestrator."""
+"""Create tasks for each PCUG file format."""
 
 from __future__ import annotations
 
@@ -17,8 +17,6 @@ from .render_tasks import render_template_task
 from .render_tasks import yaml_postprocess_tasks
 
 
-LOG = logging.getLogger(__name__)
-
 if TYPE_CHECKING:
     from collections.abc import Collection
     from collections.abc import Mapping
@@ -27,7 +25,9 @@ if TYPE_CHECKING:
     from .versions import VersionSpec
 
 
-TaskDict = dict[str, Any]
+type TaskDict = dict[str, Any]
+
+LOG = logging.getLogger(__name__)
 
 
 def tasks_for_source_file(
@@ -40,10 +40,15 @@ def tasks_for_source_file(
     """Generate doit task dicts for a single source file in a records directory."""
     tasks: list[TaskDict] = []
 
-    if source_file.suffix in (".liquid", ".jinja2"):
+    # If the source file is a template, we need to create an additional task to render
+    # it.
+    if source_file.suffix == ".jinja2":
         rendered_name = source_file.stem
         is_yaml = Path(rendered_name).suffix == ".yaml"
 
+        # YAML requires special handling. We need to render the file first, and then
+        # run it through an additional pass that converts it to JSON to get rid of all
+        # the custom constructors.
         if is_yaml:
             rendered_path = version_build_dir / (
                 Path(rendered_name).stem + ".rendered.yaml"
@@ -58,6 +63,7 @@ def tasks_for_source_file(
         )
 
         if is_yaml:
+            # Add YAML-specific tasks.
             tasks.extend(
                 yaml_postprocess_tasks(
                     rendered_path,
@@ -73,11 +79,13 @@ def tasks_for_source_file(
         # Non-YAML template files are already handled by the render task.
 
     elif source_file.suffix == ".yaml":
-        tasks.extend(
-            yaml_postprocess_tasks(
-                source_file, version_build_dir, extra_file_deps, output_root=output_root
-            )
+        # If we get here then the source file is YAML but *not* templated.
+        return yaml_postprocess_tasks(
+            source_file, version_build_dir, extra_file_deps, output_root=output_root
         )
+    else:
+        # Not YAML, not templated...
+        LOG.warning("Not sure what to do with this file: %s", source_file)
 
     return tasks
 
