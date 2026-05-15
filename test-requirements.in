@@ -2,5 +2,3 @@
 pytest~=9.0
 pytest-randomly~=4.1
 pytest-cov~=7.1
-ruff~=0.15.12
-pyrefly~=0.63.1

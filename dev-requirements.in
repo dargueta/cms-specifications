@@ -1,4 +1,6 @@
 -c requirements.txt
 -c test-requirements.txt
-pip-tools
+
 tox
+ruff~=0.15.12
+pyrefly~=1.0

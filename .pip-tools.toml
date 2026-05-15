@@ -1,6 +1,8 @@
 [tool.pip-tools.compile]
+allow_unsafe = true
 annotate = true
 generate_hashes = true
 reuse_hashes = true
-allow_unsafe = true
 strip_extras = true
+upgrade = true
+verbose = true
