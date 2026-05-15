@@ -59,13 +59,15 @@ def main(
 
     The output is the concatenation of all inputs.
     """
-    search_paths = [str(p.absolute()) for p in include[::-1]] + [str(pathlib.Path.cwd())]
+    search_paths = [str(p.absolute()) for p in include[::-1]] + [
+        str(pathlib.Path.cwd())
+    ]
     environment = jinja2.Environment(
         loader=jinja2.FileSystemLoader(searchpath=search_paths),
         undefined=jinja2.StrictUndefined,
-        keep_trailing_newline=True,
-        trim_blocks=True,
-        lstrip_blocks=True,
+        # Deliberately turn HTML escaping off, since we're generating YAML. HTML
+        # entities can actually break otherwise valid YAML.
+        autoescape=False,  # noqa: S701
     )
 
     definitions = dict(item.partition("=")[::2] for item in define)
@@ -85,7 +87,13 @@ def render_single_file(
     if file == "-":
         template = environment.from_string(sys.stdin.read())
     else:
-        template = environment.get_template(file)
+        # The file loader expects a relative path to one of its search directories. We
+        # know the current working directory is always in the search path, so we'll use
+        # that to get a relative path.
+        # (This will probably break if the template file isn't in a subdirectory of the
+        # CWD, but I'll fix that if it becomes a problem.)
+        relative = pathlib.Path(file).resolve().relative_to(pathlib.Path.cwd())
+        template = environment.get_template(str(relative))
 
     return template.render(**definitions)
 
