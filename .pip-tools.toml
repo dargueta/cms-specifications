@@ -2,6 +2,7 @@
 allow_unsafe = true
 annotate = true
 generate_hashes = true
+header = true
 reuse_hashes = true
 strip_extras = true
 upgrade = true

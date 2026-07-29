@@ -32,13 +32,13 @@ typing:
 setup:
 	pip3 install pip-tools
 	$(MAKE) pin
-	pip-sync dev-requirements.txt test-requirements.txt requirements.txt
 
 
 #---------------------------------------------------------------------------------------
 # Handle dependencies
 .PHONY: pin
 pin: dev-requirements.txt test-requirements.txt requirements.txt
+	pip-sync $^
 
 requirements.txt: requirements.in .pip-tools.toml
 	pip-compile -v -o $@ $<

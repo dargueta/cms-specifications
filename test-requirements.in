@@ -1,4 +1,4 @@
 -c requirements.txt
-pytest~=9.0
+pytest~=9.1
 pytest-randomly~=4.1
 pytest-cov~=7.1
