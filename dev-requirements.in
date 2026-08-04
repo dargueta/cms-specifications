@@ -4,4 +4,4 @@
 tox
 pip-tools
 ruff~=0.16.0
-pyrefly~=1.1
+pyrefly~=1.2
