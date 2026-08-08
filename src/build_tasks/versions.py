@@ -47,9 +47,8 @@ ALL_PCUG_VERSIONS: list[VersionSpec] = [
     # 17 and 18 have minor versions 0-9. I can't find the PDF for 17.0, but every other
     # major version has a minor version 0 so I assume it exists.
     *(VersionSpec(major, minor) for minor in range(10) for major in (17, 18)),
-    VersionSpec(19, 0),
-    # 19.1 is the most recent version as of 2026-05-21.
-    VersionSpec(19, 1),
+    # 19.4 is the most recent version as of August 2026.
+    *(VersionSpec(19, minor) for minor in range(5)),
 ]
 ALL_PCUG_VERSIONS.remove(VersionSpec(7, 3))  # I can't find mention of v7.3 anywhere.
 
