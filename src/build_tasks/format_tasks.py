@@ -73,9 +73,11 @@ def tasks_for_source_file(
                 )
             )
             # Clean up intermediate rendered YAML when `doit clean` is run.
-            tasks[-1].setdefault("clean", []).append(
-                (Path.unlink, [rendered_path], {"missing_ok": True})
-            )
+            tasks[-1].setdefault("clean", []).append((
+                Path.unlink,
+                [rendered_path],
+                {"missing_ok": True},
+            ))
         # Non-YAML template files are already handled by the render task.
 
     elif source_file.suffix == ".yaml":
@@ -127,13 +129,11 @@ def tasks_for_file_builds(
 
         if version_tasks:
             tasks.extend(version_tasks)
-            tasks.append(
-                {
-                    "name": _path_to_slug(target_root / version_dir.name, output_root),
-                    "actions": None,
-                    "task_dep": [f"build:{t['name']}" for t in version_tasks],
-                }
-            )
+            tasks.append({
+                "name": _path_to_slug(target_root / version_dir.name, output_root),
+                "actions": None,
+                "task_dep": [f"build:{t['name']}" for t in version_tasks],
+            })
 
     return tasks
 
@@ -166,11 +166,18 @@ def tasks_for_identical_versions(  # noqa: PLR0913
     parent_output_dir = format_build_root / str(parent_version)
     child_output_dirs = [format_build_root / str(v) for v in child_versions]
 
-    child_version_strings = ", ".join(map(str, child_versions))
+    if len(child_versions) <= 2:
+        child_version_strings = ", ".join(map(str, child_versions))
+    else:
+        # In all likelihood, child versions of a parent version will be one contiguous
+        # range. Rather than flod the terminal with a full list of all versions, just
+        # list the first and last.
+        child_version_strings = f"{child_versions[0]} through {child_versions[-1]}"
+
     tasks = [
         {
             "name": f"_cp_{format_name}_{parent_version.major}_{parent_version.minor}",
-            "doc": f"Clone {format_name} v{parent_version} to: {child_version_strings}",
+            "doc": f"Clone {format_name} v{parent_version} to {child_version_strings}",
             "actions": [(link_or_copy, [parent_output_dir, child_output_dirs])],
             "task_dep": [f"build:{_path_to_slug(parent_output_dir, output_root)}"],
             "uptodate": [all(d.exists() for d in child_output_dirs)],
