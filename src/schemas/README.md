@@ -9,7 +9,7 @@ The directory structure is strictly:
 ```
 file_formats
 └ <file type slug>
-  ├ Makefile
+  ├ build_rules.yaml
   ├ README.md
   └ <version>
     ├ records
@@ -23,7 +23,7 @@ For example:
 ```
 file_formats
 └ beq4rx
-   ├ Makefile
+   ├ build_rules.yaml
    ├ README.md
    ├ 18.7
    │  ├ records
@@ -35,11 +35,110 @@ file_formats
      └ ...
 ```
 
+`build_rules.yaml` tells the builder which versions are identical, which are derived from another, and what additional files may be necessary for building the full file specifications.
+
 `record_layout.mmd` is a [Mermaid state diagram](https://mermaid.ai/open-source/syntax/stateDiagram.html) describing the expected ordering of the records and how to parse the file.
 
-Any file can be templatized using [Liquid](https://shopify.github.io/liquid). For schemas, this mostly serves to remove the tedium of making "arrays" -- sequences of otherwise-identical columns that repeat.
+Any file can be templatized using [Jinja](https://jinja.palletsprojects.com/en/stable/). For schemas, this mostly serves to remove the tedium of making "arrays" -- sequences of otherwise-identical columns that repeat.
 
-Any Liquid template must have both the desired file extension *and* `.liquid` at the end. For example, to generate a file called `header.yaml`, the template file must be named `header.yaml.liquid`.
+Any Jinja template must have both the desired file extension *and* `.jinja2` at the end. For example, to generate a file called `header.yaml`, the template file must be named `header.yaml.jinja2`.
+
+## Build Rules
+
+PCUG file formats don't change every release, and some versions of a format are substantially similar to older versions. We can reduce the amount of manual work that needs to be done by telling the builder how to construct the specifications (or parts of them) that we *didn't* write. Broadly, there are four things we can do:
+
+- Consolidate identical versions: If the BQN4 file didn't change between PCUG 5.1 through 9.0, we write just the 5.0 spec.
+- Consolidate identical record types: If a file's header and trailer records didn't change between releases, but the detail record did, we can write only the new detail record.
+- Consolidate identical parts of records: All BQN4 detail records have the same first 142 fields. We can factor these out into a separate shared file.
+- Derive versions of record types from others: Each revision of the BQN4 detail record includes fields appended to the end of the previous one. We should only have to write the new fields, and inherit the preceding fields from the older revision.
+
+### Sections
+
+A `build_rules.yaml` file is composed of three sections, all optional.
+
+#### identical-versions
+
+This is a key-value mapping where:
+
+- The key is a PCUG version number that the file is implemented for.
+- The value is a constraint or list of constraints as in a Python requirements file, constraining which version(s) are identical to the key.
+
+The following declares that version 5.1 is identical to version 5.0, and all versions 5.3 and higher are identical to version 5.2.
+
+```yaml
+identical-versions:
+  "5.0": "5.1"
+  "5.2": ">=5.3"
+```
+
+If the value is a list, the constraints are ANDed together. Thus, more complex expressions are possible, such as with BQN4.
+
+```yaml
+identical-versions:
+  # 5.0 is unique
+  "5.1": [">=5.2", "<=9.0"]     # 5.2 through 9.0 == 5.1
+  # 9.1 is unique
+  "9.2": "9.3"                  # 9.3 is identical to 9.2
+  "10.0": [">=10.1", "<=10.2"]  # 10.1 and 10.2 == 10.0
+  "10.3": [">=11.0", "<12.0"]   # 11.0, 11.1, 11.2, 11.3, 12.0 == 10.3
+  "12.0": [">=12.1", "<=12.2"]  # 12.1 and 12.2 == 12.0
+  "12.3": [">=13.0", "<=15.2"]  # 13.0 through 15.2 == 12.3
+  "15.3": ">=15.4"              # 15.4 and higher == 15.3
+```
+
+Supported comparisons are "<", "<=", ">", ">=", "==", and "!=".
+
+#### identical-files
+
+This is similar in purpose to `identical-versions` but applies to specific files. This example from BQN4 states that all versions from 5.1 through 9.1 inherit `bqn4/5.0/records/header.yaml.jinja2` and `bqn4/5.0/records/trailer.yaml.jinja2`, unmodified.
+
+```yaml
+identical-files:
+  - source: "5.0/records"
+    files:
+      - header.yaml.jinja2
+      - trailer.yaml.jinja2
+    versions: [">=5.1", "<=9.1"]
+```
+
+Use this when only some records change between versions.
+
+#### file-dependencies
+
+A key-value mapping of a file path to a glob/path or list of these, of files that are derived from it. This is useful for triggering cascading updates of shared templates to all files that depend on them.
+
+Take this example from BQN4, which has a directory structure like so:
+
+```
+bqn4
+    5.0
+        records
+            detail.yaml.jinja2
+            header.yaml.jinja2
+            trailer.yaml.jinja2
+    5.1
+        records
+            detail.yaml.jinja2
+    9.1
+        records
+            detail.yaml.jinja2
+    ...
+    common
+        detail.yaml.jinja2
+        header.yaml.jinja2
+        trailer.yaml.jinja2
+```
+
+Here's the dependency spec:
+
+```yaml
+file-dependencies:
+  "common/header.jinja2": "*/records/header.jinja2"
+  "common/detail.jinja2": "*/records/detail.jinja2"
+  "common/trailer.jinja2": "*/records/trailer.jinja2"
+```
+
+This states that all files in the `bqn4` directory matching the glob `*/records/header.jinja2` implicitly depend on `bqn4/common/header.jinja2`, and changing file triggers a rebuild of all files matching `bqn4/*/records/header.jinja2`. Same concept for the detail and trailer records.
 
 ## Describing File Layouts
 
@@ -62,7 +161,6 @@ stateDiagram-v2
     record --> record
     record --> [*]
 ```
-
 
 #### Header, Detail, Trailer
 
