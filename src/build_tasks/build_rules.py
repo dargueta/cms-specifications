@@ -7,6 +7,7 @@ from __future__ import annotations
 import dataclasses
 from typing import TYPE_CHECKING
 
+import more_itertools as mi
 import ruamel.yaml
 
 from .versions import versions_matching
@@ -37,14 +38,17 @@ def parse_build_rules(config_path: Path, source_root: Path) -> ParsedBuildRules:
         for parent, constraint in raw.get("identical-versions", {}).items()
     }
 
-    # --- file-dependencies + identical-files → merged dep map ---
+    # --- file-dependencies + identical-files -> merged dep map ---
     dep_map: dict[Path, list[Path]] = {}
 
-    for parent_relpath, glob_pattern in raw.get("file-dependencies", {}).items():
+    # Iterate through file-dependencies first to get a list of all files that depend on
+    # other files unconditionally.
+    for parent_relpath, pattern_spec in raw.get("file-dependencies", {}).items():
         parent = (source_root / parent_relpath).resolve()
-        for f in source_root.glob(str(glob_pattern).strip()):
-            if f.resolve() != parent:
-                dep_map.setdefault(f.resolve(), []).append(parent)
+        for pattern in mi.always_iterable(pattern_spec):
+            for f in source_root.glob(str(pattern).strip()):
+                if f.resolve() != parent:
+                    dep_map.setdefault(f.resolve(), []).append(parent)
 
     for group in raw.get("identical-files", []):
         source_dir = source_root / group["source"]
