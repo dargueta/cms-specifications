@@ -132,6 +132,12 @@ deep-chainmap==0.2.0 \
 doit==0.37.0 \
     --hash=sha256:a9f181566aa90faac515e276f85e6526019554ed7e13c12cf9dc094ffecf3e1b \
     --hash=sha256:d3c72e0e46a8fa1ddabea8f830762402dee090caf33c30c2295ac7010db8f09c
+    # via
+    #   -r requirements.in
+    #   doit-api
+doit-api==0.8.0 \
+    --hash=sha256:62a88ea43d6f408f06905a767979f6aa8edf019bac001f399f8cdc2d3376bb65 \
+    --hash=sha256:b146aebb2d24eefa86137c7504aec2af06e5215e0cecb691ca43863048de91d0
     # via -r requirements.in
 idna==3.18 \
     --hash=sha256:7f952cbe720b688055e3f87de14f5c3e5fdaa8bc3928985c4077ca689de849a2 \

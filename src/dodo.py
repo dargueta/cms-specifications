@@ -11,6 +11,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 from doit import get_var
+from doit_api import pytask
 
 from build_tasks.constants import DEFAULT_BUILD_DIR
 from build_tasks.constants import FORMAT_SOURCE_DIRS_BY_NAME
@@ -33,13 +34,10 @@ BUILD_DIR = Path(
 ).resolve()
 
 
-def task_create_build_dir() -> TaskDict:
+@pytask(targets=[BUILD_DIR], uptodate=[BUILD_DIR.is_dir])
+def create_build_dir() -> None:
     """Create the build output directory."""
-    return {
-        "actions": [(Path.mkdir, [BUILD_DIR], {"parents": True, "exist_ok": True})],
-        "targets": [str(BUILD_DIR)],
-        "uptodate": [BUILD_DIR.is_dir],
-    }
+    BUILD_DIR.mkdir(parents=True, exist_ok=True)
 
 
 def task_build() -> Iterator[TaskDict]:
