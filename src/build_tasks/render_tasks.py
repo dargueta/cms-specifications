@@ -10,16 +10,22 @@ import subprocess
 import sys
 from typing import TYPE_CHECKING
 
+import doit_api
 import ruamel.yaml
 
 from .constants import COMMON_INCLUDE_DIR
 from .constants import FORMATS_BASE_DIR
+from .constants import SCHEMAS_SOURCE_DIR
 
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
     from pathlib import Path
-    from typing import Any
+
+
+def construct_pythonpath() -> str:
+    """Construct a PYTHONPATH to pass to subprocess invocations of Python."""
+    return ":".join((*sys.path, str(SCHEMAS_SOURCE_DIR)))
 
 
 def run_render_template(
@@ -34,7 +40,7 @@ def run_render_template(
     subprocess.run(  # noqa: S603
         [*cmd, "-o", str(output), str(source)],
         check=True,
-        env={"PYTHONPATH": os.getenv("PYTHONPATH", "")},
+        env={"PYTHONPATH": construct_pythonpath()},
     )
 
 
@@ -47,7 +53,7 @@ def run_postprocess_yaml(
     for d in include_dirs:
         cmd.extend(["-I", str(d)])
     cmd.extend(["-o", str(output), str(source)])
-    subprocess.run(cmd, check=True, env={"PYTHONPATH": os.getenv("PYTHONPATH", "")})  # noqa: S603
+    subprocess.run(cmd, check=True, env={"PYTHONPATH": construct_pythonpath()})  # noqa: S603
 
 
 def run_json_to_yaml(json_path: Path, yaml_path: Path) -> None:
@@ -63,27 +69,24 @@ def run_json_to_yaml(json_path: Path, yaml_path: Path) -> None:
         yaml.dump(data, yfd)
 
 
-def _path_to_slug(p: Path, build_dir: Path) -> str:
-    return str(p.relative_to(build_dir)).replace(os.sep, "_").replace(".", "_")
-
-
-def yaml_postprocess_tasks(
+def yaml_postprocess_tasks(  # noqa: PLR0913
     yaml_source: Path,
     build_dir: Path,
     extra_file_deps: Iterable[Path] = (),
     output_stem: str | None = None,
     *,
-    output_root: Path,
-) -> list[dict[str, Any]]:
-    """Return task dicts to postprocess a YAML file to JSON, then back to clean YAML."""
+    version: str,
+    record_type: str,
+) -> list[doit_api.task]:
+    """Return tasks to postprocess a YAML file to JSON, then back to clean YAML."""
     stem = output_stem or yaml_source.stem
     json_path = build_dir / (stem + ".json")
     yaml_path = build_dir / (stem + ".yaml")
 
     return [
-        {
-            "name": _path_to_slug(json_path, output_root),
-            "actions": [
+        doit_api.task(
+            name=f"{version}:{record_type}:postprocess",
+            actions=[
                 (
                     run_postprocess_yaml,
                     [],
@@ -94,15 +97,15 @@ def yaml_postprocess_tasks(
                     },
                 ),
             ],
-            "file_dep": [str(yaml_source)] + [str(p) for p in (extra_file_deps or [])],
-            "targets": [str(json_path)],
-        },
-        {
-            "name": _path_to_slug(yaml_path, output_root),
-            "actions": [(run_json_to_yaml, [json_path, yaml_path])],
-            "file_dep": [str(json_path)],
-            "targets": [str(yaml_path)],
-        },
+            file_dep=[str(yaml_source)] + [str(p) for p in (extra_file_deps or [])],
+            targets=[str(json_path)],
+        ),
+        doit_api.task(
+            name=f"{version}:{record_type}:yaml",
+            actions=[(run_json_to_yaml, [json_path, yaml_path])],
+            file_dep=[str(json_path)],
+            targets=[str(yaml_path)],
+        ),
     ]
 
 
@@ -111,12 +114,13 @@ def render_template_task(
     output_path: Path,
     extra_file_deps: Iterable[Path] = (),
     *,
-    output_root: Path,
-) -> dict[str, Any]:
-    """Return a task dict for rendering a template."""
-    return {
-        "name": _path_to_slug(output_path, output_root),
-        "actions": [
+    version: str,
+    record_type: str,
+) -> doit_api.task:
+    """Return a task for rendering a template."""
+    return doit_api.task(
+        name=f"{version}:{record_type}:render",
+        actions=[
             (
                 run_render_template,
                 [],
@@ -127,6 +131,6 @@ def render_template_task(
                 },
             ),
         ],
-        "file_dep": [str(source_file)] + [str(p) for p in (extra_file_deps or [])],
-        "targets": [str(output_path)],
-    }
+        file_dep=[str(source_file)] + [str(p) for p in (extra_file_deps or [])],
+        targets=[str(output_path)],
+    )

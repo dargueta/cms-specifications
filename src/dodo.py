@@ -10,6 +10,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import TYPE_CHECKING
 
+import doit_api
 from doit import get_var
 from doit_api import pytask
 
@@ -20,8 +21,6 @@ from build_tasks.format_tasks import generate_tasks_for_format
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
-
-    from .build_tasks import TaskDict
 
 
 DOIT_CONFIG = {
@@ -40,19 +39,28 @@ def create_build_dir() -> None:
     BUILD_DIR.mkdir(parents=True, exist_ok=True)
 
 
-def task_build() -> Iterator[TaskDict]:
-    """Build all file format outputs."""
-    for format_name, source_path in sorted(FORMAT_SOURCE_DIRS_BY_NAME.items()):
-        subtasks = generate_tasks_for_format(source_path, build_dir=BUILD_DIR)
-        subtask_names = [f"build:{t['name']}" for t in subtasks]
-        for subtask in subtasks:
-            subtask.setdefault("task_dep", []).append("create_build_dir")
-            yield subtask
+def _make_format_taskgen(format_name: str, source_path: Path) -> doit_api.taskgen:
+    def _generate() -> Iterator[doit_api.task]:
+        yield from generate_tasks_for_format(
+            format_name,
+            source_path,
+            build_dir=BUILD_DIR,
+            extra_task_dep=[create_build_dir],
+        )
 
-        # Group task per format: `doit build:bqn4` builds all bqn4 subtasks.
-        yield {
-            "name": format_name,
-            "actions": None,
-            "doc": f"Build all {format_name} outputs",
-            "task_dep": subtask_names,
-        }
+    return doit_api.taskgen(
+        name=format_name, doc=f"Build all {format_name} outputs"
+    )(_generate)
+
+
+for _format_name, _source_path in sorted(FORMAT_SOURCE_DIRS_BY_NAME.items()):
+    globals()[_format_name] = _make_format_taskgen(_format_name, _source_path)
+del _format_name, _source_path
+
+build = doit_api.task(
+    name="build",
+    actions=[],
+    tell_why_am_i_running=False,
+    doc="Build all file format outputs",
+    task_dep=[f"{name}:*" for name in sorted(FORMAT_SOURCE_DIRS_BY_NAME)],
+)
