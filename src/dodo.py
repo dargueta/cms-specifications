@@ -40,6 +40,7 @@ def create_build_dir() -> None:
 
 
 def _make_format_taskgen(format_name: str, source_path: Path) -> doit_api.taskgen:
+    @doit_api.taskgen(name=format_name, doc=f"Build all {format_name} outputs")
     def _generate() -> Iterator[doit_api.task]:
         yield from generate_tasks_for_format(
             format_name,
@@ -48,9 +49,7 @@ def _make_format_taskgen(format_name: str, source_path: Path) -> doit_api.taskge
             extra_task_dep=[create_build_dir],
         )
 
-    return doit_api.taskgen(name=format_name, doc=f"Build all {format_name} outputs")(
-        _generate
-    )
+    return _generate
 
 
 for _format_name, _source_path in sorted(FORMAT_SOURCE_DIRS_BY_NAME.items()):
