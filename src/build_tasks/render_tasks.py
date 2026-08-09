@@ -5,12 +5,12 @@
 from __future__ import annotations
 
 import json
-import os
 import subprocess
 import sys
 from typing import TYPE_CHECKING
 
 import doit_api
+import more_itertools as mi
 import ruamel.yaml
 
 from .constants import COMMON_INCLUDE_DIR
@@ -33,12 +33,16 @@ def run_render_template(
 ) -> None:
     """Render the template file at `source` into `output`."""
     output.parent.mkdir(parents=True, exist_ok=True)
-    cmd = [sys.executable, "-m", "scripts.render_templates"]
-    for d in include_dirs:
-        cmd.extend(["-I", str(d)])
-
     subprocess.run(  # noqa: S603
-        [*cmd, "-o", str(output), str(source)],
+        [
+            sys.executable,
+            "-m",
+            "scripts.render_templates",
+            *mi.flatten(["-I", str(d)] for d in include_dirs),
+            "-o",
+            str(output),
+            str(source),
+        ],
         check=True,
         env={"PYTHONPATH": construct_pythonpath()},
     )
@@ -49,11 +53,20 @@ def run_postprocess_yaml(
 ) -> None:
     """Resolve all custom YAML constructors and write into a JSON file."""
     output.parent.mkdir(parents=True, exist_ok=True)
-    cmd = [sys.executable, "-m", "scripts.postprocess_yaml", "--json"]
-    for d in include_dirs:
-        cmd.extend(["-I", str(d)])
-    cmd.extend(["-o", str(output), str(source)])
-    subprocess.run(cmd, check=True, env={"PYTHONPATH": construct_pythonpath()})  # noqa: S603
+    subprocess.run(  # noqa: S603
+        [
+            sys.executable,
+            "-m",
+            "scripts.postprocess_yaml",
+            "--json",
+            *mi.flatten(["-I", str(d)] for d in include_dirs),
+            "-o",
+            str(output),
+            str(source),
+        ],
+        check=True,
+        env={"PYTHONPATH": construct_pythonpath()},
+    )
 
 
 def run_json_to_yaml(json_path: Path, yaml_path: Path) -> None:
@@ -97,7 +110,7 @@ def yaml_postprocess_tasks(  # noqa: PLR0913
                     },
                 ),
             ],
-            file_dep=[str(yaml_source)] + [str(p) for p in (extra_file_deps or [])],
+            file_dep=[str(yaml_source), *map(str, extra_file_deps)],
             targets=[str(json_path)],
         ),
         doit_api.task(
@@ -131,6 +144,6 @@ def render_template_task(
                 },
             ),
         ],
-        file_dep=[str(source_file)] + [str(p) for p in (extra_file_deps or [])],
+        file_dep=[str(source_file), *map(str, extra_file_deps)],
         targets=[str(output_path)],
     )

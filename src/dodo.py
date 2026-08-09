@@ -48,9 +48,9 @@ def _make_format_taskgen(format_name: str, source_path: Path) -> doit_api.taskge
             extra_task_dep=[create_build_dir],
         )
 
-    return doit_api.taskgen(
-        name=format_name, doc=f"Build all {format_name} outputs"
-    )(_generate)
+    return doit_api.taskgen(name=format_name, doc=f"Build all {format_name} outputs")(
+        _generate
+    )
 
 
 for _format_name, _source_path in sorted(FORMAT_SOURCE_DIRS_BY_NAME.items()):
