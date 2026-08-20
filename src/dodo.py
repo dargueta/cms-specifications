@@ -40,6 +40,8 @@ def create_build_dir() -> None:
 
 
 def _make_format_taskgen(format_name: str, source_path: Path) -> doit_api.taskgen:
+    """Create the task generator function for the given file format."""
+
     @doit_api.taskgen(name=format_name, doc=f"Build all {format_name} outputs")
     def _generate() -> Iterator[doit_api.task]:
         yield from generate_tasks_for_format(

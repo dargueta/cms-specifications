@@ -42,7 +42,7 @@ def _record_type(source_file: Path) -> str:
     return source_file.name.split(".", 1)[0]
 
 
-def _record_type_tasks(  # noqa: PLR0913, PLR0917
+def generate_tasks_for_record_type(  # noqa: PLR0913, PLR0917
     format_name: str,
     version: str,
     record_type: str,
@@ -114,7 +114,7 @@ def _record_type_tasks(  # noqa: PLR0913, PLR0917
     )
 
 
-def _version_tasks(
+def generate_tasks_for_version(
     format_name: str,
     version_dir: Path,
     target_root: Path,
@@ -143,7 +143,7 @@ def _version_tasks(
         record_type = _record_type(source_file)
         extra_deps = dep_map.get(source_file.resolve(), [])
 
-        for t in _record_type_tasks(
+        for t in generate_tasks_for_record_type(
             format_name,
             version,
             record_type,
@@ -163,7 +163,7 @@ def _version_tasks(
         yield doit_api.task(name=version, actions=[], task_dep=[f"{version}:*"])
 
 
-def _clone_tasks(
+def generate_clone_tasks(
     format_name: str,
     parent_version: VersionSpec,
     children: Sequence[VersionSpec],
@@ -222,15 +222,6 @@ def generate_tasks_for_format(
 ) -> Iterator[doit_api.task]:
     """Generate all doit tasks for a given file format."""
     build_rules_file = source_path / "build_rules.yaml"
-
-    if not build_rules_file.exists():
-        LOG.warning(
-            "Format %r doesn't have the required build rules file. Ignoring for now,"
-            " but this may become an error in the future.",
-            format_name,
-        )
-        return
-
     rules = parse_build_rules(build_rules_file, source_path)
 
     target_root = build_dir / format_name
@@ -241,7 +232,7 @@ def generate_tasks_for_format(
     # `_clone_tasks` needs in order to create the copying tasks.
     for version_dir in _iter_version_dirs(source_path):
         version_tasks = list(
-            _version_tasks(
+            generate_tasks_for_version(
                 format_name,
                 version_dir,
                 target_root,
@@ -263,7 +254,7 @@ def generate_tasks_for_format(
             continue
 
         already_handled[parent_version] = "(Defined)"
-        yield from _clone_tasks(
+        yield from generate_clone_tasks(
             format_name=format_name,
             parent_version=parent_version,
             children=children,
