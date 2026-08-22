@@ -85,7 +85,7 @@ def run_json_to_yaml(json_path: Path, yaml_path: Path) -> None:
 def yaml_postprocess_tasks(  # noqa: PLR0913
     yaml_source: Path,
     build_dir: Path,
-    extra_file_deps: Iterable[Path] = (),
+    extra_deps: Iterable[doit_api.task] = (),
     output_stem: str | None = None,
     *,
     version: str,
@@ -110,7 +110,8 @@ def yaml_postprocess_tasks(  # noqa: PLR0913
                     },
                 ),
             ],
-            file_dep=[str(yaml_source), *map(str, extra_file_deps)],
+            file_dep=[str(yaml_source)],
+            task_dep=list(extra_deps),
             targets=[str(json_path)],
         ),
         doit_api.task(
@@ -125,7 +126,7 @@ def yaml_postprocess_tasks(  # noqa: PLR0913
 def render_template_task(
     source_file: Path,
     output_path: Path,
-    extra_file_deps: Iterable[Path] = (),
+    extra_deps: Iterable[doit_api.task] = (),
     *,
     version: str,
     record_type: str,
@@ -144,6 +145,7 @@ def render_template_task(
                 },
             ),
         ],
-        file_dep=[str(source_file), *map(str, extra_file_deps)],
+        file_dep=[str(source_file)],
+        task_dep=list(extra_deps),
         targets=[str(output_path)],
     )

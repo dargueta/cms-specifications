@@ -75,8 +75,8 @@ class VersionConstraint:
         """Parse a specification into a class that can compare versions."""
         spec = spec.strip()
 
-        if spec == "*":
-            return cls(lambda _a, _b: True, VersionSpec(0, 0))
+        if spec == "*":  # `*` compares equal to all versions.
+            return cls((lambda _a, _b: True), VersionSpec(0, 0))
 
         parts = re.match(r"^(?P<constraint>[><=!]+)?\s*(?P<version>\d+\.\d+)$", spec)
         if not parts:

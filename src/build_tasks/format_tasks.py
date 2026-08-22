@@ -219,7 +219,7 @@ def generate_tasks_for_format(
     source_path: Path,
     *,
     build_dir: Path,
-    extra_task_dep: Collection[object] = (),
+    extra_task_dep: Collection[doit_api.task] = (),
 ) -> Iterator[doit_api.task]:
     """Generate all doit tasks for a given file format."""
     build_rules_file = source_path / "build_rules.yaml"
