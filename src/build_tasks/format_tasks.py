@@ -14,8 +14,8 @@ import doit_api
 
 from .build_rules import parse_build_rules
 from .file_ops import link_or_copy
+from .render_tasks import generate_yaml_postprocess_tasks
 from .render_tasks import render_template_task
-from .render_tasks import yaml_postprocess_tasks
 
 
 if TYPE_CHECKING:
@@ -75,7 +75,7 @@ def generate_tasks_for_record_type(  # noqa: PLR0913, PLR0917
         )
 
         if is_yaml:
-            postprocess_tasks = yaml_postprocess_tasks(
+            postprocess_tasks = generate_yaml_postprocess_tasks(
                 rendered_path,
                 version_build_dir,
                 output_stem=Path(rendered_name).stem,
@@ -90,7 +90,7 @@ def generate_tasks_for_record_type(  # noqa: PLR0913, PLR0917
         # Non-YAML template files are already handled by the render task.
     elif source_file.suffix == ".yaml":
         # If we get here then the source file is YAML but *not* templated.
-        yield from yaml_postprocess_tasks(
+        yield from generate_yaml_postprocess_tasks(
             source_file,
             version_build_dir,
             extra_file_deps,
@@ -120,8 +120,6 @@ def generate_tasks_for_version(
     version_dir: Path,
     target_root: Path,
     dep_map: Mapping[Path, Collection[Path]],
-    *,
-    extra_task_dep: Collection[doit_api.task] = (),
 ) -> Iterator[doit_api.task]:
     """Generate the render/postprocess/yaml/group tasks for one version directory."""
     version = version_dir.name
@@ -152,10 +150,6 @@ def generate_tasks_for_version(
             version_build_dir,
             extra_deps,
         ):
-            if t.actions:
-                # Only real leaf tasks need to depend on the build dir existing; the
-                # no-op grouping tasks don't run any actions.
-                t.task_dep = [*(t.task_dep or []), *extra_task_dep]
             produced_any = True
             yield t
 
@@ -215,11 +209,7 @@ def generate_clone_tasks(
 
 
 def generate_tasks_for_format(
-    format_name: str,
-    source_path: Path,
-    *,
-    build_dir: Path,
-    extra_task_dep: Collection[doit_api.task] = (),
+    format_name: str, source_path: Path, *, build_dir: Path
 ) -> Iterator[doit_api.task]:
     """Generate all doit tasks for a given file format."""
     build_rules_file = source_path / "build_rules.yaml"
@@ -234,11 +224,7 @@ def generate_tasks_for_format(
     for version_dir in enumerate_version_dirs(source_path):
         version_tasks = list(
             generate_tasks_for_version(
-                format_name,
-                version_dir,
-                target_root,
-                rules.file_dep_map,
-                extra_task_dep=extra_task_dep,
+                format_name, version_dir, target_root, rules.file_dep_map
             )
         )
         if version_tasks:

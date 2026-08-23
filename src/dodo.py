@@ -33,22 +33,13 @@ BUILD_DIR = Path(
 ).resolve()
 
 
-@pytask(targets=[BUILD_DIR], uptodate=[BUILD_DIR.is_dir])
-def create_build_dir() -> None:
-    """Create the build output directory."""
-    BUILD_DIR.mkdir(parents=True, exist_ok=True)
-
-
 def _make_format_taskgen(format_name: str, source_path: Path) -> doit_api.taskgen:
     """Create the task generator function for the given file format."""
 
     @doit_api.taskgen(name=format_name, doc=f"Build all {format_name} outputs")
     def _generate() -> Iterator[doit_api.task]:
         yield from generate_tasks_for_format(
-            format_name,
-            source_path,
-            build_dir=BUILD_DIR,
-            extra_task_dep=[create_build_dir],
+            format_name, source_path, build_dir=BUILD_DIR
         )
 
     return _generate

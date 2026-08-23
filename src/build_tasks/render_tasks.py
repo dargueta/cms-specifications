@@ -78,11 +78,13 @@ def run_json_to_yaml(json_path: Path, yaml_path: Path) -> None:
 
     with json_path.open() as jfd:
         data = json.load(jfd)
+
+    yaml_path.parent.mkdir(parents=True, exist_ok=True)
     with yaml_path.open("w") as yfd:
         yaml.dump(data, yfd)
 
 
-def yaml_postprocess_tasks(  # noqa: PLR0913
+def generate_yaml_postprocess_tasks(  # noqa: PLR0913
     yaml_source: Path,
     build_dir: Path,
     extra_deps: Iterable[doit_api.task] = (),
