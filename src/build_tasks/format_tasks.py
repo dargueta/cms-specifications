@@ -49,7 +49,7 @@ def generate_tasks_for_record_type(  # noqa: PLR0913, PLR0917
     record_type: str,
     source_file: Path,
     version_build_dir: Path,
-    extra_file_deps: Collection[doit_api.task] = (),
+    extra_file_deps: Collection[Path] = (),
 ) -> Iterator[doit_api.task]:
     """Generate the render/postprocess/yaml stage tasks for a single source file."""
     if source_file.suffix == ".jinja2":

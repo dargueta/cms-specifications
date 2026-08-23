@@ -12,7 +12,6 @@ from typing import TYPE_CHECKING
 
 import doit_api
 from doit import get_var
-from doit_api import pytask
 
 from build_tasks.constants import DEFAULT_BUILD_DIR
 from build_tasks.constants import FORMAT_SOURCE_DIRS_BY_NAME
