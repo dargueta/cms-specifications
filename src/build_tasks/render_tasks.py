@@ -84,7 +84,7 @@ def run_json_to_yaml(json_path: Path, yaml_path: Path) -> None:
         yaml.dump(data, yfd)
 
 
-def generate_yaml_postprocess_tasks(  # noqa: PLR0913
+def create_yaml_postprocess_tasks(  # noqa: PLR0913
     yaml_source: Path,
     build_dir: Path,
     extra_file_deps: Iterable[Path] = (),
@@ -124,7 +124,7 @@ def generate_yaml_postprocess_tasks(  # noqa: PLR0913
     ]
 
 
-def render_template_task(
+def create_render_template_task(
     source_file: Path,
     output_path: Path,
     extra_file_deps: Iterable[Path] = (),

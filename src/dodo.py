@@ -15,7 +15,7 @@ from doit import get_var
 
 from build_tasks.constants import DEFAULT_BUILD_DIR
 from build_tasks.constants import FORMAT_SOURCE_DIRS_BY_NAME
-from build_tasks.format_tasks import generate_tasks_for_format
+from build_tasks.format_tasks import create_tasks_for_format
 
 
 if TYPE_CHECKING:
@@ -37,7 +37,7 @@ def _make_format_taskgen(format_name: str, source_path: Path) -> doit_api.taskge
 
     @doit_api.taskgen(name=format_name, doc=f"Build all {format_name} outputs")
     def _generate() -> Iterator[doit_api.task]:
-        yield from generate_tasks_for_format(
+        yield from create_tasks_for_format(
             format_name, source_path, build_dir=BUILD_DIR
         )
 

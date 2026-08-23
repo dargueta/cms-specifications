@@ -36,6 +36,7 @@ def link_or_copy(parent: Path, children: Iterable[Path]) -> None:
 
 
 def _link_or_copy_directory(link: Path, existing: Path) -> None:
+    link.parent.mkdir(parents=True, exist_ok=True)
     with contextlib.suppress(*_SUPPRESS_PATHLIB_EXCEPTIONS):
         link.symlink_to(existing)
         return
@@ -43,6 +44,7 @@ def _link_or_copy_directory(link: Path, existing: Path) -> None:
 
 
 def _link_or_copy_file(link: Path, existing: Path) -> None:
+    link.parent.mkdir(parents=True, exist_ok=True)
     with contextlib.suppress(*_SUPPRESS_PATHLIB_EXCEPTIONS):
         link.hardlink_to(existing)
         return

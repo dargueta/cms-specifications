@@ -14,8 +14,8 @@ import doit_api
 
 from .build_rules import parse_build_rules
 from .file_ops import link_or_copy
-from .render_tasks import generate_yaml_postprocess_tasks
-from .render_tasks import render_template_task
+from .render_tasks import create_render_template_task
+from .render_tasks import create_yaml_postprocess_tasks
 
 
 if TYPE_CHECKING:
@@ -38,12 +38,12 @@ def enumerate_version_dirs(source_path: Path) -> Iterator[Path]:
             yield version_dir
 
 
-def _record_type(source_file: Path) -> str:
+def get_record_type(source_file: Path) -> str:
     """Return the record type name: the filename stem up to the first `.`."""
     return source_file.name.split(".", 1)[0]
 
 
-def generate_tasks_for_record_type(  # noqa: PLR0913, PLR0917
+def create_tasks_for_record_type(  # noqa: PLR0913, PLR0917
     format_name: str,
     version: str,
     record_type: str,
@@ -66,7 +66,7 @@ def generate_tasks_for_record_type(  # noqa: PLR0913, PLR0917
         else:
             rendered_path = version_build_dir / rendered_name
 
-        yield render_template_task(
+        yield create_render_template_task(
             source_file,
             rendered_path,
             extra_file_deps,
@@ -75,7 +75,7 @@ def generate_tasks_for_record_type(  # noqa: PLR0913, PLR0917
         )
 
         if is_yaml:
-            postprocess_tasks = generate_yaml_postprocess_tasks(
+            postprocess_tasks = create_yaml_postprocess_tasks(
                 rendered_path,
                 version_build_dir,
                 output_stem=Path(rendered_name).stem,
@@ -90,7 +90,7 @@ def generate_tasks_for_record_type(  # noqa: PLR0913, PLR0917
         # Non-YAML template files are already handled by the render task.
     elif source_file.suffix == ".yaml":
         # If we get here then the source file is YAML but *not* templated.
-        yield from generate_yaml_postprocess_tasks(
+        yield from create_yaml_postprocess_tasks(
             source_file,
             version_build_dir,
             extra_file_deps,
@@ -115,7 +115,7 @@ def generate_tasks_for_record_type(  # noqa: PLR0913, PLR0917
     )
 
 
-def generate_tasks_for_version(
+def create_tasks_for_version(
     format_name: str,
     version_dir: Path,
     target_root: Path,
@@ -139,10 +139,10 @@ def generate_tasks_for_version(
         if not source_file.is_file():
             continue
 
-        record_type = _record_type(source_file)
+        record_type = get_record_type(source_file)
         extra_deps = dep_map.get(source_file.resolve(), [])
 
-        for t in generate_tasks_for_record_type(
+        for t in create_tasks_for_record_type(
             format_name,
             version,
             record_type,
@@ -158,7 +158,7 @@ def generate_tasks_for_version(
         yield doit_api.task(name=version, actions=[], task_dep=[f"{version}:*"])
 
 
-def generate_clone_tasks(
+def create_clone_tasks(
     format_name: str,
     parent_version: VersionSpec,
     children: Sequence[VersionSpec],
@@ -208,7 +208,7 @@ def generate_clone_tasks(
     already_handled.update(dict.fromkeys(children, str(parent_version)))
 
 
-def generate_tasks_for_format(
+def create_tasks_for_format(
     format_name: str, source_path: Path, *, build_dir: Path
 ) -> Iterator[doit_api.task]:
     """Generate all doit tasks for a given file format."""
@@ -223,7 +223,7 @@ def generate_tasks_for_format(
     # that `generate_clone_tasks` needs in order to create the copying tasks.
     for version_dir in enumerate_version_dirs(source_path):
         version_tasks = list(
-            generate_tasks_for_version(
+            create_tasks_for_version(
                 format_name, version_dir, target_root, rules.file_dep_map
             )
         )
@@ -244,7 +244,7 @@ def generate_tasks_for_format(
             )
 
         already_handled[parent_version] = "(Defined)"
-        yield from generate_clone_tasks(
+        yield from create_clone_tasks(
             format_name=format_name,
             parent_version=parent_version,
             children=children,
