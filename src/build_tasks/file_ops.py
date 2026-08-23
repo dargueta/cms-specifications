@@ -44,6 +44,14 @@ def _link_or_copy_directory(link: Path, existing: Path) -> None:
 
 
 def _link_or_copy_file(link: Path, existing: Path) -> None:
+    """Attempt to link a file `link` to `existing`, or copy `existing` to `link`.
+
+    This function tries three times:
+
+    1. Make `link` a hard link to `existing`.
+    2. Failing that, make `link` a symbolic link to `existing`.
+    3. If that fails, copy `existing` to `link`.
+    """
     link.parent.mkdir(parents=True, exist_ok=True)
     with contextlib.suppress(*_SUPPRESS_PATHLIB_EXCEPTIONS):
         link.hardlink_to(existing)
