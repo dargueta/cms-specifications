@@ -30,7 +30,7 @@ typing:
 
 .PHONY: setup
 setup:
-	pip3 install pip-tools
+	pip3 install -r dev-requirements.txt
 	$(MAKE) pin
 
 
