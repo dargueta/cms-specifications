@@ -61,7 +61,7 @@ fields:
     type: string
     constraints:
       maxLength: 3
-  - !filler 1  # "Race code" in later file versions
+  - !race-code
   - !date8
     name: transaction_date
     title: Transaction Date
@@ -75,9 +75,8 @@ fields:
       End date of LIS Period (Present if Beneficiary is deemed for the full year,
       or if the Beneficiary is losing Low Income status before the end of the
       current year.)
-  - !filler 4   # `subsidy_end_date` is listed as 12 spaces, but has an 8-digit year.
   - !filler 3   # District office code
-  - !filler 8   # (No description)
+  - !filler 12  # (No description)
   - !filler 8   # (No description)
   - !filler 5   # Source ID
   - !filler 3   # Prior plan benefit package ID

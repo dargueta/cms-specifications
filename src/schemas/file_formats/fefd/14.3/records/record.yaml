@@ -61,7 +61,7 @@ fields:
     type: string
     constraints:
       maxLength: 3
-  - !filler 1  # "Race code" in later file versions
+  - !race-code
   - !date8
     name: transaction_date
     title: Transaction Date
