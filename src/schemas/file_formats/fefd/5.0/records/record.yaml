@@ -75,6 +75,7 @@ fields:
       End date of LIS Period (Present if Beneficiary is deemed for the full year,
       or if the Beneficiary is losing Low Income status before the end of the
       current year.)
+  - !filler 4   # `subsidy_end_date` is listed as 12 spaces, but has an 8-digit year.
   - !filler 3   # District office code
   - !filler 8   # (No description)
   - !filler 8   # (No description)
