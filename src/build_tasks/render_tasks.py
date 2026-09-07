@@ -69,6 +69,26 @@ def run_postprocess_yaml(
     )
 
 
+def run_apply_yaml_patch(
+    base: Path, patch_file: Path, output: Path, include_dirs: Iterable[Path]
+) -> None:
+    """Apply a YAML patch to a fully rendered YAML or JSON file."""
+    output.parent.mkdir(parents=True, exist_ok=True)
+    subprocess.run(  # noqa: S603
+        [
+            sys.executable,
+            "-m",
+            "scripts.apply_yaml_patch",
+            *mi.flatten(["-I", str(d)] for d in include_dirs),
+            str(base),
+            str(patch_file),
+            str(output),
+        ],
+        check=True,
+        env={"PYTHONPATH": construct_pythonpath()},
+    )
+
+
 def run_json_to_yaml(json_path: Path, yaml_path: Path) -> None:
     """Convert JSON to YAML."""
     yaml = ruamel.yaml.YAML(typ="safe")
