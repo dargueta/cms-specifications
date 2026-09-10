@@ -1,3 +1,5 @@
 Makefile
 *.mk
 src/schemas/file_formats/**/README.md
+.env
+.envrc
