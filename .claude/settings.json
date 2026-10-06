@@ -3,6 +3,8 @@
     "allow": [
       "Read",
       "Bash(doit *)",
+      "WebFetch(domain:docs.python.org)",
+      "WebFetch(domain:pydoit.org)",
       "mcp__gortex__analyze",
       "mcp__gortex__capabilities",
       "mcp__gortex__change",
