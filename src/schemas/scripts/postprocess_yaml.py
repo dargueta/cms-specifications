@@ -118,7 +118,7 @@ def construct_item(
                 f" Original error: {err}"
             ) from None
         # The deserialized value is indeed None. Treat this as an empty dict.
-        user_fragment = {}
+        user_fragment: dict[str, Any] = {}
 
     deep_map = deep_chainmap.DeepChainMap(user_fragment, dict(fragment))
     return deep_to_dict(deep_map)
@@ -157,7 +157,7 @@ class Const:
     def from_yaml(cls, constructor: Constructor, node: Node) -> dict[str, Any]:
         """Create a field representing filler space in a file."""
         string_value: str
-        dict_value = {}
+        dict_value: dict[str, Any] = {}
 
         try:
             string_value = constructor.construct_yaml_str(node)
