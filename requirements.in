@@ -6,6 +6,7 @@ deep_chainmap~=0.2.0
 doit~=0.37.0
 doit-api~=0.8.0
 jinja2~=3.1
+jsonpath-ng~=1.8
 more_itertools>=9.0
 pyfixwidth~=0.3.2
 ruamel.yaml>=0.18.15, <0.20.0
