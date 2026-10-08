@@ -19,7 +19,19 @@ local zero_padded = {
 {
   '$schema': 'https://datapackage.org/profiles/2.0/tableschema.json',
   fieldsMatch: ['subset'],
-  fields: [
+
+  // The final field list is always the data fields followed by a single padding field
+  // that fills out the rest of the record. Records extending this one should append
+  // to `data_fields` and set `padding_length`, never touch `fields` directly:
+  //
+  //   base {
+  //     data_fields+: [ ...new fields... ],
+  //     padding_length:: 123,
+  //   }
+  fields: self.data_fields + [filler('record_padding', self.padding_length)],
+  padding_length:: error 'Records extending the BQN4 detail record must set padding_length.',
+
+  data_fields:: [
     const('record_type', 'DTL'),
     {
       name: 'original_record_type',
