@@ -3,10 +3,11 @@
 local bool_yn = import 'bool_yn.jsonnet';
 local detail_record = import 'bqn4/common/detail.jsonnet';
 local date8 = import 'date8.jsonnet';
+local filler = import 'filler.jsonnet';
 
 
-detail_record(
-  [
+detail_record {
+  fields+: [
     {
       name: 'last_name',
       title: 'Last Name',
@@ -90,6 +91,6 @@ detail_record(
       title: 'Part C Indicator',
       description: 'The v5.0 documentation implies, but does not state, that this should never be true.',
     },
+    filler('record_padding', 6),
   ],
-  6,
-)
+}
