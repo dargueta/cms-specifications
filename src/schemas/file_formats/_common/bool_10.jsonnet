@@ -1,0 +1,9 @@
+// SPDX-License-Identifier: BSD-3-Clause
+{
+  type: 'boolean',
+  trueValues: ['1'],
+  falseValues: ['0'],
+  constraints: {
+    maxLength: 1,
+  },
+}

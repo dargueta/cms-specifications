@@ -1,0 +1,17 @@
+// SPDX-License-Identifier: BSD-3-Clause
+{
+  name: 'race_code',
+  type: 'string',
+  categories: [
+    { value: '0', label: 'Unknown' },
+    { value: '1', label: 'White' },
+    { value: '2', label: 'Black' },
+    { value: '3', label: 'Other' },
+    { value: '4', label: 'Asian' },
+    { value: '5', label: 'Hispanic' },
+    { value: '6', label: 'North American Native' },
+  ],
+  constraints: {
+    maxLength: 1,
+  },
+}

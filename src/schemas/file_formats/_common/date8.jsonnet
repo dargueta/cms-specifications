@@ -1,0 +1,8 @@
+// SPDX-License-Identifier: BSD-3-Clause
+{
+  type: 'date',
+  format: '%Y%m%d',
+  constraints: {
+    maxLength: 8,
+  },
+}
