@@ -9,16 +9,16 @@ identical-versions:
 
 identical-files:
   - source: "5.0/records"
-    files: [header.yaml.jinja2, trailer.yaml.jinja2]
+    files: [header.jsonnet, trailer.jsonnet]
     versions: [">=5.1", "<=9.1"]
   - source: "9.2/records"
-    files: [header.yaml.jinja2, trailer.yaml.jinja2]
+    files: [header.jsonnet, trailer.jsonnet]
     versions: [">=9.3", "<=10.2"]
   - source: "10.3/records"
-    files: [header.yaml.jinja2, trailer.yaml.jinja2]
+    files: [header.jsonnet, trailer.jsonnet]
     versions: ">=12.0"
 
 file-dependencies:
-  "common/header.jinja2": "*/records/header.jinja2"
-  "common/detail.jinja2": "*/records/detail.jinja2"
-  "common/trailer.jinja2": "*/records/trailer.jinja2"
+  "common/header.jsonnet": "*/records/header.jsonnet"
+  "common/detail.jsonnet": "*/records/detail.jsonnet"
+  "common/trailer.jsonnet": "*/records/trailer.jsonnet"
