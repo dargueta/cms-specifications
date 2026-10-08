@@ -1,0 +1,95 @@
+// SPDX-License-Identifier: BSD-3-Clause
+
+local bool_yn = import 'bool_yn.jsonnet';
+local detail_record = import 'bqn4/common/detail.jsonnet';
+local date8 = import 'date8.jsonnet';
+
+
+detail_record(
+  [
+    {
+      name: 'last_name',
+      title: 'Last Name',
+      description: "The beneficiary's last name.",
+      type: 'string',
+      constraints: {
+        maxLength: 40,
+      },
+    },
+    {
+      name: 'first_name',
+      title: 'First Name',
+      description: "The beneficiary's first name.",
+      type: 'string',
+      constraints: {
+        maxLength: 30,
+      },
+    },
+    {
+      name: 'middle_initial',
+      title: 'Middle Initial',
+      description: "The beneficiary's middle initial.",
+      type: 'string',
+      constraints: {
+        maxLength: 1,
+      },
+    },
+    {
+      name: 'current_state_code',
+      title: 'Current State Code',
+      type: 'string',
+      constraints: {
+        minLength: 2,
+        maxLength: 2,
+      },
+    },
+    {
+      name: 'current_county_code',
+      title: 'Current County Code',
+      type: 'string',
+      constraints: {
+        maxLength: 3,
+      },
+    },
+    date8 {
+      name: 'date_of_death',
+      title: 'Date of Death',
+    },
+    {
+      name: 'part_c_d_contract_number',
+      title: 'Part C/D Contract Number',
+      description: 'If available.',
+      type: 'string',
+      constraints: {
+        maxLength: 5,
+      },
+    },
+    date8 {
+      name: 'part_c_d_enrollment_start_date',
+      title: 'Part C/D Enrollment Start Date',
+    },
+    bool_yn {
+      name: 'part_d_indicator',
+      title: 'Part D Indicator',
+    },
+    {
+      name: 'part_c_contract_number',
+      title: 'Part C Contract Number',
+      description: 'If available.',
+      type: 'string',
+      constraints: {
+        maxLength: 5,
+      },
+    },
+    date8 {
+      name: 'part_c_enrollment_start_date',
+      title: 'Part C Enrollment Start Date',
+    },
+    bool_yn {
+      name: 'part_c_indicator',
+      title: 'Part C Indicator',
+      description: 'The v5.0 documentation implies, but does not state, that this should never be true.',
+    },
+  ],
+  6,
+)
