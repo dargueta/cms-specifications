@@ -1,0 +1,172 @@
+// SPDX-License-Identifier: BSD-3-Clause
+// Common definitions shared by all file formats. Import with:
+//   local pcug = import 'pcug.libjsonnet';
+{
+  beneficiary_identifier: {
+    name: 'beneficiary_identifier',
+    title: 'Beneficiary Identifier',
+    constraints: {
+      minLength: 7,
+      maxLength: 12,
+      required: true,
+      pattern: '([A-Z][0-9]{6})|([A-Z]{3}[0-9]{9})|([0-9]{9}[A-Z][A-Z0-9]?)|[0-9A-Z]{11}',
+      //          | RRB (7)_____| RRB (12)_________| HICN __________________| MBI ______|
+      // TODO (dargueta): The regex for the MBI is too lax.
+    },
+  },
+
+  bool_10: {
+    type: 'boolean',
+    trueValues: ['1'],
+    falseValues: ['0'],
+    constraints: {
+      maxLength: 1,
+    },
+  },
+
+  bool_yblank: {
+    type: 'boolean',
+    trueValues: ['Y'],
+    falseValues: [''],
+    constraints: {
+      maxLength: 1,
+    },
+  },
+
+  bool_yn: {
+    type: 'boolean',
+    trueValues: ['Y'],
+    falseValues: ['N'],
+    constraints: {
+      maxLength: 1,
+    },
+  },
+
+  const: function(name, string_value) {
+    name: name,
+    type: 'string',
+    constraints: {
+      enum: [string_value],
+      minLength: std.length(string_value),
+      maxLength: std.length(string_value),
+      required: true,
+    },
+  },
+
+  date8: {
+    type: 'date',
+    format: '%Y%m%d',
+    constraints: {
+      maxLength: 8,
+    },
+  },
+
+  enrollment_source_type_code: {
+    description: 'An indicator providing the type of enrollment performed.',
+    type: 'string',
+    categories: [
+      { value: 'A', label: 'Auto enrolled by CMS.' },
+      { value: 'B', label: 'Beneficiary election.' },
+      { value: 'C', label: 'Facilitated enrollment by CMS.' },
+      { value: 'D', label: 'CMS Annual Rollover.' },
+      { value: 'E', label: 'Plan submitted auto-enrollments.' },
+      { value: 'F', label: 'Plan submitted facilitated enrollments.' },
+      { value: 'G', label: 'Point of Sale (POS) submitted enrollments.' },
+      { value: 'H', label: 'CMS or plan submitted re-assignment enrollments.' },
+      { value: 'I', label: 'Invalid Submitted Value.' },
+      { value: 'J', label: 'State-submitted MMP passive enrollment.' },
+      { value: 'K', label: 'CMS-submitted MMP passive enrollment.' },
+      { value: 'L', label: 'Beneficiary MMP election.' },
+      {
+        value: 'M',
+        label: 'Default for Financial Alignment Demo Plan enrollments submitted without an Enrollment Source Code (M is not submitted on an enrollment).',
+      },
+      { value: 'N', label: 'Rollover by plan transaction.' },
+    ],
+    constraints: {
+      maxLength: 1,
+    },
+  },
+
+  filler: function(name, width) {
+    name: name,
+    title: 'Filler',
+    type: 'string',
+    constraints: {
+      enum: [''],
+      maxLength: width,
+    },
+  },
+
+  plan_type_code: {
+    type: 'string',
+    constraints: {
+      maxLength: 2,
+    },
+    categories: [
+      { value: '01', label: 'HMO' },
+      { value: '02', label: 'HMOPOS' },
+      // "03" undefined
+      { value: '04', label: 'Local PPO' },
+      { value: '05', label: 'PSO (State License)' },
+      // "06" undefined
+      { value: '07', label: 'MSA' },
+      { value: '08', label: 'RFB PFFS' },
+      { value: '09', label: 'PFFS' },
+      // 10-17 undefined
+      { value: '18', label: '1876 Cost' },
+      { value: '19', label: 'HCPP 1833 Cost' },
+      { value: '20', label: 'National PACE' },
+      // 21-27 undefined
+      { value: '28', label: 'Chronic Care' },
+      { value: '29', label: 'Medicare Prescription Drug Plan' },
+      { value: '30', label: 'Employer/Union Only Direct Contract PDP' },
+      { value: '31', label: 'Regional PPO' },
+      { value: '32', label: 'Fallback' },
+      // 33-39 undefined
+      { value: '40', label: 'Employer/Union Only Direct Contract PFFS' },
+      // 41 undefined
+      { value: '42', label: 'RFB HMO' },
+      { value: '43', label: 'RFB HMOPOS' },
+      { value: '44', label: 'RFB Local PPO' },
+      { value: '45', label: 'RFB PSO (State License)' },
+      { value: '46', label: 'Point-of-Sale Contractor' },
+      { value: '47', label: 'Employer/Union Only Direct Contract PPO' },
+      { value: '48', label: 'Medicare-Medicaid Plan HMO' },
+      { value: '49', label: 'Medicare-Medicaid Plan HMOPOS' },
+      { value: '50', label: 'Medicare-Medicaid Plan PPO' },
+      // 51-98 undefined
+      { value: '99', label: 'Undefined Historical Data' },
+    ],
+  },
+
+  race_code: {
+    name: 'race_code',
+    type: 'string',
+    categories: [
+      { value: '0', label: 'Unknown' },
+      { value: '1', label: 'White' },
+      { value: '2', label: 'Black' },
+      { value: '3', label: 'Other' },
+      { value: '4', label: 'Asian' },
+      { value: '5', label: 'Hispanic' },
+      { value: '6', label: 'North American Native' },
+    ],
+    constraints: {
+      maxLength: 1,
+    },
+  },
+
+  sex_code: {
+    name: 'sex_code',
+    title: "Beneficiary's Sex Code",
+    description: 'The sex of the beneficiary.',
+    type: 'string',
+    rdfType: 'https://schema.org/GenderType',
+    categories: [
+      { value: '0', label: 'Unknown' },
+      { value: '1', label: 'Male' },
+      { value: '2', label: 'Female' },
+    ],
+  },
+}
