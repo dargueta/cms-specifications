@@ -1,16 +1,11 @@
 // SPDX-License-Identifier: BSD-3-Clause
-local beneficiary_identifier = import 'beneficiary_identifier.jsonnet';
-local const = import 'const.jsonnet';
-local date8 = import 'date8.jsonnet';
-local enrollment_source_type_code = import 'enrollment_source_type_code.jsonnet';
-local filler = import 'filler.jsonnet';
-local sex_code = import 'sex_code.jsonnet';
+local pcug = import 'pcug.libjsonnet';
 
 {
   '$schema': 'https://datapackage.org/profiles/2.0/tableschema.json',
   fieldsMatch: ['subset'],
   fields: [
-    beneficiary_identifier,
+    pcug.beneficiary_identifier,
     {
       name: 'surname',
       title: 'Surname',
@@ -37,11 +32,11 @@ local sex_code = import 'sex_code.jsonnet';
         maxLength: 1,
       },
     },
-    sex_code,
-    date8 {
+    pcug.sex_code,
+    pcug.date8 {
       name: 'date_of_birth',
     },
-    filler('medicaid_indicator', 1),  // Medicaid indicator
+    pcug.filler('medicaid_indicator', 1),  // Medicaid indicator
     {
       name: 'plan_contract_number',
       title: 'Plan Contract Number',
@@ -68,11 +63,11 @@ local sex_code = import 'sex_code.jsonnet';
         maxLength: 3,
       },
     },
-    filler('disability_indicator', 1),  // Disability indicator
-    filler('hospice_indicator', 1),  // Hospice indicator
-    filler('institutional_nhc_hcbs_indicator', 1),  // Institutional/NHC/HCBS Indicator
-    filler('esrd_indicator', 1),  // ESRD Indicator
-    const('transaction_reply_code', '999'),  // Transaction Reply Code
+    pcug.filler('disability_indicator', 1),  // Disability indicator
+    pcug.filler('hospice_indicator', 1),  // Hospice indicator
+    pcug.filler('institutional_nhc_hcbs_indicator', 1),  // Institutional/NHC/HCBS Indicator
+    pcug.filler('esrd_indicator', 1),  // ESRD Indicator
+    pcug.const('transaction_reply_code', '999'),  // Transaction Reply Code
     {
       name: 'transaction_code',
       type: 'string',
@@ -81,12 +76,12 @@ local sex_code = import 'sex_code.jsonnet';
         missingValues: ['01'],
       },
     },
-    filler('entitlement_type_code', 1),  // Entitlement type code
-    date8 {
+    pcug.filler('entitlement_type_code', 1),  // Entitlement type code
+    pcug.date8 {
       name: 'effective_date',
       title: 'Effective Date',
     },
-    filler('wa_indicator', 1),  // WA Indicator
+    pcug.filler('wa_indicator', 1),  // WA Indicator
     {
       name: 'pbp_id',
       title: 'Plan Benefit Package (PBP) ID',
@@ -95,29 +90,29 @@ local sex_code = import 'sex_code.jsonnet';
         maxLength: 3,
       },
     },
-    filler('race_code', 1),  // "Race code" in later file versions
-    date8 {
+    pcug.filler('race_code', 1),  // "Race code" in later file versions
+    pcug.date8 {
       name: 'transaction_date',
       title: 'Transaction Date',
       constraints: {
         required: true,
       },
     },
-    filler('_filler_1', 1),
-    date8 {
+    pcug.filler('_filler_1', 1),
+    pcug.date8 {
       name: 'subsidy_end_date',
       title: 'Subsidy End Date',
       description: 'End date of LIS Period (Present if Beneficiary is deemed for the full year, or if the Beneficiary is losing Low Income status before the end of the current year.)',
     },
-    filler('subsidy_end_date_padding', 4),  // `subsidy_end_date` is listed as 12 spaces, but has an 8-digit year.
-    filler('district_office_code', 3),  // District office code
-    filler('_filler_2', 8),  // (No description)
-    filler('_filler_3', 8),  // (No description)
-    filler('source_id', 5),  // Source ID
-    filler('prior_plan_benefit_package_id', 3),  // Prior plan benefit package ID
-    filler('application_date', 8),  // Application date
-    filler('_filler_4', 2),
-    filler('out_of_area_flag', 1),  // Out of area flag
+    pcug.filler('subsidy_end_date_padding', 4),  // `subsidy_end_date` is listed as 12 spaces, but has an 8-digit year.
+    pcug.filler('district_office_code', 3),  // District office code
+    pcug.filler('_filler_2', 8),  // (No description)
+    pcug.filler('_filler_3', 8),  // (No description)
+    pcug.filler('source_id', 5),  // Source ID
+    pcug.filler('prior_plan_benefit_package_id', 3),  // Prior plan benefit package ID
+    pcug.filler('application_date', 8),  // Application date
+    pcug.filler('_filler_4', 2),
+    pcug.filler('out_of_area_flag', 1),  // Out of area flag
     {
       name: 'segment_number',
       title: 'Segment Number',
@@ -157,11 +152,11 @@ local sex_code = import 'sex_code.jsonnet';
         decimalChar: '',
       },
     },
-    filler('election_type', 1),  // Election type
-    enrollment_source_type_code {
+    pcug.filler('election_type', 1),  // Election type
+    pcug.enrollment_source_type_code {
       name: 'enrollment_source_code',
     },
-    filler('part_d_opt_out_flag', 1),  // Part D opt-out flag
+    pcug.filler('part_d_opt_out_flag', 1),  // Part D opt-out flag
     {
       name: 'premium_withhold_option_parts_c_d',
       title: 'Premium Withhold Option -- Parts C/D',
@@ -172,15 +167,15 @@ local sex_code = import 'sex_code.jsonnet';
         { value: 'N', label: 'No premium' },
       ],
     },
-    filler('number_of_uncovered_months', 3),  // Number of uncovered months
-    filler('creditable_coverage_flag', 1),  // Creditable coverage flag
-    filler('employer_subsidy_override_flag', 1),  // Employer subsidy override flag
-    filler('rx_id', 20),  // Rx ID
-    filler('rx_group', 15),  // Rx Group
-    filler('secondary_drug_insurance_flag', 1),  // Secondary drug insurance flag
-    filler('secondary_rx_id', 20),  // Secondary Rx ID
-    filler('secondary_rx_group', 15),  // Secondary Rx Group
-    filler('eghp', 1),  // EGHP
+    pcug.filler('number_of_uncovered_months', 3),  // Number of uncovered months
+    pcug.filler('creditable_coverage_flag', 1),  // Creditable coverage flag
+    pcug.filler('employer_subsidy_override_flag', 1),  // Employer subsidy override flag
+    pcug.filler('rx_id', 20),  // Rx ID
+    pcug.filler('rx_group', 15),  // Rx Group
+    pcug.filler('secondary_drug_insurance_flag', 1),  // Secondary drug insurance flag
+    pcug.filler('secondary_rx_id', 20),  // Secondary Rx ID
+    pcug.filler('secondary_rx_group', 15),  // Secondary Rx Group
+    pcug.filler('eghp', 1),  // EGHP
     {
       name: 'part_d_lips_level',
       title: 'Part D LIPS Level',
@@ -209,13 +204,13 @@ local sex_code = import 'sex_code.jsonnet';
         { value: '5', label: 'Unknown' },
       ],
     },
-    date8 {
+    pcug.date8 {
       name: 'low_income_copay_effective_date',
       title: 'Low-Income Co-Pay Effective Date',
     },
-    filler('part_d_lep_amount', 8),  // Part D LEP amount
-    filler('part_d_lep_waived_amount', 8),  // Part D LEP waived amount
-    filler('part_d_lep_subsidy_amount', 8),  // Part D LEP subsidy amount
+    pcug.filler('part_d_lep_amount', 8),  // Part D LEP amount
+    pcug.filler('part_d_lep_waived_amount', 8),  // Part D LEP waived amount
+    pcug.filler('part_d_lep_subsidy_amount', 8),  // Part D LEP subsidy amount
     // TODO (dargueta): Determine if the decimal is present or implicit.
     {
       name: 'low_income_part_d_premium_subsidy_amount',

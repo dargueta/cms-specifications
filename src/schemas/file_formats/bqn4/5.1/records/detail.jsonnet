@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: BSD-3-Clause
 
-local bool_yn = import 'bool_yn.jsonnet';
+local pcug = import 'pcug.libjsonnet';
 local detail_record = import 'bqn4/common/detail.jsonnet';
-local date8 = import 'date8.jsonnet';
 
 
 detail_record {
@@ -51,7 +50,7 @@ detail_record {
         maxLength: 3,
       },
     },
-    date8 {
+    pcug.date8 {
       name: 'date_of_death',
       title: 'Date of Death',
     },
@@ -64,11 +63,11 @@ detail_record {
         maxLength: 5,
       },
     },
-    date8 {
+    pcug.date8 {
       name: 'part_c_d_enrollment_start_date',
       title: 'Part C/D Enrollment Start Date',
     },
-    bool_yn {
+    pcug.bool_yn {
       name: 'part_d_indicator',
       title: 'Part D Indicator',
     },
@@ -81,11 +80,11 @@ detail_record {
         maxLength: 5,
       },
     },
-    date8 {
+    pcug.date8 {
       name: 'part_c_enrollment_start_date',
       title: 'Part C Enrollment Start Date',
     },
-    bool_yn {
+    pcug.bool_yn {
       name: 'part_c_indicator',
       title: 'Part C Indicator',
       description: 'The v5.0 documentation implies, but does not state, that this should never be true.',

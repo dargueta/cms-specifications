@@ -1,18 +1,16 @@
 // SPDX-License-Identifier: BSD-3-Clause
-local const = import 'const.jsonnet';
-local date8 = import 'date8.jsonnet';
-local filler = import 'filler.jsonnet';
+local pcug = import 'pcug.libjsonnet';
 
 function(filler_size) {
   '$schema': 'https://datapackage.org/profiles/2.0/tableschema.json',
   fieldsMatch: ['subset'],
   fields: [
-    const('record_type', 'CMSBEQRH'),
-    const('sending_entity', 'MBD     ') {
+    pcug.const('record_type', 'CMSBEQRH'),
+    pcug.const('sending_entity', 'MBD     ') {
       title: 'Sending Entity',
       rdfType: 'https://schema.org/Organization',
     },
-    date8 {
+    pcug.date8 {
       name: 'file_creation_date',
       title: 'File Creation Date',
       constraints: {
@@ -29,6 +27,6 @@ function(filler_size) {
         required: true,
       },
     },
-    filler('record_padding', filler_size),
+    pcug.filler('record_padding', filler_size),
   ],
 }

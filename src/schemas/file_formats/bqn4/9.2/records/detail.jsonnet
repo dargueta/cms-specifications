@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BSD-3-Clause
 
 local base = import 'bqn4/9.1/records/detail.jsonnet';
-local date8 = import 'date8.jsonnet';
+local pcug = import 'pcug.libjsonnet';
 
 
 base {
@@ -42,7 +42,7 @@ base {
         maxLength: 9,
       },
     },
-    date8 {
+    pcug.date8 {
       name: 'mailing_address_start_date',
       title: 'Mailing Address Start Date',
     },
@@ -80,7 +80,7 @@ base {
         maxLength: 9,
       },
     },
-    date8 {
+    pcug.date8 {
       name: 'residence_address_start_date',
       title: 'Residence Address Start Date',
     },

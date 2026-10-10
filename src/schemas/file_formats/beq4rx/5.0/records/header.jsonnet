@@ -1,13 +1,11 @@
 // SPDX-License-Identifier: BSD-3-Clause
-local const = import 'const.jsonnet';
-local date8 = import 'date8.jsonnet';
-local filler = import 'filler.jsonnet';
+local pcug = import 'pcug.libjsonnet';
 
 {
   '$schema': 'https://datapackage.org/profiles/2.0/tableschema.json',
   fieldsMatch: ['subset'],
   fields: [
-    const('record_type', 'MMABEQRH'),
+    pcug.const('record_type', 'MMABEQRH'),
     {
       name: 'sending_entity',
       title: 'Sending Entity',
@@ -22,7 +20,7 @@ local filler = import 'filler.jsonnet';
         required: true,
       },
     },
-    date8 {
+    pcug.date8 {
       name: 'file_creation_date',
       title: 'File Creation Date',
       description: |||
@@ -47,6 +45,6 @@ local filler = import 'filler.jsonnet';
         required: true,
       },
     },
-    filler('_filler_1', 717),
+    pcug.filler('_filler_1', 717),
   ],
 }

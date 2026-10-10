@@ -1,11 +1,5 @@
 // SPDX-License-Identifier: BSD-3-Clause
-local beneficiary_identifier = import 'beneficiary_identifier.jsonnet';
-local bool_10 = import 'bool_10.jsonnet';
-local bool_yn = import 'bool_yn.jsonnet';
-local const = import 'const.jsonnet';
-local date8 = import 'date8.jsonnet';
-local filler = import 'filler.jsonnet';
-local sex_code = import 'sex_code.jsonnet';
+local pcug = import 'pcug.libjsonnet';
 
 local zero_padded = {
   __metadata__: {
@@ -28,11 +22,11 @@ local zero_padded = {
   //     data_fields+: [ ...new fields... ],
   //     padding_length:: 123,
   //   }
-  fields: self.data_fields + [filler('record_padding', self.padding_length)],
+  fields: self.data_fields + [pcug.filler('record_padding', self.padding_length)],
   padding_length:: error 'Records extending the BQN4 detail record must set padding_length.',
 
   data_fields:: [
-    const('record_type', 'DTL'),
+    pcug.const('record_type', 'DTL'),
     {
       name: 'original_record_type',
       title: 'Record Type',
@@ -42,16 +36,16 @@ local zero_padded = {
         required: true,
       },
     },
-    beneficiary_identifier {
+    pcug.beneficiary_identifier {
       description: 'This field will contain exactly what is received in the same field of the '
                    + "beneficiary's Detail record in the related BEQ Request file.",
     },
-    filler('_filler_1', 9),
-    date8 {
+    pcug.filler('_filler_1', 9),
+    pcug.date8 {
       name: 'sent_date_of_birth',
       title: "Beneficiary's Date of Birth Sent",
     },
-    sex_code {
+    pcug.sex_code {
       name: 'sent_sex_code',
       title: "Beneficiary's Sex Code Sent",
     },
@@ -68,14 +62,14 @@ local zero_padded = {
         unique: true,
       },
     },
-    bool_yn {
+    pcug.bool_yn {
       name: 'processed_flag',
       title: 'Processed Flag',
       constraints+: {
         required: true,
       },
     },
-    bool_yn {
+    pcug.bool_yn {
       name: 'beneficiary_matched_flag',
       title: 'Beneficiary Matched Flag',
       description: |||
@@ -85,23 +79,23 @@ local zero_padded = {
           condition in the Transaction (Detail Record).
       |||,
     },
-    date8 {
+    pcug.date8 {
       name: 'medicare_part_a_entitlement_start_date',
       title: 'Medicare Part A Entitlement Start Date',
     },
-    date8 {
+    pcug.date8 {
       name: 'medicare_part_a_entitlement_end_date',
       title: 'Medicare Part A Entitlement End Date',
     },
-    date8 {
+    pcug.date8 {
       name: 'medicare_part_b_entitlement_start_date',
       title: 'Medicare Part B Entitlement Start Date',
     },
-    date8 {
+    pcug.date8 {
       name: 'medicare_part_b_entitlement_end_date',
       title: 'Medicare Part B Entitlement End Date',
     },
-    bool_10 {
+    pcug.bool_10 {
       name: 'medicaid_indicator',
       title: 'Medicaid Indicator',
       description: 'An indicator of the presence of current Medicaid coverage for the beneficiary.\n'
@@ -111,11 +105,11 @@ local zero_padded = {
     },
   ] + std.flattenArrays([
     [
-      date8 {
+      pcug.date8 {
         name: 'part_d_enrollment_effective_date_%d' % i,
         title: 'Part D Enrollment Effective Date or Employer Subsidy Start Date (Occurrence %d)' % i,
       },
-      date8 {
+      pcug.date8 {
         name: 'part_d_disenrollment_date_%d' % i,
         title: 'Part D Disenrollment Date or Employer Subsidy End Date (Occurrence %d)' % i,
       },
@@ -148,7 +142,7 @@ local zero_padded = {
         required: true,
       },
     },
-    date8 {
+    pcug.date8 {
       name: 'file_creation_date',
       title: 'File Creation Date',
       description: 'The File Creation Date provided on the Header Record of the BEQ Request '
@@ -157,7 +151,7 @@ local zero_padded = {
         required: true,
       },
     },
-    date8 {
+    pcug.date8 {
       name: 'part_d_eligibility_start_date',
       title: 'Part D Eligibility Start Date',
       description: 'This field identifies the date the beneficiary became eligible for Part D '
@@ -165,11 +159,11 @@ local zero_padded = {
     },
   ] + std.flattenArrays([
     [
-      date8 {
+      pcug.date8 {
         name: 'deemed_lis_effective_date_%d' % i,
         title: 'Deemed / Low-Income Subsidy Effective Date (Occurrence %d)' % i,
       },
-      date8 {
+      pcug.date8 {
         name: 'deemed_lis_end_date_%d' % i,
         title: 'Deemed / Low-Income Subsidy End Date (Occurrence %d)' % i,
       },
@@ -218,7 +212,7 @@ local zero_padded = {
     for i in std.range(1, 10)
   ] + std.flattenArrays([
     [
-      date8 {
+      pcug.date8 {
         name: 'start_date_%d' % i,
         title: 'Start Date (Occurrence %d)' % i,
       },
@@ -254,12 +248,12 @@ local zero_padded = {
     ]
     for i in std.range(1, 20)
   ]) + [
-    date8 {
+    pcug.date8 {
       name: 'retrieved_date_of_birth',
       title: "Beneficiary's Retrieved Date of Birth",
       description: 'As retrieved from CMS database for matching beneficiary.',
     },
-    sex_code {
+    pcug.sex_code {
       name: 'retrieved_sex_code',
       title: "Beneficiary's Retrieved Sex Code",
       description: 'As retrieved from CMS database for matching beneficiary.',
