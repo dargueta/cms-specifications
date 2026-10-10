@@ -43,19 +43,21 @@ def parse_build_rules(config_path: Path, source_root: Path) -> ParsedBuildRules:
 
     # Iterate through file-dependencies first to get a list of all files that depend on
     # other files unconditionally.
-    for parent_relpath, pattern_spec in raw.get("file-dependencies", {}).items():
-        parent = (source_root / parent_relpath).resolve()
+    for pattern_spec, upstream_relpath in raw.get("file-dependencies", {}).items():
+        parent = (source_root / upstream_relpath).resolve()
         for pattern in mi.always_iterable(pattern_spec):
             for f in source_root.glob(str(pattern).strip()):
                 if f.resolve() != parent:
                     dep_map.setdefault(f.resolve(), []).append(parent)
 
+    # Iterate through `identical-files` to build a list of all files that need to be
+    # copied/symlinked from an ancestor file.
     for group in raw.get("identical-files", []):
-        source_dir = source_root / group["source"]
-        for filename in group["files"]:
-            upstream = (source_dir / filename).resolve()
-            for version in versions_matching(group["versions"]):
-                candidate = source_root / str(version) / "records" / filename
+        source_dir = source_root / group["source_version"]
+        for path in group["files"]:
+            upstream = (source_dir / path).resolve()
+            for version in versions_matching(group["target_versions"]):
+                candidate = source_root / str(version) / path
                 if candidate.resolve() != upstream and candidate.exists():
                     dep_map.setdefault(candidate.resolve(), []).append(upstream)
 

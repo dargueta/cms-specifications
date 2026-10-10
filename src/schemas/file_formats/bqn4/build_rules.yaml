@@ -8,17 +8,17 @@ identical-versions:
   "15.3": ">=15.4"
 
 identical-files:
-  - source: "5.0/records"
-    files: [header.jsonnet, trailer.jsonnet]
-    versions: [">=5.1", "<=9.1"]
-  - source: "9.2/records"
-    files: [header.jsonnet, trailer.jsonnet]
-    versions: [">=9.3", "<=10.2"]
-  - source: "10.3/records"
-    files: [header.jsonnet, trailer.jsonnet]
-    versions: ">=12.0"
+  - source_version: "5.0"
+    target_versions: [">=5.1", "<=9.1"]
+    files: ["records/header.jsonnet", "records/trailer.jsonnet"]
+  - source_version: "9.2"
+    target_versions: [">=9.3", "<=10.2"]
+    files: ["records/header.jsonnet", "records/trailer.jsonnet"]
+  - source_version: "10.3"
+    target_versions: ">=12.0"
+    files: ["records/header.jsonnet", "records/trailer.jsonnet"]
 
 file-dependencies:
-  "common/header.jsonnet": "*/records/header.jsonnet"
-  "common/detail.jsonnet": "*/records/detail.jsonnet"
-  "common/trailer.jsonnet": "*/records/trailer.jsonnet"
+  "*/records/header.jsonnet": ["common/header.jsonnet"]
+  "*/records/detail.jsonnet": ["common/detail.jsonnet"]
+  "*/records/trailer.jsonnet": ["common/trailer.jsonnet"]
