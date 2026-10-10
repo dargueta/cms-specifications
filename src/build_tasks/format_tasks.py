@@ -14,8 +14,8 @@ import doit_api
 
 from .build_rules import parse_build_rules
 from .file_ops import link_or_copy
-from .render_tasks import create_render_template_task
-from .render_tasks import create_yaml_postprocess_tasks
+from .render_tasks import create_json_postprocess_task
+from .render_tasks import create_render_jsonnet_task
 
 
 if TYPE_CHECKING:
@@ -52,52 +52,14 @@ def create_tasks_for_record_type(  # noqa: PLR0913, PLR0917
     extra_file_deps: Collection[Path] = (),
 ) -> Iterator[doit_api.task]:
     """Generate the render/postprocess/yaml stage tasks for a single source file."""
-    if source_file.suffix == ".jinja2":
-        rendered_name = source_file.stem
-        is_yaml = Path(rendered_name).suffix == ".yaml"
-
-        # YAML requires special handling. We need to render the file first, and then
-        # run it through an additional pass that converts it to JSON to get rid of all
-        # the custom constructors.
-        if is_yaml:
-            rendered_path = version_build_dir / (
-                Path(rendered_name).stem + ".rendered.yaml"
-            )
-        else:
-            rendered_path = version_build_dir / rendered_name
-
-        yield create_render_template_task(
-            source_file,
-            rendered_path,
-            extra_file_deps,
-            version=version,
-            record_type=record_type,
+    if source_file.suffix == ".jsonnet":
+        raw_json_file = version_build_dir / source_file.with_suffix(".json-unprocessed")
+        yield create_render_jsonnet_task(
+            source_file, raw_json_file, version, record_type, extra_file_deps
         )
-
-        if is_yaml:
-            postprocess_tasks = create_yaml_postprocess_tasks(
-                rendered_path,
-                version_build_dir,
-                output_stem=Path(rendered_name).stem,
-                version=version,
-                record_type=record_type,
-            )
-            # Clean up intermediate rendered YAML when `doit clean` is run.
-            postprocess_tasks[-1].clean = [
-                (Path.unlink, [rendered_path], {"missing_ok": True}),
-            ]
-            yield from postprocess_tasks
-        # Non-YAML template files are already handled by the render task.
-    elif source_file.suffix == ".yaml":
-        # If we get here then the source file is YAML but *not* templated.
-        yield from create_yaml_postprocess_tasks(
-            source_file,
-            version_build_dir,
-            extra_file_deps,
-            version=version,
-            record_type=record_type,
+        yield create_json_postprocess_task(
+            raw_json_file, raw_json_file.with_suffix(".json"), version, record_type
         )
-        return
     else:
         # Not YAML, not templated...
         LOG.warning(
