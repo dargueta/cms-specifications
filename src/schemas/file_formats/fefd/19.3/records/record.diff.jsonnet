@@ -1,12 +1,18 @@
 // SPDX-License-Identifier: BSD-3-Clause
-local base = import 'fefd/14.3/records/record.jsonnet';
 local pcug = import 'pcug.libjsonnet';
 
 // TODO (dargueta): This feels wrong, verify field indexes against the schema.
 //  An off-by-one error seems likely.
-base {
-  __changes__: {
-    district_office_code: null,
-    _filler_2: pcug.filler('_filler_2', 12),
-  },
+{
+  base: 'fefd/14.3/records/record.jsonnet',
+  changes: [
+    {
+      selector: 'fields[name="district_office_code"]',
+      new_value: null,  // Delete
+    },
+    {
+      selector: 'fields[name="_filler_2"]',
+      new_value: pcug.filler('_filler_2', 12),
+    },
+  ],
 }
