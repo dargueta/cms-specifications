@@ -4,7 +4,7 @@ local pcug = import 'pcug.libjsonnet';
 // TODO (dargueta): This feels wrong, verify field indexes against the schema.
 //  An off-by-one error seems likely.
 {
-  base: 'fefd/14.3/records/record.jsonnet',
+  base: 'fefd/14.3/records/record.json',
   changes: [
     {
       selector: 'fields[name="district_office_code"]',

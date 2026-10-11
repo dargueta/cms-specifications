@@ -2,7 +2,7 @@
 local pcug = import 'pcug.libjsonnet';
 
 {
-  base: 'fefd/5.2/records/record.jsonnet',
+  base: 'fefd/5.2/records/record.json',
   changes: [
     {
       selector: 'fields[name="race_code"]',
