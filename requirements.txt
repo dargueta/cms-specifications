@@ -204,10 +204,6 @@ click==8.5.0 \
     # via
     #   -r requirements.in
     #   check-jsonschema
-deep-chainmap==0.2.0 \
-    --hash=sha256:2a979383ca85c4cfee35bd34984e51b2ec69d66efa81df1eae7f99e4dfb35330 \
-    --hash=sha256:96b0a0e861b18eafd8dedd5cd47a49b9a3fe5d5bd5ace701e5a55a7a6e44fc8f
-    # via -r requirements.in
 doit==0.37.0 \
     --hash=sha256:a9f181566aa90faac515e276f85e6526019554ed7e13c12cf9dc094ffecf3e1b \
     --hash=sha256:d3c72e0e46a8fa1ddabea8f830762402dee090caf33c30c2295ac7010db8f09c
