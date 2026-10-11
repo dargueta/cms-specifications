@@ -4,16 +4,13 @@
 
 from __future__ import annotations
 
-import json
 import subprocess
 import sys
 from typing import TYPE_CHECKING
 
 import doit_api
 import more_itertools as mi
-import ruamel.yaml
 
-from .constants import COMMON_INCLUDE_DIR
 from .constants import FORMATS_BASE_DIR
 from .constants import SCHEMAS_SOURCE_DIR
 
@@ -45,50 +42,21 @@ def run_render_jsonnet(
     )
 
 
-def run_postprocess_json(source: Path, output: Path) -> None:
-    """Apply changes in the `__changes__` key of a JSON file."""
+def run_apply_diff(source: Path, output: Path, format_root_dir: Path) -> None:
+    """Run applying a JSON diff."""
     output.parent.mkdir(parents=True, exist_ok=True)
     subprocess.run(  # noqa: S603
         [
             sys.executable,
             "-m",
-            "scripts.postprocess_json",
+            "scripts.apply_diff",
             "-o",
             str(output),
+            str(format_root_dir),
             str(source),
         ],
-        check=True,
         env={"PYTHONPATH": construct_pythonpath()},
-    )
-
-
-def create_json_postprocess_task(
-    source: Path, target: Path, version: str, record_type: str
-) -> doit_api.task:
-    """Create the task to render a JSON file's `__changes__` list.
-
-    Many records differ by only a few fields. Unfortunately, we can't override field
-    definitions by name, because they're defined in a list. A specialized postprocessing
-    task will allow us to specify changes in terms of a field name.
-
-    Arguments:
-        source (pathlib.Path):
-            A valid JSONnet file that needs to be processed.
-        target (pathlib.Path):
-            The file to write the rendered (albeit unprocessed) JSON output to.
-        version (str):
-            The PCUG version that this file is for.
-        record_type (str):
-            The type of the record that the file describes, such as "header", "trailer",
-            etc., not the file type.
-    """
-    return doit_api.task(
-        name=f"{version}:{record_type}:postprocess",
-        actions=[
-            (run_postprocess_json, [], {"source": source, "output": target}),
-        ],
-        file_dep=[str(source)],
-        targets=[str(target)],
+        check=True,
     )
 
 
@@ -114,5 +82,31 @@ def create_render_jsonnet_task(
             ),
         ],
         file_dep=[str(source_file), *extra_file_deps],
+        targets=[str(output_path)],
+    )
+
+
+def create_apply_diff_task(
+    source_file: Path,
+    output_path: Path,
+    format_root_dir: Path,
+    version: str,
+    record_type: str,
+) -> doit_api.task:
+    """Generate a JSON file by applying a diff given by another file."""
+    return doit_api.task(
+        name=f"{version}:{record_type}:render",
+        actions=[
+            (
+                run_apply_diff,
+                [],
+                {
+                    "source": source_file,
+                    "output": output_path,
+                    "format_root_dir": format_root_dir,
+                },
+            ),
+        ],
+        file_dep=[str(source_file)],
         targets=[str(output_path)],
     )
