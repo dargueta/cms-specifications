@@ -5,6 +5,6 @@ identical-versions:
   "19.3": "19.4"
 
 file-dependencies:
-  "5.2/records/record.diff.jsonnet": ["5.0/record.jsonnet"]
-  "14.3/records/record.diff.jsonnet": ["5.2/record.diff.jsonnet"]
-  "19.3/records/record.diff.jsonnet": ["14.3/record.diff.jsonnet"]
+  "5.2/records/record.jsonnet": ["5.0/record.jsonnet"]
+  "14.3/records/record.jsonnet": ["5.2/record.jsonnet"]
+  "19.3/records/record.jsonnet": ["14.3/record.jsonnet"]
