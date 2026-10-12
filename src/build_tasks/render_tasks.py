@@ -31,7 +31,7 @@ def run_render_jsonnet(
     """Render the jsonnet file at `source` into `output`."""
     output.parent.mkdir(parents=True, exist_ok=True)
     subprocess.run(  # noqa: S603
-        [
+        [  # noqa: S607
             "jsonnet",
             *mi.flatten(["-J", str(d)] for d in include_dirs),
             "-o",

@@ -7,7 +7,6 @@ from __future__ import annotations
 import logging
 import re
 import sys
-from pathlib import Path
 from typing import TYPE_CHECKING
 
 import doit_api
@@ -24,6 +23,7 @@ if TYPE_CHECKING:
     from collections.abc import Mapping
     from collections.abc import MutableMapping
     from collections.abc import Sequence
+    from pathlib import Path
 
     from .versions import VersionSpec
 
