@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: BSD-3-Clause
 """Apply a diff in a basic format."""
 
 from __future__ import annotations
