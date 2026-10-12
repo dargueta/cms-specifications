@@ -1,10 +1,9 @@
 # SPDX-License-Identifier: BSD-3-Clause
-"""Apply a diff in a basic format."""
+"""Apply a diff embedded in a JSON file."""
 
 from __future__ import annotations
 
 import json
-import pathlib
 import sys
 from typing import TYPE_CHECKING
 
@@ -18,46 +17,34 @@ if TYPE_CHECKING:
     from typing import TextIO
 
 
-@click.argument(
-    "patch_file", type=click.Path(dir_okay=False, exists=True, path_type=pathlib.Path)
-)
-@click.argument(
-    "path_root", type=click.Path(file_okay=False, exists=True, path_type=pathlib.Path)
-)
-@click.option("-o", "--output", type=click.File("w", atomic=True), default=sys.stdout)
+@click.argument("output", type=click.File("w", atomic=True), default=sys.stdout)
+@click.argument("source_file", type=click.File(), default=sys.stdin)
 @click.command()
-def main(path_root: pathlib.Path, patch_file: pathlib.Path, output: TextIO) -> None:
-    """Apply a diff to a JSON file.
+def main(source_file: TextIO, output: TextIO) -> None:
+    """Apply a diff embedded in a JSON file.
 
-    The file must have two top-level keys, `base` and `changes`.
+    This does nothing unless the file has a top-level key named ``__patch__``.
+    ``__patch__`` is list of objects, each object having two keys:
 
     \b
-    * `base`: The relative path from PATH_ROOT to the file that the diff will be applied
-      to.
-    * `changes`: A list of objects with two keys:
-      - `selector`: A JSONPath selector for the key(s) to modify.
-      - `new_value`: The replacement value. Use `null` to delete matching items.
+    * `selector`: A JSONPath selector for the key(s) to modify.
+    * `new_value`: The replacement value. Use `null` to delete matching items.
     """
-    with patch_file.open() as fd:
-        patch = json.load(fd)
+    data = json.load(source_file)
 
-    base_file_path = path_root / patch["base"]
-    with base_file_path.open() as fd:
-        base = json.load(fd)
-
-    for change in patch["changes"]:
+    for change in data.get("__patch__", ()):
         try:
             selector = jsonpath_ng.ext.parse(change["selector"])
         except JsonPathLexerError as err:
-            sys.exit(f"Bad patch file `{patch_file}`: {err}")
+            sys.exit(f"Bad selector {change['selector']!r} for patch: {err}")
 
         if change["new_value"] is not None:
-            base = selector.update(base, change["new_value"])
+            data = selector.update(data, change["new_value"])
         else:
             # Assignment to null means "delete this item".
-            base = selector.filter(lambda _: True, base)
+            data = selector.filter(lambda _: True, data)
 
-    json.dump(base, output, indent=2)
+    json.dump(data, output, indent=2)
 
 
 if __name__ == "__main__":
