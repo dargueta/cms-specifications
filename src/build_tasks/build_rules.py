@@ -32,27 +32,27 @@ def parse_build_rules(config_path: Path, source_root: Path) -> ParsedBuildRules:
     with config_path.open() as fh:
         raw = yaml.load(fh) or {}
 
-    # --- identical-versions ---
+    # --- identical_versions ---
     identical_versions: dict[VersionSpec, list[VersionSpec]] = {
         VersionSpec.from_string(str(parent)): versions_matching(constraint)
-        for parent, constraint in raw.get("identical-versions", {}).items()
+        for parent, constraint in raw.get("identical_versions", {}).items()
     }
 
-    # --- file-dependencies + identical-files -> merged dep map ---
+    # --- file_dependencies + identical_files -> merged dep map ---
     dep_map: dict[Path, list[Path]] = {}
 
-    # Iterate through file-dependencies first to get a list of all files that depend on
+    # Iterate through file_dependencies first to get a list of all files that depend on
     # other files unconditionally.
-    for pattern_spec, upstream_relpath in raw.get("file-dependencies", {}).items():
-        parent = (source_root / upstream_relpath).resolve()
-        for pattern in mi.always_iterable(pattern_spec):
+    for pattern, upstream_relpaths in raw.get("file_dependencies", {}).items():
+        for upstream_relpath in mi.always_iterable(upstream_relpaths):
+            parent = (source_root / upstream_relpath).resolve()
             for f in source_root.glob(str(pattern).strip()):
                 if f.resolve() != parent:
                     dep_map.setdefault(f.resolve(), []).append(parent)
 
-    # Iterate through `identical-files` to build a list of all files that need to be
+    # Iterate through `identical_files` to build a list of all files that need to be
     # copied/symlinked from an ancestor file.
-    for group in raw.get("identical-files", []):
+    for group in raw.get("identical_files", []):
         source_dir = source_root / group["source_version"]
         for path in group["files"]:
             upstream = (source_dir / path).resolve()

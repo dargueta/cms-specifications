@@ -1,10 +1,10 @@
-identical-versions:
+identical_versions:
   "5.0": "5.1"
   "5.2": [">=5.3", "<14.3"]
   "14.3": [">=15.0", "<19.3"]
   "19.3": "19.4"
 
-file-dependencies:
+file_dependencies:
   "5.2/records/record.jsonnet": ["5.0/record.jsonnet"]
   "14.3/records/record.jsonnet": ["5.2/record.jsonnet"]
   "19.3/records/record.jsonnet": ["14.3/record.jsonnet"]
