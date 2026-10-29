@@ -69,8 +69,8 @@ def create_tasks_for_record_type(  # noqa: PLR0913, PLR0917
         yield create_render_jsonnet_task(
             source_file, raw_json_file, version, record_type, extra_file_deps
         )
-    else:
-        # Not YAML, not templated...
+    elif source_file.suffixes != [".json"]:
+        # Not JSON, Jsonnet, or a Jsonnet diff...
         LOG.warning(
             "Not sure what to do with this file in format %r: %s",
             format_name,
