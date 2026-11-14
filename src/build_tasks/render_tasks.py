@@ -42,24 +42,6 @@ def run_render_jsonnet(
     )
 
 
-def run_apply_diff(source: Path, output: Path, format_root_dir: Path) -> None:
-    """Run applying a JSON diff."""
-    output.parent.mkdir(parents=True, exist_ok=True)
-    subprocess.run(  # noqa: S603
-        [
-            sys.executable,
-            "-m",
-            "scripts.apply_diff",
-            "-o",
-            str(output),
-            str(format_root_dir),
-            str(source),
-        ],
-        env={"PYTHONPATH": construct_pythonpath()},
-        check=True,
-    )
-
-
 def create_render_jsonnet_task(
     source_file: Path,
     output_path: Path,
@@ -82,31 +64,5 @@ def create_render_jsonnet_task(
             ),
         ],
         file_dep=[str(source_file), *extra_file_deps],
-        targets=[str(output_path)],
-    )
-
-
-def create_apply_diff_task(
-    source_file: Path,
-    output_path: Path,
-    format_root_dir: Path,
-    version: str,
-    record_type: str,
-) -> doit_api.task:
-    """Generate a JSON file by applying a diff given by another file."""
-    return doit_api.task(
-        name=f"{version}:{record_type}:render",
-        actions=[
-            (
-                run_apply_diff,
-                [],
-                {
-                    "source": source_file,
-                    "output": output_path,
-                    "format_root_dir": format_root_dir,
-                },
-            ),
-        ],
-        file_dep=[str(source_file)],
         targets=[str(output_path)],
     )

@@ -13,7 +13,6 @@ import doit_api
 
 from .build_rules import parse_build_rules
 from .file_ops import link_or_copy
-from .render_tasks import create_apply_diff_task
 from .render_tasks import create_render_jsonnet_task
 
 
@@ -52,19 +51,7 @@ def create_tasks_for_record_type(  # noqa: PLR0913, PLR0917
     extra_file_deps: Collection[Path] = (),
 ) -> Iterator[doit_api.task]:
     """Generate the render/postprocess/yaml stage tasks for a single source file."""
-    if source_file.suffixes == [".diff", ".jsonnet"]:
-        rendered_diff = source_file.with_suffix(".diff.json")
-        yield create_render_jsonnet_task(
-            source_file, rendered_diff, version, record_type, extra_file_deps
-        )
-        yield create_apply_diff_task(
-            rendered_diff,
-            rendered_diff.with_suffix(".json"),
-            version_build_dir.parent,
-            version,
-            record_type,
-        )
-    elif source_file.suffixes == [".jsonnet"]:
+    if source_file.suffixes == [".jsonnet"]:
         raw_json_file = version_build_dir / source_file.with_suffix(".json")
         yield create_render_jsonnet_task(
             source_file, raw_json_file, version, record_type, extra_file_deps
