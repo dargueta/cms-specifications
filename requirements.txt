@@ -198,9 +198,9 @@ check-jsonschema==0.39.0 \
     --hash=sha256:14ce5c94871c551268ea948ffe21e9f1464dc48fb20bf9a4c13deeaaf756cf9b \
     --hash=sha256:33340a2f885e207411c7a7d1db0a052ba24a4e58c92a47f54231e4a128af2764
     # via -r requirements.in
-click==8.5.0 \
-    --hash=sha256:255bc9599cf7748b4b1a446ccc735421bd08a2ae529a8b88597d3de5664ee360 \
-    --hash=sha256:ba0d2089de75ea0310e2dde03160e6ca10009947fb95a182f9b54021bb272e34
+click==8.5.1 \
+    --hash=sha256:8bb5376d2006950386f8c6427613334a2acadc5f559cb80e638d00b4df957e37 \
+    --hash=sha256:9bbfada76703fd1d784b83eea012e3e8c6a001a876543ef104fa56aaaeb072b4
     # via
     #   -r requirements.in
     #   check-jsonschema
@@ -233,9 +233,9 @@ jsonnet==0.22.0 \
     --hash=sha256:f13c60dc93d682bdcd63f4db368ea6e7e6e9ef9d2efb5bcd1b8dd78818d4fa7d \
     --hash=sha256:f52e8aebcedace2ecc0eeebbd10a18fd3fb2d66ada892acec571a8119eff5087
     # via -r requirements.in
-jsonpath-ng==1.14.0 \
-    --hash=sha256:748ffe4fce1a5f7f67f5414206ab4919bab99f800598de1f60df280a211d71df \
-    --hash=sha256:8c8b0b32c24421ba150621863c6a943e84861edbe6a4414261d1ad7cba7828bc
+jsonpath-ng==1.16.0 \
+    --hash=sha256:a81066736e00d47d0c2b5c510d12b78d09b40fd1ec954e7beff1954a55606099 \
+    --hash=sha256:c5e28ddd70ebcaeba9af3c2b880933fbfeb108b5e68c9edb84e1b57803091218
     # via -r requirements.in
 jsonschema==4.26.0 \
     --hash=sha256:0c26707e2efad8aa1bfc5b7ce170f3fccc2e4918ff85989ba9ffa9facb2be326 \
