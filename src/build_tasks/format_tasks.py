@@ -51,13 +51,12 @@ def create_tasks_for_record_type(  # noqa: PLR0913, PLR0917
     extra_file_deps: Collection[Path] = (),
 ) -> Iterator[doit_api.task]:
     """Generate the render/postprocess/yaml stage tasks for a single source file."""
-    if source_file.suffixes == [".jsonnet"]:
-        raw_json_file = version_build_dir / source_file.with_suffix(".json")
-        yield create_render_jsonnet_task(
-            source_file, raw_json_file, version, record_type, extra_file_deps
+    if source_file.suffixes == [".json"]:
+        LOG.info(
+            "Ignoring build artifact in format %r: %s", format_name, source_file
         )
-    elif source_file.suffixes != [".json"]:
-        # Not JSON, Jsonnet, or a Jsonnet diff...
+        return
+    if source_file.suffixes != [".jsonnet"]:
         LOG.warning(
             "Not sure what to do with this file in format %r: %s",
             format_name,
@@ -65,6 +64,10 @@ def create_tasks_for_record_type(  # noqa: PLR0913, PLR0917
         )
         return
 
+    raw_json_file = version_build_dir / source_file.with_suffix(".json")
+    yield create_render_jsonnet_task(
+        source_file, raw_json_file, version, record_type, extra_file_deps
+    )
     # No-op grouping task: `doit {format}:{version}:{record_type}` builds every stage.
     yield doit_api.task(
         name=f"{version}:{record_type}",
@@ -79,7 +82,7 @@ def create_tasks_for_version(
     target_root: Path,
     dep_map: Mapping[Path, Collection[Path]],
 ) -> Iterator[doit_api.task]:
-    """Generate the render/postprocess/yaml/group tasks for one version directory."""
+    """Generate the rendering tasks for one version directory."""
     version = version_dir.name
     records_dir = version_dir / "records"
     if not records_dir.exists():
@@ -155,9 +158,10 @@ def create_clone_tasks(
             name=f"{child}:_clone",
             doc=f"Clone {format_name} v{parent_version} to {child_version_strings}",
             actions=[(link_or_copy, [parent_dir, [child_dir]])],
-            task_dep=[f"{format_name}:{parent_version}"],
+            file_dep=[parent_dir],
+            # task_dep=[f"{format_name}:{parent_version}"],
             uptodate=[child_dir.exists()],
-            targets=[str(child_dir)],
+            targets=[child_dir],
         )
         # No-op grouping task so `doit {format}:{child}` works uniformly with
         # non-cloned versions.
