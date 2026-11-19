@@ -191,6 +191,7 @@ def create_jsonnet_render_task(
                 },
             ),
         ],
+        clean=True,
     )
 
 
@@ -210,4 +211,5 @@ def create_copy_rendered_file_task(
         file_dep=[rendered_source_file],
         uptodate=[target_file.exists],
         targets=[target_file],
+        clean=True,
     )

@@ -11,7 +11,7 @@ schemas:
 
 .PHONY: clean
 clean:
-	cd src && doit clean
+	doit clean -f src/dodo.py -a
 	$(RM) -r build
 
 .PHONY: format
