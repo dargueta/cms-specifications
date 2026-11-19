@@ -8,10 +8,8 @@ import subprocess
 import sys
 from typing import TYPE_CHECKING
 
-import doit_api
 import more_itertools as mi
 
-from .constants import FORMATS_BASE_DIR
 from .constants import SCHEMAS_SOURCE_DIR
 
 
@@ -39,30 +37,4 @@ def run_render_jsonnet(
             str(source),
         ],
         check=True,
-    )
-
-
-def create_render_jsonnet_task(
-    source_file: Path,
-    output_path: Path,
-    version: str,
-    record_type: str,
-    extra_file_deps: Iterable[Path] = (),
-) -> doit_api.task:
-    """Return a task for rendering a JSONnet file."""
-    return doit_api.task(
-        name=f"{version}:{record_type}:render",
-        actions=[
-            (
-                run_render_jsonnet,
-                [],
-                {
-                    "source": source_file,
-                    "output": output_path,
-                    "include_dirs": [FORMATS_BASE_DIR],
-                },
-            ),
-        ],
-        file_dep=[str(source_file), *extra_file_deps],
-        targets=[str(output_path)],
     )
