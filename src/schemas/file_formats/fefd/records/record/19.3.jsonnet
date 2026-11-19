@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: BSD-3-Clause
-local base = import '14.3/records/record.jsonnet';
+local base = import 'fefd/records/record/14.3.jsonnet';
 local pcug = import 'pcug.libjsonnet';
 
 // TODO (dargueta): This feels wrong, verify field indexes against the schema.
