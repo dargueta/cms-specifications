@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: BSD-3-Clause
-local base = import '5.2/records/record.jsonnet';
+local base = import 'fefd/records/record/5.2.jsonnet';
 local pcug = import 'pcug.libjsonnet';
 
 base {

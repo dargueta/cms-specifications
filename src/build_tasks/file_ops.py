@@ -27,12 +27,17 @@ def link_or_copy(parent: Path, children: Iterable[Path]) -> None:
 
     This works with both files and directories.
     """
+    if not parent.exists():
+        raise FileNotFoundError(parent)
+
     for child in children:
         with contextlib.suppress(FileExistsError):
             if parent.is_dir():
                 _link_or_copy_directory(child, parent)
-            else:
+            elif parent.is_file():
                 _link_or_copy_file(child, parent)
+            else:
+                raise ValueError(f"Not sure what this is: {parent}")
 
 
 def _link_or_copy_directory(link: Path, existing: Path) -> None:

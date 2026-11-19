@@ -4,18 +4,11 @@
 
 from __future__ import annotations
 
-import dataclasses
-import operator
-import re
 from typing import NamedTuple
 from typing import TYPE_CHECKING
 
-from more_itertools import always_iterable
-
 
 if TYPE_CHECKING:
-    from collections.abc import Callable
-    from collections.abc import Iterable
     from typing import Self
 
 
@@ -41,74 +34,13 @@ class VersionSpec(NamedTuple):
 
 ALL_PCUG_VERSIONS: list[VersionSpec] = [
     # Versions 5 through 14 all have minor versions 0-3, except "7.3" may not exist.
-    *(VersionSpec(major, minor) for minor in range(4) for major in range(1, 15)),
+    *(VersionSpec(major, minor) for major in range(1, 15) for minor in range(4)),
     # 15 and 16 have minor versions 0-4.
-    *(VersionSpec(major, minor) for minor in range(5) for major in (15, 16)),
+    *(VersionSpec(major, minor) for major in (15, 16) for minor in range(5)),
     # 17 and 18 have minor versions 0-9. I can't find the PDF for 17.0, but every other
     # major version has a minor version 0 so I assume it exists.
-    *(VersionSpec(major, minor) for minor in range(10) for major in (17, 18)),
+    *(VersionSpec(major, minor) for major in (17, 18) for minor in range(10)),
     # 19.4 is the most recent version as of August 2026.
     *(VersionSpec(19, minor) for minor in range(5)),
 ]
 ALL_PCUG_VERSIONS.remove(VersionSpec(7, 3))  # I can't find mention of v7.3 anywhere.
-
-
-_VERSION_CONSTRAINT_CHECKS: dict[str, Callable[[VersionSpec, VersionSpec], bool]] = {
-    "<": operator.lt,
-    "<=": operator.le,
-    ">": operator.gt,
-    ">=": operator.ge,
-    "==": operator.eq,
-    "!=": operator.ne,
-}
-
-
-@dataclasses.dataclass(frozen=True)
-class VersionConstraint:
-    """A specification for comparing versions against a single constraint."""
-
-    comparator: Callable[[VersionSpec, VersionSpec], bool]
-    version: VersionSpec
-
-    @classmethod
-    def from_spec_string(cls, spec: str) -> Self:
-        """Parse a specification into a class that can compare versions."""
-        spec = spec.strip()
-
-        if spec == "*":  # `*` compares equal to all versions.
-            return cls((lambda _a, _b: True), VersionSpec(0, 0))
-
-        parts = re.match(r"^(?P<constraint>[><=!]+)?\s*(?P<version>\d+\.\d+)$", spec)
-        if not parts:
-            raise ValueError(f"Invalid constraint definition: {spec!r}")
-
-        comparator = parts["constraint"] or "=="  # ("X.Y" is the same as "==X.Y")
-        if comparator not in _VERSION_CONSTRAINT_CHECKS:
-            raise ValueError(
-                f"Invalid constraint definition {spec!r}: {comparator!r} not one of: "
-                + ", ".join(sorted(_VERSION_CONSTRAINT_CHECKS))
-            )
-
-        return cls(
-            comparator=_VERSION_CONSTRAINT_CHECKS[comparator],
-            version=VersionSpec.from_string(parts["version"]),
-        )
-
-    def check(self, other_version: VersionSpec) -> bool:
-        """Check the given version against this constraint."""
-        return self.comparator(other_version, self.version)
-
-
-def versions_matching(constraints: str | Iterable[str]) -> list[VersionSpec]:
-    """Return all PCUG versions satisfying the given constraint(s).
-
-    ``constraints`` may be a single string (e.g. ``">=5.0"``) or an iterable of strings
-    (e.g. ``[">=5.0", "<9.0"]``). All constraints must be satisfied simultaneously.
-    """
-    specs = [
-        VersionConstraint.from_spec_string(s)
-        for s in always_iterable(constraints, base_type=str)
-    ]
-    if not specs:
-        raise ValueError("Version constraint list must not be empty.")
-    return [v for v in ALL_PCUG_VERSIONS if all(c.check(v) for c in specs)]
