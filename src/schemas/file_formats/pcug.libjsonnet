@@ -3,68 +3,90 @@
 //   local pcug = import 'pcug.libjsonnet';
 {
   beneficiary_identifier: {
-    name: 'beneficiary_identifier',
-    title: 'Beneficiary Identifier',
-    constraints: {
+    name: 'Beneficiary Identifier',
+    logicalType: 'string',
+    physicalName: 'beneficiary_identifier',
+    physicalType: 'VARCHAR(12)',
+    required: true,
+    logicalTypeOptions: {
       minLength: 7,
       maxLength: 12,
-      required: true,
       pattern: '([A-Z][0-9]{6})|([A-Z]{3}[0-9]{9})|([0-9]{9}[A-Z][A-Z0-9]?)|[0-9A-Z]{11}',
-      //          | RRB (7)_____| RRB (12)_________| HICN __________________| MBI ______|
+      //         | RRB (7)_____| RRB (12)_________| HICN __________________| MBI ______|
       // TODO (dargueta): The regex for the MBI is too lax.
     },
   },
 
   bool_10: {
-    type: 'boolean',
-    trueValues: ['1'],
-    falseValues: ['0'],
-    constraints: {
-      maxLength: 1,
+    logicalType: 'boolean',
+    physicalType: 'VARCHAR(1)',
+    customProperties: {
+      trueValues: ['1'],
+      falseValues: ['0'],
+      physicalTypeOptions: {
+        maxLength: 1,
+      },
     },
   },
 
   bool_yblank: {
-    type: 'boolean',
-    trueValues: ['Y'],
-    falseValues: [''],
-    constraints: {
-      maxLength: 1,
+    logicalType: 'boolean',
+    physicalType: 'VARCHAR(1)',
+    customProperties: {
+      trueValues: ['Y'],
+      falseValues: [''],
+      physicalTypeOptions: {
+        maxLength: 1,
+      },
     },
   },
 
   bool_yn: {
-    type: 'boolean',
-    trueValues: ['Y'],
-    falseValues: ['N'],
-    constraints: {
-      maxLength: 1,
+    logicalType: 'boolean',
+    physicalType: 'VARCHAR(1)',
+    customProperties: {
+      trueValues: ['Y'],
+      falseValues: ['N'],
+      physicalTypeOptions: {
+        maxLength: 1,
+      },
     },
   },
 
   const: function(name, string_value) {
     name: name,
-    type: 'string',
-    constraints: {
-      enum: [string_value],
+    physicalName: name,
+    logicalType: 'string',
+    physicalType: 'VARCHAR(' + std.toString(std.length(string_value)) + ')',
+    logicalTypeOptions: {
       minLength: std.length(string_value),
       maxLength: std.length(string_value),
-      required: true,
     },
+    enum: [{ value: string_value }],
+    required: true,
   },
 
   date8: {
-    type: 'date',
-    format: '%Y%m%d',
-    constraints: {
-      maxLength: 8,
+    logicalType: 'date',
+    logicalTypeOptions: {
+      format: 'yyyyMMdd',
+    },
+    physicalType: 'VARCHAR(8)',
+    customProperties: {
+      physicalTypeOptions: {
+        maxLength: 8,
+      },
     },
   },
 
   enrollment_source_type_code: {
+    name: 'Enrollment Source Type Code',
     description: 'An indicator providing the type of enrollment performed.',
-    type: 'string',
-    categories: [
+    logicalType: 'string',
+    logicalTypeOptions: {
+      maxLength: 1,
+    },
+    enum: [
       { value: 'A', label: 'Auto enrolled by CMS.' },
       { value: 'B', label: 'Beneficiary election.' },
       { value: 'C', label: 'Facilitated enrollment by CMS.' },
@@ -83,27 +105,31 @@
       },
       { value: 'N', label: 'Rollover by plan transaction.' },
     ],
-    constraints: {
-      maxLength: 1,
-    },
+    physicalName: 'enrollment_source_type_code',
+    physicalType: 'VARCHAR(1)',
   },
 
   filler: function(name, width) {
-    name: name,
-    title: 'Filler',
-    type: 'string',
-    constraints: {
-      enum: [''],
-      maxLength: width,
+    name: 'Filler',
+    physicalName: name,
+    logicalType: 'string',
+    physicalType: 'VARCHAR(' + std.toString(width) + ')',
+    enum: [{ value: null }],
+    required: false,
+    customProperties: {
+      physicalTypeOptions: {
+        maxLength: width,
+      },
     },
   },
 
   plan_type_code: {
-    type: 'string',
-    constraints: {
+    logicalType: 'string',
+    physicalType: 'VARCHAR(2)',
+    logicalTypeOptions: {
       maxLength: 2,
     },
-    categories: [
+    enum: [
       { value: '01', label: 'HMO' },
       { value: '02', label: 'HMOPOS' },
       // "03" undefined
@@ -141,9 +167,14 @@
   },
 
   race_code: {
-    name: 'race_code',
-    type: 'string',
-    categories: [
+    name: 'Race Code',
+    physicalName: 'race_code',
+    logicalType: 'string',
+    physicalType: 'VARCHAR(1)',
+    logicalTypeOptions: {
+      maxLength: 1,
+    },
+    enum: [
       { value: '0', label: 'Unknown' },
       { value: '1', label: 'White' },
       { value: '2', label: 'Black' },
@@ -152,21 +183,24 @@
       { value: '5', label: 'Hispanic' },
       { value: '6', label: 'North American Native' },
     ],
-    constraints: {
-      maxLength: 1,
-    },
   },
 
   sex_code: {
-    name: 'sex_code',
-    title: "Beneficiary's Sex Code",
+    name: "Beneficiary's Sex Code",
+    physicalName: 'beneficiary_sex_code',
     description: 'The sex of the beneficiary.',
-    type: 'string',
-    rdfType: 'https://schema.org/GenderType',
-    categories: [
+    logicalType: 'string',
+    physicalType: 'VARCHAR(1)',
+    logicalTypeOptions: {
+      maxLength: 1,
+    },
+    enum: [
       { value: '0', label: 'Unknown' },
       { value: '1', label: 'Male' },
       { value: '2', label: 'Female' },
+    ],
+    authoritativeDefinitions: [
+      { url: 'https://schema.org/GenderType', type: 'ontology' },
     ],
   },
 }
