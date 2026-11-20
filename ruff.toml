@@ -17,6 +17,7 @@ extend-ignore = [
     "FBT",     # Takes umbrage at any boolean positional argument
     "FIX002",  # Disallows FIXME comments
     "PLR2004", # Overzealous detection of "magic constants"
+    "PTH123",  # Forbids use of built-in `open()` in favor of `pathlib.Path.open()`
     "TD003",   # Requires links on all TODOs
     "TRY003",  # Gripes about exceptions with "long" error messages. I like details.
 ]
@@ -24,6 +25,9 @@ extend-ignore = [
 [lint.per-file-ignores]
 "__init__.py" = ["F403", "PLC0414"]
 "src/schemas/scripts/schemas.py" = ["I002", "N815", "TC003"]
+"src/schemas/scripts/*" = [
+    "D301", # Complains about `\b` in docstrings, needed by Click for formatting.
+]
 "Makefile.py" = ["I002", "TC003"]
 
 [lint.isort]

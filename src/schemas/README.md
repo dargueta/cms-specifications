@@ -56,7 +56,7 @@ PCUG file formats don't change every release, and some versions of a format are 
 
 A `build_rules.yaml` file is composed of three sections, all optional.
 
-#### identical-versions
+#### identical_versions
 
 This is a key-value mapping where:
 
@@ -66,7 +66,7 @@ This is a key-value mapping where:
 The following declares that version 5.1 is identical to version 5.0, and all versions 5.3 and higher are identical to version 5.2.
 
 ```yaml
-identical-versions:
+identical_versions:
   "5.0": "5.1"
   "5.2": ">=5.3"
 ```
@@ -74,7 +74,7 @@ identical-versions:
 If the value is a list, the constraints are ANDed together. Thus, more complex expressions are possible, such as with BQN4.
 
 ```yaml
-identical-versions:
+identical_versions:
   # 5.0 is unique
   "5.1": [">=5.2", "<=9.0"]     # 5.2 through 9.0 == 5.1
   # 9.1 is unique
@@ -88,12 +88,12 @@ identical-versions:
 
 Supported comparisons are "<", "<=", ">", ">=", "==", and "!=".
 
-#### identical-files
+#### identical_files
 
-This is similar in purpose to `identical-versions` but applies to specific files. This example from BQN4 states that all versions from 5.1 through 9.1 inherit `bqn4/5.0/records/header.yaml.jinja2` and `bqn4/5.0/records/trailer.yaml.jinja2`, unmodified.
+This is similar in purpose to `identical_versions` but applies to specific files. This example from BQN4 states that all versions from 5.1 through 9.1 inherit `bqn4/5.0/records/header.yaml.jinja2` and `bqn4/5.0/records/trailer.yaml.jinja2`, unmodified.
 
 ```yaml
-identical-files:
+identical_files:
   - source: "5.0/records"
     files:
       - header.yaml.jinja2
@@ -103,7 +103,7 @@ identical-files:
 
 Use this when only some records change between versions.
 
-#### file-dependencies
+#### file_dependencies
 
 A key-value mapping of a file path to a glob/path or list of these, of files that are derived from it. This is useful for triggering cascading updates of shared templates to all files that depend on them.
 
@@ -132,7 +132,7 @@ bqn4
 Here's the dependency spec:
 
 ```yaml
-file-dependencies:
+file_dependencies:
   "common/header.jinja2": "*/records/header.jinja2"
   "common/detail.jinja2": "*/records/detail.jinja2"
   "common/trailer.jinja2": "*/records/trailer.jinja2"
