@@ -1,7 +1,7 @@
 -c requirements.txt
 -c test-requirements.txt
 
-datacontract-cli[]~=1.2.11
+datacontract-cli~=1.2.11
 pip-tools>=7.6.1
 pyrefly~=1.5
 ruff~=0.17.5
