@@ -141,9 +141,11 @@
   },
 
   race_code: {
-    name: 'race_code',
-    type: 'string',
-    categories: [
+    name: 'Race Code',
+    physicalName: 'race_code',
+    logicalType: 'string',
+    physicalType: 'VARCHAR(1)',
+    enum: [
       { value: '0', label: 'Unknown' },
       { value: '1', label: 'White' },
       { value: '2', label: 'Black' },
@@ -152,21 +154,27 @@
       { value: '5', label: 'Hispanic' },
       { value: '6', label: 'North American Native' },
     ],
-    constraints: {
+    logicalTypeOptions: {
       maxLength: 1,
     },
   },
 
   sex_code: {
-    name: 'sex_code',
-    title: "Beneficiary's Sex Code",
+    name: "Beneficiary's Sex Code",
     description: 'The sex of the beneficiary.',
-    type: 'string',
-    rdfType: 'https://schema.org/GenderType',
-    categories: [
+    physicalName: 'sex_code',
+    logicalType: 'string',
+    physicalType: 'VARCHAR(1)',
+    authoritativeDefinitions: [
+      { url: 'https://schema.org/GenderType', type: 'ontology' },
+    ],
+    enum: [
       { value: '0', label: 'Unknown' },
       { value: '1', label: 'Male' },
       { value: '2', label: 'Female' },
     ],
+    logicalTypeOptions: {
+      maxLength: 1,
+    },
   },
 }
