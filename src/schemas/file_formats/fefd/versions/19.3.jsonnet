@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: BSD-3-Clause
-local base = import 'fefd/records/data/14.3.jsonnet';
+local base = import 'fefd/versions/14.3.jsonnet';
 local pcug = import 'pcug.libjsonnet';
 
 // TODO (dargueta): This feels wrong, verify field indexes against the schema.
@@ -7,11 +7,15 @@ local pcug = import 'pcug.libjsonnet';
 base {
   __patch__+: [
     {
-      selector: '$.fields[?(@.name == "district_office_code")]',
+      selector: '$.version',
+      new_value: '19.3',
+    },
+    {
+      selector: '$.schema[0].properties[?(@.physicalName == "district_office_code")]',
       new_value: null,  // Delete
     },
     {
-      selector: '$.fields[?(@.name == "_filler_2")]',
+      selector: '$.schema[0].properties[?(@.physicalName == "_filler_2")]',
       new_value: pcug.filler('_filler_2', 12),
     },
   ],
