@@ -2,30 +2,33 @@
 local pcug = import 'pcug.libjsonnet';
 
 function(filler_size) {
-  '$schema': 'https://datapackage.org/profiles/2.0/tableschema.json',
-  fieldsMatch: ['subset'],
-  fields: [
+  id: 'header',
+  name: 'header',
+  logicalType: 'object',
+  physicalType: 'table',
+  properties: [
     pcug.const('record_type', 'CMSBEQRH'),
     pcug.const('sending_entity', 'MBD     ') {
-      title: 'Sending Entity',
-      rdfType: 'https://schema.org/Organization',
+      name: 'Sending Entity',
+      authoritativeDefinitions: [
+        { url: 'https://schema.org/Organization', type: 'ontology' },
+      ],
     },
     pcug.date8 {
-      name: 'file_creation_date',
-      title: 'File Creation Date',
-      constraints: {
-        required: true,
-      },
+      name: 'File Creation Date',
+      physicalName: 'file_creation_date',
+      required: true,
     },
     {
-      name: 'file_control_number',
-      title: 'File Control Number',
-      type: 'string',
-      constraints: {
+      name: 'File Control Number',
+      logicalType: 'string',
+      logicalTypeOptions: {
         maxLength: 9,
         minLength: 1,
-        required: true,
       },
+      required: true,
+      physicalName: 'file_control_number',
+      physicalType: 'VARCHAR(9)',
     },
     pcug.filler('record_padding', filler_size),
   ],
