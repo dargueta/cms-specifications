@@ -5,9 +5,6 @@
   beneficiary_identifier: {
     name: 'Beneficiary Identifier',
     logicalType: 'string',
-    physicalName: 'beneficiary_identifier',
-    physicalType: 'VARCHAR(12)',
-    required: true,
     logicalTypeOptions: {
       minLength: 7,
       maxLength: 12,
@@ -15,55 +12,58 @@
       //         | RRB (7)_____| RRB (12)_________| HICN __________________| MBI ______|
       // TODO (dargueta): The regex for the MBI is too lax.
     },
+    required: true,
+    physicalName: 'beneficiary_identifier',
+    physicalType: 'VARCHAR(12)',
   },
 
   bool_10: {
     logicalType: 'boolean',
-    physicalType: 'VARCHAR(1)',
+    physicalType: 'BOOLEAN',
     customProperties: {
-      trueValues: ['1'],
-      falseValues: ['0'],
-      physicalTypeOptions: {
-        maxLength: 1,
+      serialization: {
+        length: 1,
+        trueValues: ['1'],
+        falseValues: ['0'],
       },
     },
   },
 
   bool_yblank: {
     logicalType: 'boolean',
-    physicalType: 'VARCHAR(1)',
+    physicalType: 'BOOLEAN',
     customProperties: {
-      trueValues: ['Y'],
-      falseValues: [''],
-      physicalTypeOptions: {
-        maxLength: 1,
+      serialization: {
+        length: 1,
+        trueValues: ['Y'],
+        falseValues: [''],
       },
     },
   },
 
   bool_yn: {
     logicalType: 'boolean',
-    physicalType: 'VARCHAR(1)',
+    physicalType: 'BOOLEAN',
     customProperties: {
-      trueValues: ['Y'],
-      falseValues: ['N'],
-      physicalTypeOptions: {
-        maxLength: 1,
+      serialization: {
+        length: 1,
+        trueValues: ['Y'],
+        falseValues: ['N'],
       },
     },
   },
 
   const: function(name, string_value) {
     name: name,
-    physicalName: name,
     logicalType: 'string',
-    physicalType: 'VARCHAR(' + std.toString(std.length(string_value)) + ')',
     logicalTypeOptions: {
       minLength: std.length(string_value),
       maxLength: std.length(string_value),
     },
     enum: [{ value: string_value }],
     required: true,
+    physicalName: name,
+    physicalType: 'VARCHAR(' + std.toString(std.length(string_value)) + ')',
   },
 
   date8: {
@@ -71,10 +71,10 @@
     logicalTypeOptions: {
       format: 'yyyyMMdd',
     },
-    physicalType: 'VARCHAR(8)',
+    physicalType: 'DATE',
     customProperties: {
-      physicalTypeOptions: {
-        maxLength: 8,
+      serialization: {
+        length: 8,
       },
     },
   },
@@ -168,9 +168,7 @@
 
   race_code: {
     name: 'Race Code',
-    physicalName: 'race_code',
     logicalType: 'string',
-    physicalType: 'VARCHAR(1)',
     logicalTypeOptions: {
       maxLength: 1,
     },
@@ -183,14 +181,14 @@
       { value: '5', label: 'Hispanic' },
       { value: '6', label: 'North American Native' },
     ],
+    physicalName: 'race_code',
+    physicalType: 'VARCHAR(1)',
   },
 
   sex_code: {
     name: "Beneficiary's Sex Code",
-    physicalName: 'beneficiary_sex_code',
     description: 'The sex of the beneficiary.',
     logicalType: 'string',
-    physicalType: 'VARCHAR(1)',
     logicalTypeOptions: {
       maxLength: 1,
     },
@@ -199,6 +197,8 @@
       { value: '1', label: 'Male' },
       { value: '2', label: 'Female' },
     ],
+    physicalName: 'beneficiary_sex_code',
+    physicalType: 'VARCHAR(1)',
     authoritativeDefinitions: [
       { url: 'https://schema.org/GenderType', type: 'ontology' },
     ],
