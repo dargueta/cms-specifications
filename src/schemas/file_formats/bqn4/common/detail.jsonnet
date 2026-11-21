@@ -201,7 +201,7 @@ local zero_padded = {
         physicalType: 'VARCHAR(3)',
         customProperties: {
           serialization: {
-            string: 3,
+            length: 3,
           },
         },
       },
