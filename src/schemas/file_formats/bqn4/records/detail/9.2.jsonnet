@@ -7,82 +7,82 @@ local pcug = import 'pcug.libjsonnet';
 base {
   data_fields+: [
     {
-      name: 'mailing_address_line_%d' % i,
-      title: 'Mailing Address Line %d' % i,
-      type: 'string',
-      constraints: {
+      name: 'Mailing Address Line %d' % i,
+      logicalType: 'string',
+      logicalTypeOptions: {
         maxLength: 40,
       },
+      physicalName: 'mailing_address_line_%d' % i,
     }
     for i in std.range(1, 6)
   ] + [
     {
-      name: 'mailing_address_city',
-      title: 'Mailing Address City',
-      type: 'string',
-      rdfType: 'https://schema.org/City',
-      constraints: {
+      name: 'Mailing Address City',
+      logicalType: 'string',
+      logicalTypeOptions: {
         maxLength: 40,
       },
+      physicalName: 'mailing_address_city',
+      authoritativeDefinitions: [{ url: 'https://schema.org/City', logicalType: 'ontology' }],
     },
     {
-      name: 'mailing_address_state',
-      title: 'Mailing Address Postal State Code',
-      type: 'string',
-      rdfType: 'https://schema.org/State',
-      constraints: {
+      name: 'Mailing Address Postal State Code',
+      logicalType: 'string',
+      logicalTypeOptions: {
         maxLength: 2,
       },
+      physicalName: 'mailing_address_state',
+      authoritativeDefinitions: [{ url: 'https://schema.org/State', logicalType: 'ontology' }],
     },
     {
-      name: 'mailing_address_zip_code',
-      title: 'Mailing Address ZIP Code',
-      type: 'string',
-      constraints: {
+      name: 'Mailing Address ZIP Code',
+      logicalType: 'string',
+      logicalTypeOptions: {
         maxLength: 9,
       },
+      physicalName: 'mailing_address_zip_code',
     },
     pcug.date8 {
-      name: 'mailing_address_start_date',
-      title: 'Mailing Address Start Date',
+      name: 'Mailing Address Start Date',
+      physicalName: 'mailing_address_start_date',
     },
     {
-      name: 'residence_address_line_1',
-      title: 'Residence Address Line 1',
-      type: 'string',
-      constraints: {
+      name: 'Residence Address Line 1',
+      logicalType: 'string',
+      logicalTypeOptions: {
         maxLength: 60,
       },
+      physicalName: 'residence_address_line_1',
     },
     {
-      name: 'residence_address_city',
-      title: 'Residence Address City',
-      type: 'string',
-      rdfType: 'https://schema.org/City',
-      constraints: {
+      name: 'Residence Address City',
+      logicalType: 'string',
+      logicalTypeOptions: {
         maxLength: 40,
       },
+      physicalName: 'residence_address_city',
+      authoritativeDefinitions: [{ url: 'https://schema.org/City', logicalType: 'ontology' }],
     },
     {
-      name: 'residence_address_state',
-      title: 'Residence Address Postal State Code',
-      type: 'string',
-      rdfType: 'https://schema.org/State',
-      constraints: {
+      name: 'Residence Address Postal State Code',
+      logicalType: 'string',
+      logicalTypeOptions: {
         maxLength: 2,
       },
+      physicalName: 'residence_address_state',
+      authoritativeDefinitions: [{ url: 'https://schema.org/State', logicalType: 'ontology' }],
     },
     {
-      name: 'residence_address_zip_code',
-      title: 'Residence Address ZIP Code',
-      type: 'string',
-      constraints: {
+      name: 'Residence Address ZIP Code',
+      logicalType: 'string',
+      logicalTypeOptions: {
         maxLength: 9,
       },
+      physicalName: 'residence_address_zip_code',
     },
     pcug.date8 {
-      name: 'residence_address_start_date',
-      title: 'Residence Address Start Date',
+      name: 'Residence Address Start Date',
+      physicalName: 'residence_address_start_date',
     },
   ],
   padding_length:: 325,

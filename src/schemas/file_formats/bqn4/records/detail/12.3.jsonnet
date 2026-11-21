@@ -7,18 +7,18 @@ local pcug = import 'pcug.libjsonnet';
 base {
   data_fields+: [
     pcug.date8 {
-      name: 'most_recent_duals_sep_use_date',
-      title: 'Most Recent Duals SEP Use Date',
+      name: 'Most Recent Duals SEP Use Date',
+      physicalName: 'most_recent_duals_sep_use_date',
     },
   ] + std.flattenArrays([
     [
       pcug.date8 {
-        name: 'cara_status_start_date_%d' % i,
-        title: 'CARA Status Start Date (%d)' % i,
+        name: 'CARA Status Start Date (%d)' % i,
+        physicalName: 'cara_status_start_date_%d' % i,
       },
       pcug.date8 {
-        name: 'cara_status_end_date_%d' % i,
-        title: 'CARA Status End Date (%d)' % i,
+        name: 'CARA Status End Date (%d)' % i,
+        physicalName: 'cara_status_end_date_%d' % i,
       },
     ]
     for i in std.range(1, 10)

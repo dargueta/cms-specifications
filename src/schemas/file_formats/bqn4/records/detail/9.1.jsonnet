@@ -7,46 +7,46 @@ local pcug = import 'pcug.libjsonnet';
 base {
   data_fields+: [
     pcug.bool_10 {
-      name: 'esrd_indicator',
-      title: 'End Stage Renal Disease Indicator',
+      name: 'End Stage Renal Disease Indicator',
+      physicalName: 'esrd_indicator',
     },
     {
-      name: 'part_c_pbp_number',
-      title: 'PBP Number',
+      name: 'PBP Number',
       description: 'Associated with contract number in Field 88, positions 717 - 721.',
-      type: 'string',
-      constraints: {
+      logicalType: 'string',
+      logicalTypeOptions: {
         maxLength: 3,
       },
+      physicalName: 'part_c_pbp_number',
     },
     pcug.plan_type_code {
-      name: 'part_c_plan_type_code',
-      title: 'Plan Type Code',
+      name: 'Plan Type Code',
       description: 'Associated with PBP number in Field 95, positions 746 - 748',
+      physicalName: 'part_c_plan_type_code',
     },
     pcug.bool_yn {
-      name: 'part_c_eghp_indicator',
-      title: 'EGHP Indicator',
+      name: 'EGHP Indicator',
       description: 'Associated with PBP number in Field 95, positions 746 - 748',
+      physicalName: 'part_c_eghp_indicator',
     },
     {
-      name: 'part_c_d_pbp_number',
-      title: 'PBP Number',
+      name: 'PBP Number',
       description: 'Associated with contract number in Field 91, positions 731 - 735',
-      type: 'string',
-      constraints: {
+      logicalType: 'string',
+      logicalTypeOptions: {
         maxLength: 3,
       },
+      physicalName: 'part_c_d_pbp_number',
     },
     pcug.plan_type_code {
-      name: 'part_c_d_plan_type_code',
-      title: 'Plan Type Code',
+      name: 'Plan Type Code',
+      physicalName: 'part_c_d_plan_type_code',
       description: 'Associated with contract number in Field 91, positions 731 - 735',
     },
     pcug.bool_yn {
-      name: 'part_c_d_eghp_indicator',
-      title: 'EGHP Indicator',
+      name: 'EGHP Indicator',
       description: 'Associated with contract number in Field 91, positions 731 - 735',
+      physicalName: 'part_c_d_eghp_indicator',
     },
   ],
   padding_length:: 743,

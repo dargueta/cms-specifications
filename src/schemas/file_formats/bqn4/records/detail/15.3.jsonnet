@@ -7,20 +7,20 @@ local pcug = import 'pcug.libjsonnet';
 base {
   data_fields+: [
     pcug.date8 {
-      name: 'medicare_part_a_entitlement_start_date_2',
-      title: 'Medicare Part A Entitlement Start Date 2',
+      name: 'Medicare Part A Entitlement Start Date 2',
+      physicalName: 'medicare_part_a_entitlement_start_date_2',
     },
     pcug.date8 {
-      name: 'medicare_part_a_entitlement_end_date_2',
-      title: 'Medicare Part A Entitlement End Date 2',
+      name: 'Medicare Part A Entitlement End Date 2',
+      physicalName: 'medicare_part_a_entitlement_end_date_2',
     },
     pcug.date8 {
-      name: 'medicare_part_b_entitlement_start_date_2',
-      title: 'Medicare Part B Entitlement Start Date 2',
+      name: 'Medicare Part B Entitlement Start Date 2',
+      physicalName: 'medicare_part_b_entitlement_start_date_2',
     },
     pcug.date8 {
-      name: 'medicare_part_b_entitlement_end_date_2',
-      title: 'Medicare Part B Entitlement End Date 2',
+      name: 'Medicare Part B Entitlement End Date 2',
+      physicalName: 'medicare_part_b_entitlement_end_date_2',
     },
   ],
   padding_length:: 234,

@@ -1,93 +1,100 @@
 // SPDX-License-Identifier: BSD-3-Clause
 
-local pcug = import 'pcug.libjsonnet';
 local detail_record = import 'bqn4/common/detail.jsonnet';
+local pcug = import 'pcug.libjsonnet';
 
 
 detail_record {
   data_fields+: [
     {
-      name: 'last_name',
-      title: 'Last Name',
+      name: 'Last Name',
       description: "The beneficiary's last name.",
-      type: 'string',
-      constraints: {
+      logicalType: 'string',
+      logicalTypeOptions: {
         maxLength: 40,
       },
+      physicalName: 'last_name',
+      physicalType: 'VARCHAR(40)',
     },
     {
-      name: 'first_name',
-      title: 'First Name',
+      name: 'First Name',
       description: "The beneficiary's first name.",
-      type: 'string',
-      constraints: {
+      logicalType: 'string',
+      logicalTypeOptions: {
         maxLength: 30,
       },
+      physicalName: 'first_name',
+      physicalType: 'VARCHAR(30)',
     },
     {
-      name: 'middle_initial',
-      title: 'Middle Initial',
+      name: 'Middle Initial',
       description: "The beneficiary's middle initial.",
-      type: 'string',
-      constraints: {
+      logicalType: 'string',
+      logicalTypeOptions: {
         maxLength: 1,
       },
+      physicalName: 'middle_initial',
+      physicalType: 'VARCHAR(1)',
     },
     {
-      name: 'current_state_code',
-      title: 'Current State Code',
-      type: 'string',
-      constraints: {
+      name: 'Current State Code',
+      logicalType: 'string',
+      logicalTypeOptions: {
         minLength: 2,
         maxLength: 2,
       },
+      physicalName: 'current_state_code',
+      physicalType: 'VARCHAR(2)',
     },
     {
-      name: 'current_county_code',
-      title: 'Current County Code',
-      type: 'string',
-      constraints: {
+      name: 'Current County Code',
+      logicalType: 'string',
+      logicalTypeOptions: {
         maxLength: 3,
       },
+      physicalName: 'current_county_code',
+      physicalType: 'VARCHAR(3)',
     },
     pcug.date8 {
-      name: 'date_of_death',
-      title: 'Date of Death',
+      name: 'Date of Death',
+      physicalName: 'date_of_death',
     },
     {
-      name: 'part_c_d_contract_number',
-      title: 'Part C/D Contract Number',
+      name: 'Part C/D Contract Number',
       description: 'If available.',
-      type: 'string',
-      constraints: {
+      logicalType: 'string',
+      logicalTypeOptions: {
         maxLength: 5,
       },
+      physicalName: 'part_c_d_contract_number',
+      physicalType: 'VARCHAR(5)',
     },
     pcug.date8 {
-      name: 'part_c_d_enrollment_start_date',
-      title: 'Part C/D Enrollment Start Date',
+      name: 'Part C/D Enrollment Start Date',
+      physicalName: 'part_c_d_enrollment_start_date',
     },
     pcug.bool_yn {
-      name: 'part_d_indicator',
-      title: 'Part D Indicator',
+      name: 'Part D Indicator',
+      physicalName: 'part_d_indicator',
     },
     {
-      name: 'part_c_contract_number',
-      title: 'Part C Contract Number',
+      name: 'Part C Contract Number',
       description: 'If available.',
-      type: 'string',
-      constraints: {
+      logicalType: 'string',
+      logicalTypeOptions: {
         maxLength: 5,
       },
+      physicalName: 'part_c_contract_number',
+      physicalType: 'VARCHAR(5)',
     },
     pcug.date8 {
-      name: 'part_c_enrollment_start_date',
-      title: 'Part C Enrollment Start Date',
+      name: 'Part C Enrollment Start Date',
+      physicalName: 'part_c_enrollment_start_date',
     },
     pcug.bool_yn {
-      name: 'part_c_indicator',
-      title: 'Part C Indicator',
+      name: 'Part C Indicator',
       description: 'The v5.0 documentation implies, but does not state, that this should never be true.',
+      physicalName: 'part_c_indicator',
     },
   ],
   padding_length:: 6,
