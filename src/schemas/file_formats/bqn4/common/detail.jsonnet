@@ -2,18 +2,18 @@
 local pcug = import 'pcug.libjsonnet';
 
 local zero_padded = {
-  __metadata__: {
+  customProperties+: {
     serialization: {
       align: 'right',
-      padding_character: '0',
+      paddingCharacter: '0',
     },
   },
 };
 
 {
-  '$schema': 'https://datapackage.org/profiles/2.0/tableschema.json',
-  fieldsMatch: ['subset'],
-
+  id: 'detail',
+  logicalType: 'object',
+  physicalType: 'table',
   // The final field list is always the data fields followed by a single padding field
   // that fills out the rest of the record. Records extending this one should append
   // to `data_fields` and set `padding_length`, never touch `fields` directly:
@@ -22,19 +22,21 @@ local zero_padded = {
   //     data_fields+: [ ...new fields... ],
   //     padding_length:: 123,
   //   }
-  fields: self.data_fields + [pcug.filler('record_padding', self.padding_length)],
+  properties: self.data_fields + [pcug.filler('record_padding', self.padding_length)],
   padding_length:: error 'Records extending the BQN4 detail record must set padding_length.',
 
   data_fields:: [
     pcug.const('record_type', 'DTL'),
     {
-      name: 'original_record_type',
-      title: 'Record Type',
-      type: 'string',
-      constraints: {
+      name: 'Record Type',
+      logicalType: 'string',
+      logicalTypeOptions: {
+        minLength: 5,
         maxLength: 5,
-        required: true,
       },
+      required: true,
+      physicalName: 'original_record_type',
+      physicalType: 'VARCHAR(5)',
     },
     pcug.beneficiary_identifier {
       description: 'This field will contain exactly what is received in the same field of the '
@@ -42,221 +44,244 @@ local zero_padded = {
     },
     pcug.filler('_filler_1', 9),
     pcug.date8 {
-      name: 'sent_date_of_birth',
-      title: "Beneficiary's Date of Birth Sent",
+      name: "Beneficiary's Date of Birth Sent",
+      physicalName: 'sent_date_of_birth',
     },
     pcug.sex_code {
-      name: 'sent_sex_code',
-      title: "Beneficiary's Sex Code Sent",
+      name: "Beneficiary's Sex Code Sent",
+      physicalName: 'sent_sex_code',
     },
     {
-      name: 'detail_record_sequence_number',
-      title: 'Detail Record Sequence Number',
-      type: 'integer',
-      constraints: {
-        minLength: 1,
-        maxLength: 7,
+      name: 'Detail Record Sequence Number',
+      logicalType: 'integer',
+      logicalTypeOptions: {
+        format: 'u32',
         minimum: 0,
         maximum: 9999999,
-        required: true,
-        unique: true,
+      },
+      required: true,
+      physicalName: 'detail_record_sequence_number',
+      physicalType: 'INTEGER',
+      customProperties: {
+        serialization: {
+          length: 7,
+          uniqueWithinFile: true,
+        },
       },
     },
     pcug.bool_yn {
-      name: 'processed_flag',
-      title: 'Processed Flag',
-      constraints+: {
-        required: true,
-      },
+      name: 'Processed Flag',
+      physicalName: 'processed_flag',
+      required: true,
     },
     pcug.bool_yn {
-      name: 'beneficiary_matched_flag',
-      title: 'Beneficiary Matched Flag',
+      name: 'Beneficiary Matched Flag',
       description: |||
         * "Y": The beneficiary was matched (located) successfully.
         * "N": The beneficiary was not matched (located) successfully.
         * " " (SPACE) = Beneficiary match was not attempted due to an Invalid
           condition in the Transaction (Detail Record).
       |||,
+      physicalName: 'beneficiary_matched_flag',
     },
     pcug.date8 {
-      name: 'medicare_part_a_entitlement_start_date',
-      title: 'Medicare Part A Entitlement Start Date',
+      name: 'Medicare Part A Entitlement Start Date',
+      physicalName: 'medicare_part_a_entitlement_start_date',
     },
     pcug.date8 {
-      name: 'medicare_part_a_entitlement_end_date',
-      title: 'Medicare Part A Entitlement End Date',
+      name: 'Medicare Part A Entitlement End Date',
+      physicalName: 'medicare_part_a_entitlement_end_date',
     },
     pcug.date8 {
-      name: 'medicare_part_b_entitlement_start_date',
-      title: 'Medicare Part B Entitlement Start Date',
+      name: 'Medicare Part B Entitlement Start Date',
+      physicalName: 'medicare_part_b_entitlement_start_date',
     },
     pcug.date8 {
-      name: 'medicare_part_b_entitlement_end_date',
-      title: 'Medicare Part B Entitlement End Date',
+      name: 'Medicare Part B Entitlement End Date',
+      physicalName: 'medicare_part_b_entitlement_end_date',
     },
     pcug.bool_10 {
-      name: 'medicaid_indicator',
-      title: 'Medicaid Indicator',
+      name: 'Medicaid Indicator',
       description: 'An indicator of the presence of current Medicaid coverage for the beneficiary.\n'
                    + 'The value for this field is based upon the presence of Medicaid reported '
                    + 'for the beneficiary by states in the previous calendar month via the MMA '
                    + 'State Files.',
+      physicalName: 'medicaid_indicator',
     },
   ] + std.flattenArrays([
     [
       pcug.date8 {
-        name: 'part_d_enrollment_effective_date_%d' % i,
-        title: 'Part D Enrollment Effective Date or Employer Subsidy Start Date (Occurrence %d)' % i,
+        name: 'Part D Enrollment Effective Date or Employer Subsidy Start Date (Occurrence %d)' % i,
+        physicalName: 'part_d_enrollment_effective_date_%d' % i,
       },
       pcug.date8 {
-        name: 'part_d_disenrollment_date_%d' % i,
-        title: 'Part D Disenrollment Date or Employer Subsidy End Date (Occurrence %d)' % i,
+        name: 'Part D Disenrollment Date or Employer Subsidy End Date (Occurrence %d)' % i,
+        physicalName: 'part_d_disenrollment_date_%d' % i,
       },
     ]
     for i in std.range(1, 10)
   ]) + [
     {
-      name: 'sending_entity',
-      title: 'Sending Entity',
+      name: 'Sending Entity',
       description: 'The Sending Entity provided on the Header Record of the BEQ Request File '
                    + 'in which the Transaction (Detail Record) was found.\n'
                    + 'The Sending Entity may be a Part D Organization.',
-      type: 'string',
-      constraints: {
+      logicalType: 'string',
+      logicalTypeOptions: {
         minLength: 5,
         maxLength: 8,
-        required: true,
       },
+      required: true,
+      physicalName: 'sending_entity',
+      physicalType: 'VARCHAR(8)',
     },
     {
-      name: 'file_control_number',
-      title: 'File Control Number',
+      name: 'File Control Number',
       description: 'The File Control Number provided by the Sending Entity on the Header '
                    + 'record of the BEQ Request File in which the Transaction (Detail Record) '
                    + 'was found.',
-      type: 'string',
-      constraints: {
+      logicalType: 'string',
+      logicalTypeOptions: {
         maxLength: 9,
         minLength: 1,
-        required: true,
       },
+      required: true,
+      physicalName: 'file_control_number',
+      physicalType: 'VARCHAR(9)',
     },
     pcug.date8 {
-      name: 'file_creation_date',
-      title: 'File Creation Date',
+      name: 'File Creation Date',
       description: 'The File Creation Date provided on the Header Record of the BEQ Request '
                    + 'File in which the Transaction (Detail Record) was found.',
-      constraints+: {
-        required: true,
-      },
+      required: true,
+      physicalName: 'file_creation_date',
     },
     pcug.date8 {
-      name: 'part_d_eligibility_start_date',
-      title: 'Part D Eligibility Start Date',
+      name: 'Part D Eligibility Start Date',
       description: 'This field identifies the date the beneficiary became eligible for Part D '
                    + 'Benefits.',
+      physicalName: 'part_d_eligibility_start_date',
     },
   ] + std.flattenArrays([
     [
       pcug.date8 {
-        name: 'deemed_lis_effective_date_%d' % i,
-        title: 'Deemed / Low-Income Subsidy Effective Date (Occurrence %d)' % i,
+        name: 'Deemed / Low-Income Subsidy Effective Date (Occurrence %d)' % i,
+        physicalName: 'deemed_lis_effective_date_%d' % i,
       },
       pcug.date8 {
-        name: 'deemed_lis_end_date_%d' % i,
-        title: 'Deemed / Low-Income Subsidy End Date (Occurrence %d)' % i,
+        name: 'Deemed / Low-Income Subsidy End Date (Occurrence %d)' % i,
+        physicalName: 'deemed_lis_end_date_%d' % i,
       },
       {
-        name: 'copayment_level_identifier_%d' % i,
-        title: 'Co-Payment Level Identifier (Occurrence %d)' % i,
-        type: 'string',
-        constraints: {
-          enum: ['1', '2', '3', '4', '5'],
+        name: 'Co-Payment Level Identifier (Occurrence %d)' % i,
+        logicalType: 'string',
+        logicalTypeOptions: {
           maxLength: 1,
         },
+        enum: [{ value: '1' }, { value: '2' }, { value: '3' }, { value: '4' }, { value: '5' }],
+        physicalName: 'copayment_level_identifier_%d' % i,
+        physicalType: 'VARCHAR(1)',
       },
       zero_padded {
-        name: 'part_d_premium_subsidy_percent_%d' % i,
-        title: 'Part D Premium Subsidy Percent (Occurrence %d)' % i,
-        type: 'integer',
-        constraints: {
+        name: 'Part D Premium Subsidy Percent (Occurrence %d)' % i,
+        logicalType: 'integer',
+        logicalTypeOptions: {
           minimum: 0,
           maximum: 100,
-          enum: [
-            // NOTE: 0 is not valid in later versions.
-            0,
-            25,
-            50,
-            75,
-            100,
-          ],
-          maxLength: 3,
+        },
+        enum: [
+          // NOTE: 0 is not valid in later versions.
+          { value: 0, label: '0%' },
+          { value: 25, label: '25%' },
+          { value: 50, label: '50%' },
+          { value: 75, label: '75%' },
+          { value: 100, label: '100%' },
+        ],
+        physicalName: 'part_d_premium_subsidy_percent_%d' % i,
+        physicalType: 'VARCHAR(3)',
+        customProperties: {
+          serialization: {
+            string: 3,
+          },
         },
       },
     ]
     for i in std.range(1, 2)
   ]) + [
     {
-      name: 'rds_part_d_indicator_%d' % i,
-      title: 'RDS / Part D Indicator (Occurrence %d)' % i,
-      type: 'string',
-      categories: [
+      name: 'RDS / Part D Indicator (Occurrence %d)' % i,
+      logicalType: 'string',
+      logicalTypeOptions: {
+        maxLength: 1,
+      },
+      enum: [
         { value: 'D', label: 'Part D' },
         { value: 'R', label: 'RDS' },
       ],
-      constraints: {
-        maxLength: 1,
-      },
+      physicalName: 'rds_part_d_indicator_%d' % i,
+      physicalType: 'VARCHAR(1)',
     }
     for i in std.range(1, 10)
   ] + std.flattenArrays([
     [
       pcug.date8 {
-        name: 'start_date_%d' % i,
-        title: 'Start Date (Occurrence %d)' % i,
+        name: 'Start Date (Occurrence %d)' % i,
+        physicalName: 'start_date_%d' % i,
       },
       zero_padded {
-        name: 'number_of_uncovered_months_%d' % i,
-        title: 'Number of Uncovered Months (Occurrence %d)' % i,
-        type: 'integer',
-        rdfType: 'http://purl.org/dc/terms/SizeOrDuration',
-        constraints: {
+        name: 'Number of Uncovered Months (Occurrence %d)' % i,
+        logicalType: 'integer',
+        logicalTypeOptions: {
           minimum: 0,
           maximum: 999,
-          maxLength: 3,
+        },
+        authoritativeDefinitions: [
+          { url: 'http://purl.org/dc/terms/SizeOrDuration', type: 'ontology' },
+        ],
+        physicalName: 'number_of_uncovered_months_%d' % i,
+        customProperties: {
+          serialization: {
+            // TODO (dargueta): Align right and pad with "0"?
+            length: 3,
+          },
         },
       },
       {
-        name: 'number_of_uncovered_months_status_indicator_%d' % i,
-        title: 'Number of Uncovered Months Status Indicator (Occurrence %d)' % i,
-        type: 'string',
-        constraints: {
+        name: 'Number of Uncovered Months Status Indicator (Occurrence %d)' % i,
+        logicalType: 'string',
+        logicalTypeOptions: {
           maxLength: 1,
         },
+        physicalName: 'number_of_uncovered_months_status_indicator_%d' % i,
       },
       zero_padded {
-        name: 'total_number_of_uncovered_months_%d' % i,
-        title: 'Total Number of Uncovered Months Status Indicator (Occurrence %d)' % i,
-        type: 'integer',
-        constraints: {
+        name: 'Total Number of Uncovered Months Status Indicator (Occurrence %d)' % i,
+        logicalType: 'integer',
+        logicalTypeOptions: {
+          format: 'u32',
           minimum: 0,
           maximum: 999,
-          maxLength: 3,
+        },
+        physicalName: 'total_number_of_uncovered_months_%d' % i,
+        physicalType: 'INTEGER',
+        customProperties: {
+          serialization: {
+            length: 3,
+          },
         },
       },
     ]
     for i in std.range(1, 20)
   ]) + [
     pcug.date8 {
-      name: 'retrieved_date_of_birth',
-      title: "Beneficiary's Retrieved Date of Birth",
+      name: "Beneficiary's Retrieved Date of Birth",
       description: 'As retrieved from CMS database for matching beneficiary.',
+      physicalName: 'retrieved_date_of_birth',
     },
     pcug.sex_code {
-      name: 'retrieved_sex_code',
-      title: "Beneficiary's Retrieved Sex Code",
+      name: "Beneficiary's Retrieved Sex Code",
       description: 'As retrieved from CMS database for matching beneficiary.',
+      physicalName: 'retrieved_sex_code',
     },
   ],
 }
