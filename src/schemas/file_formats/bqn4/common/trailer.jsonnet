@@ -2,44 +2,48 @@
 local pcug = import 'pcug.libjsonnet';
 
 function(filler_size) {
-  '$schema': 'https://datapackage.org/profiles/2.0/tableschema.json',
-  fieldsMatch: ['subset'],
-  fields: [
+  id: 'trailer',
+  name: 'trailer',
+  logicalType: 'object',
+  physicalName: 'trailer',
+  physicalType: 'table',
+  properties: [
     pcug.const('record_type', 'CMSBEQRT'),
     pcug.const('sending_entity', 'MBD     ') {
-      title: 'Sending Entity',
-      rdfType: 'https://schema.org/Organization',
+      name: 'Sending Entity',
+      authoritativeDefinitions: [
+        { url: 'https://schema.org/Organization', type: 'ontology' },
+      ],
     },
     pcug.date8 {
-      name: 'file_creation_date',
-      title: 'File Creation Date',
-      constraints: {
-        required: true,
-      },
+      name: 'File Creation Date',
+      physicalName: 'file_creation_date',
+      required: true,
     },
     {
-      name: 'file_control_number',
-      title: 'File Control Number',
-      type: 'string',
-      constraints: {
+      name: 'File Control Number',
+      logicalType: 'string',
+      logicalTypeOptions: {
         maxLength: 9,
         minLength: 1,
-        required: true,
       },
+      required: true,
+      physicalName: 'file_control_number',
+      physicalType: 'VARCHAR(9)',
     },
     {
-      name: 'record_count',
-      title: 'Record Count',
-      type: 'integer',
-      constraints: {
+      name: 'Record Count',
+      logicalType: 'integer',
+      logicalTypeOptions: {
         minimum: 1,
         maximum: 9999999,
-        minLength: 7,
-        maxLength: 7,
-        required: true,
       },
-      __metadata__: {
+      required: true,
+      physicalName: 'record_count',
+      physicalType: 'INTEGER',
+      customProperties: {
         serialization: {
+          length: 7,
           align: 'right',
           padding_character: '0',
         },
