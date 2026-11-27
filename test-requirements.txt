@@ -158,3 +158,7 @@ pytest-randomly==5.1.0 \
     --hash=sha256:cdf8af20419969d273b97c8e7c8d688200807e815bdc733cf2a6af183080ad58 \
     --hash=sha256:fb9004e6821422291087d0294fd62f45ff304094db11fbdff8f2fe1ed20764d8
     # via -r test-requirements.in
+types-jsonnet==0.22.0.20261122 \
+    --hash=sha256:915a840168c7b3384b3b9092a98db9b24ec93069d10aea21eba2bcb8b737b848 \
+    --hash=sha256:ec9934a0e85a847b5b96406807ca6f99a9207b854603d664c6b5b553f166b56b
+    # via -r test-requirements.in

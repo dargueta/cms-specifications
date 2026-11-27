@@ -20,13 +20,13 @@ attrs==26.1.0 \
     # via
     #   jsonschema
     #   referencing
-boto3==1.44.10 \
-    --hash=sha256:2ec7370e9f387bf5ba3ae93024d18b3a9fd07eb697062d81165e3672f16a9335 \
-    --hash=sha256:4d5761c368ea199c2488401b86cfd966c132cbdb3c43b0390b25db69041f7989
+boto3==1.44.12 \
+    --hash=sha256:7459cd7a476eef9a5a8044f5cd6b2dfa47cef0fcb74aefa951e154c5102b1199 \
+    --hash=sha256:9f1cf241303edb523af912ebdc001e0563301d9ba8eef076d25fe9a8bfb6efaf
     # via datacontract-cli
-botocore==1.44.10 \
-    --hash=sha256:6fc109eefd1b02899196499d798141be6df70ca257b399741adc9975569d41b6 \
-    --hash=sha256:d9c8602d24df40e366bbe80157c6f94155c91c367eaaabeceb26d47532f6baba
+botocore==1.44.12 \
+    --hash=sha256:5806bb66bf167fa3172f4ddf78b088db9b22653702537b19969d02d2c3301ee5 \
+    --hash=sha256:d5df4cf868f2c4050999a0e6bc94e0a039017e719f4e27b2a8e87053856787b9
     # via
     #   boto3
     #   s3transfer
@@ -187,9 +187,9 @@ cachebox==6.2.11 \
     --hash=sha256:fdb32306f7ed1e07ae5369033b06a86ef622bd38f434e2805ee72d4f00e15fd0 \
     --hash=sha256:ff54f77383d9c384f197524fff5b21920e6a42eef09815b784034dddbcbc8511
     # via deepdiff
-cachetools==8.0.2 \
-    --hash=sha256:30ac523adfc118b51d2b2e7bad8a0ddb31370dfe2700c7f10ca224f36ccf81e0 \
-    --hash=sha256:502bf3c17c6e35d78ccdaa70da8c7001b28634541f5cde0dee33c93bb252277d
+cachetools==8.0.3 \
+    --hash=sha256:08bc12eeb7c7ab68abbe2d64d07fd7923ff532e32ff04ae27d22add1c5e8a5f9 \
+    --hash=sha256:79245d0d90464e29355f13658cd769e57d98ed06242d3c6fbd71796ca0938ef9
     # via tox
 certifi==2026.11.20 \
     --hash=sha256:7422df25243767b9877031a2248cb14d09ddac9beee846f4cef3d5c9191d488f \
@@ -1112,9 +1112,9 @@ six==1.17.0 \
     --hash=sha256:4721f391ed90541fddacab5acf947aa0d3dc7d27b2e1e8eda2be8970586c3274 \
     --hash=sha256:ff70335d468e7eb6ec65b95b99d3a2836546063f63acc5171de367e834932a81
     # via python-dateutil
-sqlglot==30.34.0 \
-    --hash=sha256:43cf9a6bb558bf2fe6fd4493a64f870dae76e21d43dace8819be7c3432c078d9 \
-    --hash=sha256:5ce4763ac98c6b24422a3c062b6e63f30ec4e6be9a81333c8dfa74adc9fb07bf
+sqlglot==30.35.0 \
+    --hash=sha256:136757a9845f4225f25613b26fc4e778e679c7a40b15bcc9b84e61bfc50c6dd8 \
+    --hash=sha256:cca0d94bd12026184b0ba9f0f9c78a34a932d730a598de7893de448debb0149d
     # via datacontract-cli
 tomli-w==1.2.0 \
     --hash=sha256:188306098d013b691fcadc011abd66727d3c414c571bb01b1a174ba8c983cf90 \
@@ -1128,9 +1128,9 @@ truststore==0.10.5 \
     --hash=sha256:30d36967ccaded5cbb38d602c433f53600036c79d502f4533a49b60a03bbefcd \
     --hash=sha256:9aaaedaefaf06d8b206278cf8b5012bc897f485a874503501e12d776df78951c
     # via datacontract-cli
-typer==0.29.2 \
-    --hash=sha256:b1998dc5f2c3dedafa1517a9521fa944cc4dc1fadcea085d81a3b10ebcaeb075 \
-    --hash=sha256:f30731f8ca758368b836b3714872e58e395cef8fcaff918c853b1969ed5274e7
+typer==0.29.3 \
+    --hash=sha256:1fd37275046faecc86caa2e0e313978c10db71533fc0fe1a48f4e03a60efc23c \
+    --hash=sha256:8189a53bb9684dc551e0b61e71904b323214884f2eb14bfe71aa859ae980d10a
     # via datacontract-cli
 typing-extensions==4.16.0 \
     --hash=sha256:481caa481374e813c1b176ada14e97f1f67a4539ce9cfeb3f350d78d6370c2e8 \

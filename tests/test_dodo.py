@@ -311,7 +311,9 @@ def test_find_dependencies_accepts_relative_source_path(
 ) -> None:
     """A relative source path works and is still excluded from its own dependencies."""
     dep = _write(formats_dir / "dep.libsonnet")
-    _write(formats_dir / "main.jsonnet", "import 'dep.libsonnet' + import 'main.jsonnet'")
+    _write(
+        formats_dir / "main.jsonnet", "import 'dep.libsonnet' + import 'main.jsonnet'"
+    )
     monkeypatch.chdir(formats_dir)
 
     assert dodo.find_jsonnet_dependencies(Path("main.jsonnet")) == [dep]
@@ -484,9 +486,7 @@ def test_clones_always_point_at_rendered_file(formats_dir: Path) -> None:
 
 
 @pytest.mark.usefixtures("fake_versions")
-def test_removed_sentinel_stops_inheritance(
-    formats_dir: Path, build_dir: Path
-) -> None:
+def test_removed_sentinel_stops_inheritance(formats_dir: Path, build_dir: Path) -> None:
     """A .removed sentinel stops inheritance until the next defined version."""
     root = _make_format(formats_dir, "fmt", defined=[V50, V54], removed=[V52])
 

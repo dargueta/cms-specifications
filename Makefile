@@ -1,9 +1,5 @@
 # SPDX-License-Identifier: BSD-3-Clause
 
-PYTHONPATH:=$(CURDIR)/src/schemas:$(PYTHONPATH)
-export PYTHONPATH
-
-
 .PHONY: schemas
 schemas:
 	cd src && doit
@@ -16,12 +12,12 @@ clean:
 
 .PHONY: format
 format:
-	ruff check --select I --fix src
-	ruff format src
+	ruff check --select I --fix src tests
+	ruff format src tests
 
 .PHONY: lint
 lint:
-	ruff check src
+	ruff check src tests
 
 .PHONY: typing
 typing:
