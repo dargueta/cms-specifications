@@ -23,6 +23,9 @@ lint:
 typing:
 	pyrefly check
 
+.PHONY: test
+test:
+	pytest tests
 
 .PHONY: setup
 setup:
