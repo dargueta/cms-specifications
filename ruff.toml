@@ -24,11 +24,10 @@ extend-ignore = [
 
 [lint.per-file-ignores]
 "__init__.py" = ["F403", "PLC0414"]
-"src/schemas/scripts/schemas.py" = ["I002", "N815", "TC003"]
-"src/schemas/scripts/*" = [
-    "D301", # Complains about `\b` in docstrings, needed by Click for formatting.
+"tests/**/*.py" = [
+    "D104", # Don't require package docstrings.
+    "S101", # Allow `assert` statements.
 ]
-"Makefile.py" = ["I002", "TC003"]
 
 [lint.isort]
 force-single-line = true

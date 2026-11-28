@@ -5,6 +5,15 @@ on: [ push ]
 jobs:
   generation:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        fail-fast: false
+        include:
+          command:
+            - schemas
+            - test
+            - typing
+            - lint
     steps:
       - uses: actions/checkout@v5
       # Note: We're using 3.12 because that's the lowest version of Python we
@@ -14,6 +23,6 @@ jobs:
         with:
           python-version: "3.12"
       - name: Install Python Dependencies
-        run: pip3 install -r requirements.txt
+        run: make setup
       - name: Test generating files
-        run: make
+        run: make ${{ matrix.command }}
